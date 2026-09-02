@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>CloakBrowser-shaped migration facade backed by SpyBrowser and official Playwright interfaces.</Description>
+    <PackageId>SpyBrowser.Compatibility.CloakBrowser</PackageId>
+    <AssemblyName>CloakBrowser</AssemblyName>
+    <RootNamespace>CloakBrowser</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpyBrowser.Core\SpyBrowser.Core.csproj" />
+    <ProjectReference Include="..\SpyBrowser.Playwright\SpyBrowser.Playwright.csproj" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
+  </ItemGroup>
+</Project>

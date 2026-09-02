@@ -1,0 +1,32 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet restore SpyBrowser.sln
+      - run: dotnet build SpyBrowser.sln -c Release --no-restore
+      - run: dotnet test SpyBrowser.sln -c Release --no-build
+      - run: dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages
+      - run: dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages
+      - run: dotnet pack src/SpyBrowser.Compatibility.CloakBrowser/SpyBrowser.Compatibility.CloakBrowser.csproj -c Release --no-build -o artifacts/packages
+      - run: dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o artifacts/packages
+      - if: env.NUGET_API_KEY != ''
+        run: dotnet nuget push "artifacts/packages/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" artifacts/packages/* --generate-notes

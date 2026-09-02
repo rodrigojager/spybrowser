@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionSuffix>beta.1</VersionSuffix>
+    <Authors>Rodrigo Jager</Authors>
+    <Company>SpyBrowser</Company>
+    <Copyright>Copyright (c) 2026 Rodrigo Jager</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/rodrigojager/spybrowser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rodrigojager/spybrowser</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>playwright;browser;automation;rpa;persistent-profile;cross-platform</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(CI)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)THIRD_PARTY_NOTICES.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

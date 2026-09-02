@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+.idea/
+TestResults/
+artifacts/
+*.user
+*.suo
+*.nupkg
+*.snupkg
+
+# Local browser identities can contain cookies and authenticated sessions.
+.spybrowser/
+identities/
+profiles/

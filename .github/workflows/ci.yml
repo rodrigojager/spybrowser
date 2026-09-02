@@ -1,0 +1,84 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        playwright: ["1.61.0", "latest"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - id: playwright
+        shell: pwsh
+        run: |
+          $requested = "${{ matrix.playwright }}"
+          if ($requested -eq "latest") {
+            $index = Invoke-RestMethod https://api.nuget.org/v3-flatcontainer/microsoft.playwright/index.json
+            $requested = $index.versions |
+              Where-Object { $_ -notmatch '-' } |
+              ForEach-Object { [version]$_ } |
+              Sort-Object |
+              Select-Object -Last 1
+          }
+          "version=$requested" >> $env:GITHUB_OUTPUT
+      - run: dotnet restore SpyBrowser.sln -p:MicrosoftPlaywrightVersion="${{ steps.playwright.outputs.version }}"
+      - run: dotnet build SpyBrowser.sln -c Release --no-restore -p:MicrosoftPlaywrightVersion="${{ steps.playwright.outputs.version }}"
+      - run: dotnet test SpyBrowser.sln -c Release --no-build -p:MicrosoftPlaywrightVersion="${{ steps.playwright.outputs.version }}"
+      - if: matrix.playwright == '1.61.0'
+        run: dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages
+      - if: matrix.playwright == '1.61.0'
+        run: dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages
+      - if: matrix.playwright == '1.61.0'
+        run: dotnet pack src/SpyBrowser.Compatibility.CloakBrowser/SpyBrowser.Compatibility.CloakBrowser.csproj -c Release --no-build -o artifacts/packages
+      - if: matrix.playwright == '1.61.0'
+        run: dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o artifacts/packages
+      - if: matrix.playwright == '1.61.0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.os }}
+          path: artifacts/packages
+
+  chrome-compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        playwright: ["1.61.0", "latest"]
+    runs-on: ${{ matrix.os }}
+    env:
+      SPYBROWSER_RUN_BROWSER_TESTS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - id: playwright
+        shell: pwsh
+        run: |
+          $requested = "${{ matrix.playwright }}"
+          if ($requested -eq "latest") {
+            $index = Invoke-RestMethod https://api.nuget.org/v3-flatcontainer/microsoft.playwright/index.json
+            $requested = $index.versions |
+              Where-Object { $_ -notmatch '-' } |
+              ForEach-Object { [version]$_ } |
+              Sort-Object |
+              Select-Object -Last 1
+          }
+          "version=$requested" >> $env:GITHUB_OUTPUT
+      - run: dotnet restore SpyBrowser.sln -p:MicrosoftPlaywrightVersion="${{ steps.playwright.outputs.version }}"
+      - if: runner.os == 'Windows'
+        run: dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="${{ steps.playwright.outputs.version }}" --filter FullyQualifiedName~BrowserIntegrationTests
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="${{ steps.playwright.outputs.version }}" --filter FullyQualifiedName~BrowserIntegrationTests

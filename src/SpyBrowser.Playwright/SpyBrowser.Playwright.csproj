@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Playwright-compatible persistent browser runtime for SpyBrowser.</Description>
+    <PackageId>SpyBrowser.Playwright</PackageId>
+    <Authors>Rodrigo Jager</Authors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Playwright" />
+    <ProjectReference Include="..\SpyBrowser.Core\SpyBrowser.Core.csproj" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
+  </ItemGroup>
+</Project>

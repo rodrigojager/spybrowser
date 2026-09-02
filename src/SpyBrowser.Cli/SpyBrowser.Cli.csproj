@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Description>Command-line tools for SpyBrowser identities and environment diagnostics.</Description>
+    <PackageId>SpyBrowser.Cli</PackageId>
+    <Authors>Rodrigo Jager</Authors>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>spybrowser</ToolCommandName>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <NoWarn>$(NoWarn);NU5111</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpyBrowser.Core\SpyBrowser.Core.csproj" />
+    <ProjectReference Include="..\SpyBrowser.Playwright\SpyBrowser.Playwright.csproj" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
+  </ItemGroup>
+</Project>
