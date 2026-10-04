@@ -109,6 +109,7 @@ public sealed class HumanActions
         var state = _mouseStates.GetValue(page, _ => new PageMouseState());
         cancellationToken.ThrowIfCancellationRequested();
         if (page.IsClosed) throw new InvalidOperationException("The page is closed.");
+        ValidateSelectedMouseAlgorithm();
 
         if (_options.MouseAlgorithm == MouseTrajectoryAlgorithm.Cursory)
         {
@@ -334,6 +335,7 @@ public sealed class HumanActions
             throw new ArgumentOutOfRangeException(nameof(action));
         }
 
+        ValidateSelectedMouseAlgorithm();
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
         // Trial verifies actionability before preparatory pointer side effects; every stage gets only
         // the remaining part of the same monotonic budget.
@@ -402,6 +404,7 @@ public sealed class HumanActions
         ILocator locator,
         CancellationToken cancellationToken)
     {
+        ValidateSelectedMouseAlgorithm();
         await locator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible })
             .ConfigureAwait(false);
         await locator.ClickAsync(new LocatorClickOptions { Trial = true }).ConfigureAwait(false);
@@ -413,6 +416,11 @@ public sealed class HumanActions
         var page = locator.Page;
         await MoveCoreAsync(page, targetX, targetY, cancellationToken).ConfigureAwait(false);
         return (page, targetX, targetY);
+    }
+
+    private void ValidateSelectedMouseAlgorithm()
+    {
+        if (_options.MouseAlgorithm == MouseTrajectoryAlgorithm.Cursory) _cursory.ValidateReady();
     }
 
     private async Task ClickCurrentPositionAsync(IPage page, CancellationToken cancellationToken)

@@ -2,9 +2,12 @@ using SpyBrowser.Cursory.Internal;
 
 namespace SpyBrowser.Cursory;
 
-/// <summary>Standalone experimental Cursory trajectory generator. This preview does not integrate with Playwright.</summary>
+/// <summary>Experimental Cursory trajectory generator, also available through the opt-in Playwright mouse algorithm.</summary>
 public static class CursoryTrajectoryGenerator
 {
+    /// <summary>Validate the embedded trajectory dataset without generating a path.</summary>
+    public static void ValidateDatasetReady() => _ = Dataset.Shared.Value;
+
     /// <summary>Generate a recorded, selected and transformed path between two finite points.</summary>
     public static Trajectory Generate(TrajectoryPoint start, TrajectoryPoint end, TrajectoryOptions? options = null) =>
         GenerateCore(start, end, options, null);

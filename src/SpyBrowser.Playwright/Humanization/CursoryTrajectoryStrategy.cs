@@ -5,6 +5,8 @@ namespace SpyBrowser.Playwright.Humanization;
 /// <summary>Adapts the standalone Cursory generator to Playwright's mouse dispatch.</summary>
 internal sealed class CursoryTrajectoryStrategy
 {
+    internal void ValidateReady() => CursoryTrajectoryGenerator.ValidateDatasetReady();
+
     internal IReadOnlyList<TimedMousePoint> Create(
         double startX,
         double startY,
