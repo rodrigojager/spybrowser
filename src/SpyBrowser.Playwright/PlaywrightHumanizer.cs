@@ -744,7 +744,13 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
 
                 try
                 {
-                    pending = (Task)targetMethod.Invoke(_target, arguments)!;
+                    var nativeArguments = arguments;
+                    if (_scope.NativeDefaultTimeoutApplies(_target, targetMethod, arguments) &&
+                        GetExplicitTimeoutMilliseconds(arguments) is null)
+                    {
+                        nativeArguments = ApplyRemainingNativeTimeout(targetMethod, arguments, page, cancellationToken);
+                    }
+                    pending = (Task)targetMethod.Invoke(_target, nativeArguments)!;
                     if (_target is IMouse && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
                     {
                         // Confirm native pointer/button state before releasing the per-page lease.
@@ -811,6 +817,24 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
 
     private static ILocator? UnwrapKnownLocator(ILocator? locator) =>
         locator is IHumanizedPlaywrightObject wrapped ? (ILocator)wrapped.Original : locator;
+
+    internal static object?[] ApplyRemainingNativeTimeout(MethodInfo method, object?[] arguments, IPage page, CancellationToken token)
+    {
+        var remaining = PageInputState.GetRemainingBudgetMilliseconds(page, token);
+        if (!remaining.HasValue) return arguments;
+        var parameters = method.GetParameters();
+        if (parameters.Length == 0) return arguments;
+        var optionsType = parameters[^1].ParameterType;
+        var timeoutProperty = optionsType.GetProperty("Timeout");
+        if (timeoutProperty?.CanWrite != true || optionsType.IsValueType) return arguments;
+        var adjusted = (object?[])arguments.Clone();
+        var optionsIndex = parameters.Length - 1;
+        var options = adjusted.ElementAtOrDefault(optionsIndex) ?? Activator.CreateInstance(optionsType);
+        if (options is null) return arguments;
+        timeoutProperty.SetValue(options, (float)remaining.Value);
+        adjusted[optionsIndex] = options;
+        return adjusted;
+    }
 
     private static int? GetExplicitTimeoutMilliseconds(object?[] arguments)
     {

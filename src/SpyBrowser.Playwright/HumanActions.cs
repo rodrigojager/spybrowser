@@ -216,7 +216,7 @@ public sealed class HumanActions
                 return;
             }
 
-            using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
+            using var deadline = CreateDeadline(locator.Page, _options.TypingDeadlineMilliseconds, cancellationToken);
             var typeOptions = new LocatorPressSequentiallyOptions { Timeout = deadline.RemainingMilliseconds };
             if (replaceExisting)
             {
@@ -302,7 +302,7 @@ public sealed class HumanActions
             return;
         }
 
-        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
+        using var deadline = CreateDeadline(page, _options.TypingDeadlineMilliseconds, cancellationToken);
         var runes = text.EnumerateRunes().ToArray();
         for (var index = 0; index < runes.Length; index++)
         {
@@ -333,7 +333,7 @@ public sealed class HumanActions
 
     internal async Task PressFocusedCoreAsync(IPage page, string key, CancellationToken cancellationToken)
     {
-        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
+        using var deadline = CreateDeadline(page, _options.ActionDeadlineMilliseconds, cancellationToken);
         deadline.ThrowIfExpired();
         await page.Keyboard.PressAsync(key, new KeyboardPressOptions { Delay = Math.Min(75, deadline.RemainingMilliseconds) })
             .ConfigureAwait(false);
@@ -348,7 +348,7 @@ public sealed class HumanActions
         }
 
         ValidateSelectedMouseAlgorithm();
-        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
+        using var deadline = CreateDeadline(page, _options.ActionDeadlineMilliseconds, cancellationToken);
         // Trial verifies actionability before preparatory pointer side effects; every stage gets only
         // the remaining part of the same monotonic budget.
         if (action == "click")
@@ -505,6 +505,13 @@ public sealed class HumanActions
 
     private double NextDouble(double minimum, double maximum) =>
         minimum + _random.NextDouble() * (maximum - minimum);
+
+    private static InteractionDeadline CreateDeadline(IPage page, int configuredMilliseconds, CancellationToken cancellationToken)
+    {
+        var remaining = PageInputState.GetRemainingBudgetMilliseconds(page, cancellationToken);
+        var budget = remaining.HasValue ? Math.Min(configuredMilliseconds, remaining.Value) : configuredMilliseconds;
+        return new InteractionDeadline(TimeSpan.FromMilliseconds(budget), cancellationToken);
+    }
 
     private Task DelayAsync(int minimum, int maximum, CancellationToken cancellationToken) =>
         Task.Delay(_random.Next(minimum, maximum + 1), cancellationToken);

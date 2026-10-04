@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Playwright;
 
@@ -7,6 +8,7 @@ namespace SpyBrowser.Playwright.Humanization;
 internal sealed class PageInputState
 {
     private static readonly ConditionalWeakTable<IPage, PageInputState> States = new();
+    private static readonly AsyncLocal<InputLease?> AmbientLease = new();
     private readonly IPage _page;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private readonly CancellationTokenSource _lifetime = new();
@@ -42,9 +44,11 @@ internal sealed class PageInputState
         // to the native operation. Duplicating either timeout here can win the race, turn a native
         // TimeoutException into cancellation, and close the page. In particular, Timeout=0 is
         // native-unlimited, not SDK-defaulted.
-        var nativeOwnsTimeout = explicitTimeoutMilliseconds.HasValue || (nativeDefaultTimeoutApplies && observedDefault >= 0);
-        var budget = nativeOwnsTimeout ? Timeout.Infinite :
+        var nativeOwnsTimeout = explicitTimeoutMilliseconds.HasValue || (nativeDefaultTimeoutApplies && observedDefault <= 0);
+        var budget = explicitTimeoutMilliseconds.HasValue ? Timeout.Infinite :
+            nativeDefaultTimeoutApplies ? (observedDefault > 0 ? observedDefault : Timeout.Infinite) :
             selectedTimeout > 0 ? selectedTimeout : configuredBudgetMilliseconds;
+        var operationStarted = Stopwatch.GetTimestamp();
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetimeToken, cancellationToken);
         if (!nativeOwnsTimeout && budget > 0) deadline.CancelAfter(budget);
         await _gate.WaitAsync(deadline.Token).ConfigureAwait(false);
@@ -53,8 +57,20 @@ internal sealed class PageInputState
         try
         {
             deadline.Token.ThrowIfCancellationRequested();
-            operationTask = operation(deadline.Token);
-            await operationTask.WaitAsync(deadline.Token).ConfigureAwait(false);
+            var previousLease = AmbientLease.Value;
+            // Native Playwright defaults own the action timeout after admission. Keep the
+            // monotonic lease for derived SDK stages, but avoid racing its native TimeoutException.
+            if (nativeDefaultTimeoutApplies && budget > 0) deadline.CancelAfter(Timeout.Infinite);
+            AmbientLease.Value = budget > 0 ? new InputLease(this, deadline.Token, budget, operationStarted) : null;
+            try
+            {
+                operationTask = operation(deadline.Token);
+                await operationTask.WaitAsync(deadline.Token).ConfigureAwait(false);
+            }
+            finally
+            {
+                AmbientLease.Value = previousLease;
+            }
         }
         catch (OperationCanceledException)
         {
@@ -65,7 +81,7 @@ internal sealed class PageInputState
             // An owned core deadline can win before this linked timer's callback is
             // scheduled. Preserve legacy closure for that SDK cancellation too;
             // explicit native timeouts and caller/lifetime cancellation are distinct.
-            var budgetExpired = !nativeOwnsTimeout &&
+            var budgetExpired = !nativeOwnsTimeout && !nativeDefaultTimeoutApplies &&
                 !cancellationToken.IsCancellationRequested && !_lifetimeToken.IsCancellationRequested;
             if (!operationStopped || (closePageOnBudgetCancellation && budgetExpired))
             {
@@ -94,6 +110,22 @@ internal sealed class PageInputState
             if (!gateTransferred) _gate.Release();
         }
     }
+
+    public static int? GetRemainingBudgetMilliseconds(IPage page, CancellationToken token)
+    {
+        var lease = AmbientLease.Value;
+        if (lease is null || !ReferenceEquals(lease.State._page, page) || lease.Token != token) return null;
+        var remaining = lease.BudgetMilliseconds - Stopwatch.GetElapsedTime(lease.Started).TotalMilliseconds;
+        if (remaining <= 0)
+        {
+            token.ThrowIfCancellationRequested();
+            throw new TimeoutException("The shared input-operation budget expired.");
+        }
+
+        return Math.Max(1, (int)Math.Ceiling(remaining));
+    }
+
+    private sealed record InputLease(PageInputState State, CancellationToken Token, int BudgetMilliseconds, long Started);
 
     private async Task ClosePageAsync()
     {
