@@ -333,14 +333,16 @@ public sealed class ActionContractMatrixTests
         Assert.True(sent is "directwrapped" or "wrappeddirect", $"Direct and wrapped helpers interleaved: {sent}");
 
         var otherPage = await context.NewPageAsync();
-        await otherPage.SetContentAsync("<input id='field'><script>window.firstAt=0;window.firstInput=new Promise(resolve=>field.addEventListener('input',()=>{if(!firstAt)firstAt=performance.now();resolve()}, {once:true}))</script>");
-        await page.EvaluateAsync("(()=>{field.value='';window.firstAt=0;window.firstInput=new Promise(resolve=>field.addEventListener('input',()=>{if(!firstAt)firstAt=performance.now();resolve()}, {once:true}));return true})()");
+        await otherPage.SetContentAsync("<input id='field'><script>window.firstAt=0;window.firstInput=new Promise(resolve=>field.addEventListener('input',()=>{if(!firstAt)firstAt=performance.timeOrigin+performance.now();resolve()}, {once:true}))</script>");
+        await page.EvaluateAsync("(()=>{field.value='';window.firstAt=0;window.firstInput=new Promise(resolve=>field.addEventListener('input',()=>{if(!firstAt)firstAt=performance.timeOrigin+performance.now();resolve()}, {once:true}));return true})()");
         await page.Locator("#field").FocusAsync();
         await otherPage.Locator("#field").FocusAsync();
         var slower = new HumanInteractionOptions { KeyMinimumDelayMilliseconds = 250, KeyMaximumDelayMilliseconds = 250, TypingDeadlineMilliseconds = 8_000 };
         var firstPageInput = new HumanActions(slower).TypeFocusedAsync(page, "abcdefgh");
         var otherPageInput = new HumanActions(slower).TypeFocusedAsync(otherPage, "abcdefgh");
         await Task.WhenAll(page.EvaluateAsync("window.firstInput"), otherPage.EvaluateAsync("window.firstInput"));
+        // Relative performance.now() clocks have different origins for these pages.
+        // Compare their epoch-normalized event times without changing the bound.
         var firstTimes = await Task.WhenAll(page.EvaluateAsync<double>("window.firstAt"), otherPage.EvaluateAsync<double>("window.firstAt"));
         Assert.InRange(Math.Abs(firstTimes[0] - firstTimes[1]), 0, 1_500);
         await Task.WhenAll(firstPageInput, otherPageInput);

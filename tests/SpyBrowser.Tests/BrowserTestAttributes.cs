@@ -24,6 +24,16 @@ public sealed class BrowserTheoryAttribute : TheoryAttribute
     }
 }
 
+/// <summary>Reports the optional foreground-focus lane honestly when disabled.</summary>
+public sealed class HeadedProbeFactAttribute : FactAttribute
+{
+    public HeadedProbeFactAttribute()
+    {
+        if (!string.Equals(Environment.GetEnvironmentVariable("SPYBROWSER_RUN_HEADED_PROBE_TESTS"), "1", StringComparison.Ordinal))
+            Skip = "Headed focus lane not enabled (set SPYBROWSER_RUN_HEADED_PROBE_TESTS=1).";
+    }
+}
+
 internal static class BrowserTestSettings
 {
     public static bool Enabled => string.Equals(

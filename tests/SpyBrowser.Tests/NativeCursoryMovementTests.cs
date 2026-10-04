@@ -54,7 +54,10 @@ public sealed class NativeCursoryMovementTests
     [InlineData(2d)]
     public async Task Cursory_move_reaches_fractional_endpoint_in_local_dom_at_device_scale(double scale)
     {
-        await using var runtime = await OwnedBrowserRuntime.LaunchAsync();
+        // Normalize the host window's base DPI, not the configured emulation scale.
+        // Raw headed Chrome/Edge otherwise introduce OS-DPI ratio rounding even
+        // without this SDK. Keep the exact assertion and all four scale factors.
+        await using var runtime = await OwnedBrowserRuntime.LaunchAsync(normalizeHostDpi: true);
         await using var context = await runtime.Browser.NewContextAsync(new BrowserNewContextOptions
         {
             ViewportSize = new ViewportSize { Width = 600, Height = 400 },
@@ -157,7 +160,7 @@ public sealed class NativeCursoryMovementTests
             Browser = browser;
         }
 
-        internal static async Task<OwnedBrowserRuntime> LaunchAsync()
+        internal static async Task<OwnedBrowserRuntime> LaunchAsync(bool normalizeHostDpi = false)
         {
             var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
             try
@@ -165,7 +168,8 @@ public sealed class NativeCursoryMovementTests
                 var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
                 {
                     Headless = BrowserTestSettings.Headless,
-                    Channel = BrowserTestSettings.Channel
+                    Channel = BrowserTestSettings.Channel,
+                    Args = normalizeHostDpi ? ["--force-device-scale-factor=1"] : null
                 });
                 return new OwnedBrowserRuntime(playwright, browser);
             }

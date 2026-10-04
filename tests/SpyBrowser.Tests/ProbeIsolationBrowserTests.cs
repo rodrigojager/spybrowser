@@ -47,12 +47,9 @@ public sealed class ProbeIsolationBrowserTests
         }
     }
 
-    [Fact]
+    [HeadedProbeFact]
     public async Task Headed_probe_does_not_change_the_existing_pages_focus_or_active_element()
     {
-        if (!string.Equals(Environment.GetEnvironmentVariable("SPYBROWSER_RUN_HEADED_PROBE_TESTS"), "1", StringComparison.Ordinal))
-            return;
-
         using var temporary = new TemporaryDirectory();
         var identity = BrowserIdentity.Create("headed-probe-focus");
         var options = new SpyBrowserLaunchOptions
