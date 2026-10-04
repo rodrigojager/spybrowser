@@ -8,6 +8,20 @@ namespace SpyBrowser.Tests;
 public sealed class NativeCursoryMovementTests
 {
     [Fact]
+    public void Invalid_generation_configuration_fails_before_a_trajectory_can_be_dispatched()
+    {
+        var strategy = new CursoryTrajectoryStrategy();
+        var options = new HumanInteractionOptions
+        {
+            MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
+            CursoryFrequency = 0,
+            RandomSeed = 21021
+        };
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => strategy.Create(10, 20, 700, 450, options));
+    }
+
+    [Fact]
     public void Duration_resize_preserves_selected_sample_order_and_point_frequency()
     {
         var strategy = new CursoryTrajectoryStrategy();
