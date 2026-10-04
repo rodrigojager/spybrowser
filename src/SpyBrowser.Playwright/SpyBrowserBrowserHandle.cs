@@ -34,7 +34,8 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
     /// <summary>
     /// Configured browser adapter. Context events report contexts created by its configured
     /// factories only; contexts created through <see cref="RawBrowser"/> bypass configuration
-    /// and are intentionally not announced retroactively.
+    /// and are intentionally not announced retroactively. Context event handlers receive this
+    /// configured adapter as sender and the configured context as event arguments.
     /// </summary>
     public IBrowser Browser { get; }
 
