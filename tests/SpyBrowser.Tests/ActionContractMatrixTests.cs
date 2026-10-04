@@ -229,6 +229,49 @@ public sealed class ActionContractMatrixTests
     }
 
     [BrowserFact]
+    public async Task Preparatory_pointer_endpoint_tracks_native_final_click_point()
+    {
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        await page.SetContentAsync("<button id='target' style='position:absolute;left:180px;top:120px;width:100px;height:50px'>go</button><script>window.trace=[];target.addEventListener('mousemove',e=>trace.push(['move',e.clientX,e.clientY]));target.addEventListener('click',e=>trace.push(['click',e.clientX,e.clientY]))</script>");
+        var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions { CompatibilityMode = Compatible, MouseMinimumDurationMilliseconds = 0, MouseMaximumDurationMilliseconds = 0 }).Wrap(page);
+        await wrapped.Locator("#target").ClickAsync();
+        Assert.Equal("click", await page.EvaluateAsync<string>("trace.at(-1)[0]"));
+        var points = await page.EvaluateAsync<double[][]>("trace.map(e=>[e[1],e[2]])");
+        Assert.NotEmpty(points);
+        Assert.InRange(Math.Abs(points[^1][0] - 230), 0, 2);
+        Assert.InRange(Math.Abs(points[^1][1] - 145), 0, 2);
+    }
+
+    [BrowserFact]
+    public async Task Readiness_deadline_expires_before_late_target_appears()
+    {
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        await page.SetContentAsync("<script>window.clicks=0;setTimeout(()=>{document.body.insertAdjacentHTML('beforeend','<button id=late>late</button>');document.querySelector('#late').onclick=()=>clicks++},600)</script>");
+        var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions { CompatibilityMode = Compatible, ActionDeadlineMilliseconds = 150 }).Wrap(page);
+        var failure = await Record.ExceptionAsync(() => wrapped.Locator("#late").ClickAsync());
+        Assert.NotNull(failure);
+        Assert.True(failure is TimeoutException or TaskCanceledException or PlaywrightException);
+    }
+
+    [BrowserFact]
+    public async Task Focus_loss_during_type_does_not_replay_or_reinsert_the_prefix()
+    {
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        await page.SetContentAsync("<input id='field'><script>window.inputs=0;field.addEventListener('input',()=>{inputs++;field.blur()})</script>");
+        var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions { CompatibilityMode = Compatible, KeyMinimumDelayMilliseconds = 0, KeyMaximumDelayMilliseconds = 0 }).Wrap(page);
+        var error = await Record.ExceptionAsync(() => wrapped.Locator("#field").PressSequentiallyAsync("abc"));
+        Assert.Null(error);
+        Assert.Equal("a", await page.Locator("#field").InputValueAsync());
+        Assert.Equal(1, await page.EvaluateAsync<int>("inputs"));
+    }
+
+    [BrowserFact]
     public async Task Typing_deadline_is_bounded_and_closing_page_stops_later_characters()
     {
         using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
