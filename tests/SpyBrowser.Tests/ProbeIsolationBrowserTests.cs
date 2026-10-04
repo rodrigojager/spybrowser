@@ -74,5 +74,73 @@ public sealed class ProbeIsolationBrowserTests
         Assert.Contains(userPage, handle.Pages);
         Assert.Equal(pagesBefore.Length + 1, handle.Pages.Count);
         Assert.DoesNotContain(userPageEvents, page => !handle.Pages.Any(current => ReferenceEquals(current, page)));
+
+        // Hold native probe creation open, then bypass the wrapped NewPage gate as a
+        // browser-created popup would. Its publication must be deferred, not dropped.
+        var registry = ProbePageRegistry.For(handle.RawContext);
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        IPage? probePage = null;
+        registry.ProbePageFactory = async () =>
+        {
+            started.TrySetResult();
+            await release.Task;
+            probePage = await handle.RawContext.NewPageAsync();
+            return probePage;
+        };
+        var deferredEvents = new List<IPage>();
+        handle.Context.Page += (_, page) => deferredEvents.Add(page);
+        try
+        {
+            var rawPopupEvent = new TaskCompletionSource<IPage>(TaskCreationOptions.RunContinuationsAsynchronously);
+            void CaptureRawPopup(object? _, IPage page) => rawPopupEvent.TrySetResult(page);
+            handle.RawContext.Page += CaptureRawPopup;
+            var isolatedProbe = GpuProbe.RunAsync(handle.RawContext, TimeSpan.FromSeconds(15));
+            await started.Task;
+            await PlaywrightHumanizer.Unwrap(first).EvaluateAsync("() => window.open('about:blank')");
+            var popup = await rawPopupEvent.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            handle.RawContext.Page -= CaptureRawPopup;
+            Assert.Empty(deferredEvents);
+            release.SetResult();
+            await isolatedProbe;
+            Assert.NotNull(probePage);
+            Assert.True(registry.IsProbe(probePage));
+            Assert.Single(deferredEvents);
+            Assert.Same(PlaywrightHumanizer.Unwrap(popup), PlaywrightHumanizer.Unwrap(deferredEvents[0]));
+            Assert.Contains(handle.Pages, page => ReferenceEquals(PlaywrightHumanizer.Unwrap(page), popup));
+            Assert.DoesNotContain(handle.Pages, page => ReferenceEquals(PlaywrightHumanizer.Unwrap(page), probePage));
+        }
+        finally
+        {
+            release.TrySetResult();
+            registry.ProbePageFactory = null;
+        }
+
+        var lateStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var createLate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var latePage = new TaskCompletionSource<IPage>(TaskCreationOptions.RunContinuationsAsynchronously);
+        registry.ProbePageFactory = async () =>
+        {
+            lateStarted.TrySetResult();
+            await createLate.Task;
+            var page = await handle.RawContext.NewPageAsync();
+            latePage.TrySetResult(page);
+            return page;
+        };
+        try
+        {
+            var timedOut = GpuProbe.RunAsync(handle.RawContext, TimeSpan.FromMilliseconds(100));
+            await lateStarted.Task;
+            await Assert.ThrowsAsync<TimeoutException>(() => timedOut);
+            createLate.SetResult();
+            var late = await latePage.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            for (var attempt = 0; !late.IsClosed && attempt < 50; attempt++) await Task.Delay(20);
+            Assert.True(late.IsClosed);
+        }
+        finally
+        {
+            createLate.TrySetResult();
+            registry.ProbePageFactory = null;
+        }
     }
 }
