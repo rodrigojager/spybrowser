@@ -18,11 +18,35 @@ Directory.CreateDirectory(outputDirectory);
 var datasetPath = FindDatasetPath();
 var datasetHash = Convert.ToHexString(SHA256.HashData(await File.ReadAllBytesAsync(datasetPath))).ToLowerInvariant();
 
-// This is the first Cursory generation in this freshly launched benchmark process.
+// Snapshot around the first invocation. These diagnostics are outside browser dispatch timing.
+GC.Collect();
+GC.WaitForPendingFinalizers();
+GC.Collect();
+var coldManagedHeapBefore = GC.GetTotalMemory(forceFullCollection: true);
+using var coldProcess = Process.GetCurrentProcess();
+coldProcess.Refresh();
+var coldWorkingSetBefore = coldProcess.WorkingSet64;
+var coldAllocatedBefore = GC.GetAllocatedBytesForCurrentThread();
 var coldWatch = Stopwatch.StartNew();
 var coldPath = CursoryTrajectoryGenerator.Generate(new(20, 30), new(21, 31), new TrajectoryOptions { Seed = seed });
 coldWatch.Stop();
-var coldGeneration = new { elapsedMs = coldWatch.Elapsed.TotalMilliseconds, pointCount = coldPath.Points.Count };
+var coldAllocatedBytes = GC.GetAllocatedBytesForCurrentThread() - coldAllocatedBefore;
+var coldManagedHeapAfter = GC.GetTotalMemory(forceFullCollection: true);
+coldProcess.Refresh();
+var coldWorkingSetAfter = coldProcess.WorkingSet64;
+var coldGeneration = new
+{
+    elapsedMs = coldWatch.Elapsed.TotalMilliseconds,
+    pointCount = coldPath.Points.Count,
+    currentThreadManagedAllocatedBytes = coldAllocatedBytes,
+    managedHeapBeforeBytes = coldManagedHeapBefore,
+    managedHeapAfterBytes = coldManagedHeapAfter,
+    managedHeapDeltaBytes = coldManagedHeapAfter - coldManagedHeapBefore,
+    processWorkingSetBeforeBytes = coldWorkingSetBefore,
+    processWorkingSetAfterBytes = coldWorkingSetAfter,
+    processWorkingSetDeltaBytes = coldWorkingSetAfter - coldWorkingSetBefore,
+    measurementScope = "fresh-process first Cursory generator call; managed heap and process working-set snapshots are process-wide diagnostics, not exclusive generator ownership or peak memory"
+};
 var repeatPath = CursoryTrajectoryGenerator.Generate(new(20, 30), new(21, 31), new TrajectoryOptions { Seed = seed });
 var deterministicGeneration = coldPath.Points.Count == repeatPath.Points.Count &&
     coldPath.Points.Zip(repeatPath.Points).All(pair => Math.Abs(pair.First.X - pair.Second.X) <= 1e-9 && Math.Abs(pair.First.Y - pair.Second.Y) <= 1e-9) &&
@@ -55,6 +79,10 @@ foreach (var algorithm in Enum.GetValues<MouseTrajectoryAlgorithm>())
 foreach (var motionCase in cases)
 {
     var pageCount = motionCase.Kind == "concurrent" ? 3 : 1;
+    using var caseProcess = Process.GetCurrentProcess();
+    caseProcess.Refresh();
+    var caseWorkingSetBefore = caseProcess.WorkingSet64;
+    var caseManagedHeapBefore = GC.GetTotalMemory(forceFullCollection: false);
     var contexts = new List<IBrowserContext>();
     var tasks = new List<Task<object>>();
     for (var pageIndex = 0; pageIndex < pageCount; pageIndex++)
@@ -67,7 +95,7 @@ foreach (var motionCase in cases)
         await page.SetContentAsync(motionCase.Kind == "button"
             ? $"<button id='target' style='position:absolute;left:{endX - 45}px;top:{endY - 20}px;width:90px;height:40px'>activate</button><script>window.samples=[];window.hovers=0;window.clicks=0;addEventListener('mousemove',e=>samples.push([performance.now(),e.clientX,e.clientY]));document.querySelector('#target').addEventListener('mouseenter',()=>window.hovers++);document.querySelector('#target').addEventListener('click',()=>window.clicks++);</script>"
             : "<script>window.samples=[];addEventListener('mousemove',e=>samples.push([performance.now(),e.clientX,e.clientY]));</script>");
-        var pageHeapBefore = await page.EvaluateAsync<double?>("performance.memory?.usedJSHeapSize ?? null");
+        var pageHeapBefore = await ReadPageMemoryAsync(context, page);
         IPage actionPage = motionCase.Kind == "slow" ? SlowMousePageProxy.Create(page, 12) : page;
         var humanizer = new PlaywrightHumanizer(new HumanInteractionOptions
         {
@@ -80,9 +108,28 @@ foreach (var motionCase in cases)
         var wrapped = humanizer.Wrap(actionPage);
         await wrapped.Mouse.MoveAsync((float)motionCase.StartX, (float)motionCase.StartY);
         await page.EvaluateAsync("samples.length=0");
-        tasks.Add(ObserveMoveAsync(page, wrapped, algorithm, motionCase, endX, endY, pageIndex, plannedMilliseconds, pageHeapBefore));
+        tasks.Add(ObserveMoveAsync(context, page, wrapped, algorithm, motionCase, endX, endY, pageIndex, plannedMilliseconds, pageHeapBefore));
     }
-    results.Add(new { algorithm = algorithm.ToString(), caseName = motionCase.Name, pages = await Task.WhenAll(tasks) });
+    var pageResults = await Task.WhenAll(tasks);
+    caseProcess.Refresh();
+    var caseWorkingSetAfter = caseProcess.WorkingSet64;
+    var caseManagedHeapAfter = GC.GetTotalMemory(forceFullCollection: false);
+    results.Add(new
+    {
+        algorithm = algorithm.ToString(),
+        caseName = motionCase.Name,
+        processMemoryDiagnostic = new
+        {
+            workingSetBeforeBytes = caseWorkingSetBefore,
+            workingSetAfterBytes = caseWorkingSetAfter,
+            workingSetDeltaBytes = caseWorkingSetAfter - caseWorkingSetBefore,
+            managedHeapBeforeBytes = caseManagedHeapBefore,
+            managedHeapAfterBytes = caseManagedHeapAfter,
+            managedHeapDeltaBytes = caseManagedHeapAfter - caseManagedHeapBefore,
+            scope = "benchmark process-wide snapshots around this case (includes Playwright/driver and all concurrent pages); not attributable to a page/target or SDK-only state"
+        },
+        pages = pageResults
+    });
     realDomRunCount += tasks.Count;
     foreach (var context in contexts) await context.CloseAsync();
 }
@@ -125,7 +172,7 @@ var report = new
         managedAllocatedBytesPerTrajectory = generationAllocated / warmRuns,
         investigationTargetP95Ms = 10,
         investigationTargetMetOnThisRun = Percentile(genSamples, .95) < 10,
-        measurement = "Cursory generator only, cold first call in this fresh benchmark process; warm timings use Stopwatch. Allocations use current-thread GC delta.",
+        measurement = "Cold first-call elapsed time and current-thread managed allocations plus managed-heap/process-working-set snapshots are captured in a fresh process. Warm 40-run timings and allocations are separately measured before Playwright/browser startup; snapshots are diagnostic, not peak/exclusive ownership.",
         benchmarkProcessWorkingSetDeltaBytes = processAfterBrowser - processBeforeBrowser,
         browserPhaseManagedAllocatedBytesAggregate = totalManagedAllocatedAfterBrowser - totalManagedAllocatedBeforeBrowser,
         browserPhaseAllocationMethod = "GC.GetTotalAllocatedBytes delta for the benchmark process, including asynchronous/Playwright overhead; not attributed per page or algorithm"
@@ -136,7 +183,7 @@ var report = new
         "Bezier is the existing baseline; Cursory is the native recorded-trajectory implementation. Differences describe implementation cost and observed rhythm, not human-likeness or detection outcomes.",
         "Planned duration is the configured 300 ms path budget (Bezier resolves to this clamp; Cursory is scaled to this limit). Actual DOM timing is browser-observed and intentionally not bit-reproducible.",
         "The slow transport case adds an explicit artificial 12 ms delay immediately before each IMouse.MoveAsync delegate call. This is not network/CDP latency.",
-        "Working set is process-level and includes benchmark, Playwright driver/browser-launch overhead; it is not attributable per page. No reliable per-page memory claim is made."
+        "Cold generation memory snapshots are process-wide and include managed runtime state; per-case snapshots include Playwright/driver and concurrent pages. Neither is exclusive generator/page ownership. Per-target CDP reports target V8 heap and supported Performance metrics only; Chromium may share a renderer across targets, so these are not exclusive per-page browser RSS. SDK-state allocations per page are not isolated by this harness."
     }
 };
 var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
@@ -156,7 +203,7 @@ await File.WriteAllTextAsync(jsonPath, reportJson);
 await File.WriteAllTextAsync(Path.Combine(outputDirectory, "motion-quality.md"), ToMarkdown(jsonPath, reportJson));
 Console.WriteLine($"Wrote {Path.GetFullPath(jsonPath)} and {Path.GetFullPath(Path.Combine(outputDirectory, "motion-quality.md"))}");
 
-static async Task<object> ObserveMoveAsync(IPage rawPage, IPage wrappedPage, MouseTrajectoryAlgorithm algorithm, MotionCase motionCase, double endX, double endY, int pageIndex, int plannedMs, double? pageHeapBefore)
+static async Task<object> ObserveMoveAsync(IBrowserContext context, IPage rawPage, IPage wrappedPage, MouseTrajectoryAlgorithm algorithm, MotionCase motionCase, double endX, double endY, int pageIndex, int plannedMs, object pageMemoryBefore)
 {
     var start = Stopwatch.StartNew();
     await wrappedPage.Mouse.MoveAsync((float)endX, (float)endY);
@@ -216,12 +263,37 @@ static async Task<object> ObserveMoveAsync(IPage rawPage, IPage wrappedPage, Mou
         taskCompleted = completed,
         hoverCompleted = hovered,
         clickCompleted = clicked,
-        chromiumPageJavaScriptHeapBytesBefore = pageHeapBefore,
-        chromiumPageJavaScriptHeapBytesAfter = await rawPage.EvaluateAsync<double?>("performance.memory?.usedJSHeapSize ?? null"),
+        targetMemoryBefore = pageMemoryBefore,
+        targetMemoryAfter = await ReadPageMemoryAsync(context, rawPage),
         taskKind = motionCase.Kind,
         measuredAlgorithm = algorithm.ToString(),
         timingSource = "DOM event performance.now()"
     };
+}
+
+static async Task<object> ReadPageMemoryAsync(IBrowserContext context, IPage page)
+{
+    // CDP diagnostics run before/after, never inside the timed mouse dispatch/action interval.
+    var session = await context.NewCDPSessionAsync(page);
+    try
+    {
+        await session.SendAsync("Performance.enable");
+        var heap = await session.SendAsync("Runtime.getHeapUsage");
+        var metrics = await session.SendAsync("Performance.getMetrics");
+        return new
+        {
+            protocol = "Chrome DevTools Protocol",
+            targetHeap = heap,
+            targetHeapUnit = "bytes (CDP Runtime.getHeapUsage byte-valued fields)",
+            performanceMetrics = metrics,
+            performanceMetricUnits = "CDP-defined per metric; raw metric names retained (timestamps/durations in seconds, heap-size metrics in bytes, count metrics as named)",
+            scope = "CDP target V8 heap/metrics; renderer process may be shared with other targets and these values are not exclusive per-page browser RSS"
+        };
+    }
+    finally
+    {
+        await session.DetachAsync();
+    }
 }
 
 static double Finite(double value) => double.IsFinite(value) ? value : 0;
@@ -317,7 +389,7 @@ static string ToMarkdown(string jsonPath, string json)
     }
     var generation = report.GetProperty("generation");
     sb.AppendLine().AppendLine($"Cursory cold generation/load: {generation.GetProperty("coldDatasetAndGeneration").GetProperty("elapsedMs").GetDouble():F1} ms; warm p50/p95: {generation.GetProperty("warmP50Ms").GetDouble():F1}/{generation.GetProperty("warmP95Ms").GetDouble():F1} ms; allocated: {generation.GetProperty("managedAllocatedBytesPerTrajectory").GetInt64()} bytes/trajectory; same-seed determinism (1e-9): {generation.GetProperty("deterministicSameSeedWithin1eMinus9").GetBoolean()}; initial 10 ms p95 target met: {generation.GetProperty("investigationTargetMetOnThisRun").GetBoolean()}.").AppendLine();
-    sb.AppendLine("DOM `performance.now()` timings include actual browser scheduling. The slow case includes artificial 12 ms delay before each real mouse dispatch, not network latency. Results describe implementation cost and observed rhythm only; they do not claim improved humanness, stealth, CAPTCHA outcomes, or detection avoidance.");
+    sb.AppendLine("DOM `performance.now()` timings include actual browser scheduling. The slow case includes artificial 12 ms delay before each real mouse dispatch, not network latency. Cold first-call allocated bytes/managed heap/process working set, warm generator allocation, per-case process snapshots, and per-target CDP V8/Performance values are separate diagnostics outside timed dispatch. Process values are shared process snapshots, not per-page attribution; CDP target heap is not exclusive browser RSS because renderer processes may be shared. SDK-state allocations per page are not isolated. Results describe implementation cost and observed rhythm only; they do not claim improved humanness, stealth, CAPTCHA outcomes, or detection avoidance.");
     return sb.ToString();
 }
 
