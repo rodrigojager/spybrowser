@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using Microsoft.Playwright;
+using SpyBrowser.Playwright.Humanization;
 
 namespace SpyBrowser.Playwright;
 
@@ -182,54 +183,45 @@ internal sealed class HumanizationScope
         object?[] arguments,
         out object? result)
     {
+        var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
         if (method.Name == nameof(ILocator.ClickAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = actions.ClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click") : actions.ClickAsync(locator);
             return true;
         }
-
         if (method.Name == nameof(ILocator.DblClickAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = actions.DoubleClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick") : actions.DoubleClickAsync(locator);
             return true;
         }
-
         if (method.Name == nameof(ILocator.HoverAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = actions.HoverAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover") : actions.HoverAsync(locator);
             return true;
         }
-
-        if (method.Name == nameof(ILocator.FillAsync) &&
-            arguments.ElementAtOrDefault(0) is string fill &&
-            HasOnlyDefaultOptions(arguments, 1))
+        if (!compatible && method.Name == nameof(ILocator.FillAsync) &&
+            arguments.ElementAtOrDefault(0) is string fill && HasOnlyDefaultOptions(arguments, 1))
         {
             result = actions.TypeAsync(locator, fill, replaceExisting: true);
             return true;
         }
-
         if ((method.Name == nameof(ILocator.TypeAsync) || method.Name == nameof(ILocator.PressSequentiallyAsync)) &&
-            arguments.ElementAtOrDefault(0) is string text &&
-            HasOnlyDefaultOptions(arguments, 1))
+            arguments.ElementAtOrDefault(0) is string text && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.TypeAsync(locator, text, replaceExisting: false);
+            result = compatible ? actions.CompatibleTypeAsync(locator, text) : actions.TypeAsync(locator, text, replaceExisting: false);
             return true;
         }
-
-        if (method.Name == nameof(ILocator.PressAsync) &&
-            arguments.ElementAtOrDefault(0) is string key &&
-            HasOnlyDefaultOptions(arguments, 1))
+        if (!compatible && method.Name == nameof(ILocator.PressAsync) &&
+            arguments.ElementAtOrDefault(0) is string key && HasOnlyDefaultOptions(arguments, 1))
         {
             result = actions.PressAsync(locator, key);
             return true;
         }
-
-        if (method.Name == nameof(ILocator.ClearAsync) && HasOnlyDefaultOptions(arguments, 0))
+        if (!compatible && method.Name == nameof(ILocator.ClearAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
             result = actions.TypeAsync(locator, string.Empty, replaceExisting: true);
             return true;
         }
-
         result = null;
         return false;
     }
@@ -248,25 +240,26 @@ internal sealed class HumanizationScope
         }
 
         var locator = locatorFactory(selector);
+        var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
         if (method.Name is nameof(IPage.ClickAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.ClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click") : actions.ClickAsync(locator);
             return true;
         }
 
         if (method.Name is nameof(IPage.DblClickAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.DoubleClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick") : actions.DoubleClickAsync(locator);
             return true;
         }
 
         if (method.Name is nameof(IPage.HoverAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.HoverAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover") : actions.HoverAsync(locator);
             return true;
         }
 
-        if (method.Name is nameof(IPage.FillAsync) &&
+        if (!compatible && method.Name is nameof(IPage.FillAsync) &&
             arguments.ElementAtOrDefault(1) is string fill &&
             HasOnlyDefaultOptions(arguments, 2))
         {
@@ -278,11 +271,11 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string text &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.TypeAsync(locator, text, replaceExisting: false);
+            result = compatible ? actions.CompatibleTypeAsync(locator, text) : actions.TypeAsync(locator, text, replaceExisting: false);
             return true;
         }
 
-        if (method.Name is nameof(IPage.PressAsync) &&
+        if (!compatible && method.Name is nameof(IPage.PressAsync) &&
             arguments.ElementAtOrDefault(1) is string key &&
             HasOnlyDefaultOptions(arguments, 2))
         {
@@ -310,7 +303,8 @@ internal sealed class HumanizationScope
             return true;
         }
 
-        if ((method.Name == nameof(IMouse.ClickAsync) || method.Name == nameof(IMouse.DblClickAsync)) &&
+        if (actions.CompatibilityMode != HumanizationCompatibilityMode.PlaywrightCompatible &&
+            (method.Name == nameof(IMouse.ClickAsync) || method.Name == nameof(IMouse.DblClickAsync)) &&
             arguments.ElementAtOrDefault(0) is float clickX &&
             arguments.ElementAtOrDefault(1) is float clickY &&
             HasOnlyDefaultOptions(arguments, 2))
@@ -319,7 +313,8 @@ internal sealed class HumanizationScope
             return true;
         }
 
-        if (method.Name == nameof(IMouse.WheelAsync) &&
+        if (actions.CompatibilityMode != HumanizationCompatibilityMode.PlaywrightCompatible &&
+            method.Name == nameof(IMouse.WheelAsync) &&
             arguments.ElementAtOrDefault(0) is float deltaX &&
             arguments.ElementAtOrDefault(1) is float deltaY)
         {
@@ -338,7 +333,8 @@ internal sealed class HumanizationScope
         object?[] arguments,
         out object? result)
     {
-        if ((method.Name == nameof(IKeyboard.TypeAsync) || method.Name == nameof(IKeyboard.InsertTextAsync)) &&
+        if ((method.Name == nameof(IKeyboard.TypeAsync) ||
+             (actions.CompatibilityMode != HumanizationCompatibilityMode.PlaywrightCompatible && method.Name == nameof(IKeyboard.InsertTextAsync))) &&
             arguments.ElementAtOrDefault(0) is string text &&
             HasOnlyDefaultOptions(arguments, 1))
         {
@@ -346,7 +342,7 @@ internal sealed class HumanizationScope
             return true;
         }
 
-        if (method.Name == nameof(IKeyboard.PressAsync) &&
+        if (actions.CompatibilityMode != HumanizationCompatibilityMode.PlaywrightCompatible && method.Name == nameof(IKeyboard.PressAsync) &&
             arguments.ElementAtOrDefault(0) is string key &&
             HasOnlyDefaultOptions(arguments, 1))
         {

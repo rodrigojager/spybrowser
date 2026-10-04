@@ -1,7 +1,18 @@
 namespace SpyBrowser.Playwright;
 
+public enum HumanizationCompatibilityMode
+{
+    Legacy,
+    PlaywrightCompatible
+}
+
 public sealed record HumanInteractionOptions
 {
+    public HumanizationCompatibilityMode CompatibilityMode { get; init; } = HumanizationCompatibilityMode.Legacy;
+
+    /// <summary>Maximum budget for one compatible human-paced typing operation.</summary>
+    public int TypingDeadlineMilliseconds { get; init; } = 30_000;
+
     public int MouseMinimumDurationMilliseconds { get; init; } = 180;
 
     public int MouseMaximumDurationMilliseconds { get; init; } = 650;
@@ -30,6 +41,16 @@ public sealed record HumanInteractionOptions
 
     internal void Validate()
     {
+        if (!Enum.IsDefined(CompatibilityMode))
+        {
+            throw new ArgumentOutOfRangeException(nameof(CompatibilityMode));
+        }
+
+        if (TypingDeadlineMilliseconds <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(TypingDeadlineMilliseconds));
+        }
+
         if (MouseMinimumDurationMilliseconds < 0 ||
             MouseMaximumDurationMilliseconds < MouseMinimumDurationMilliseconds)
         {

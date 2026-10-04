@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Playwright;
+using SpyBrowser.Playwright.Humanization;
 
 namespace SpyBrowser.Playwright;
 
@@ -14,6 +15,9 @@ public sealed class HumanActions
     private readonly Random _random;
     private double? _cursorX;
     private double? _cursorY;
+    private readonly IMouseTrajectoryStrategy _trajectory = new BezierTrajectoryStrategy();
+
+    internal HumanizationCompatibilityMode CompatibilityMode => _options.CompatibilityMode;
 
     public HumanActions(HumanInteractionOptions? options = null)
     {
@@ -193,6 +197,75 @@ public sealed class HumanActions
         await page.Keyboard.UpAsync(key).ConfigureAwait(false);
     }
 
+    internal async Task CompatibleLocatorActionAsync(ILocator locator, string action, CancellationToken cancellationToken = default)
+    {
+        var page = locator.Page;
+        if (action != "click" && action != "dblclick" && action != "hover")
+        {
+            throw new ArgumentOutOfRangeException(nameof(action));
+        }
+
+        // Trial verifies Playwright actionability before any preparatory pointer side effects.
+        if (action == "click")
+        {
+            await locator.ClickAsync(new LocatorClickOptions { Trial = true }).ConfigureAwait(false);
+        }
+        else if (action == "dblclick")
+        {
+            await locator.DblClickAsync(new LocatorDblClickOptions { Trial = true }).ConfigureAwait(false);
+        }
+        else
+        {
+            await locator.HoverAsync(new LocatorHoverOptions { Trial = true }).ConfigureAwait(false);
+        }
+
+        try
+        {
+            await locator.ScrollIntoViewIfNeededAsync().ConfigureAwait(false);
+            var box = await locator.BoundingBoxAsync().ConfigureAwait(false);
+            if (box is not null && box.Width > 0 && box.Height > 0)
+            {
+                var x = box.X + box.Width / 2d;
+                var y = box.Y + box.Height / 2d;
+                await MoveAsync(page, x, y, cancellationToken).ConfigureAwait(false);
+            }
+        }
+        catch (PlaywrightException) when (!cancellationToken.IsCancellationRequested)
+        {
+            // Preparation is best effort; the one native action below owns final actionability/errors.
+        }
+
+        // Always leave the semantic action (including dblclick/detail and revalidation) to Playwright.
+        switch (action)
+        {
+            case "click": await locator.ClickAsync().ConfigureAwait(false); break;
+            case "dblclick": await locator.DblClickAsync().ConfigureAwait(false); break;
+            case "hover": await locator.HoverAsync().ConfigureAwait(false); break;
+        }
+    }
+
+    internal async Task CompatibleTypeAsync(ILocator locator, string text, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
+        await locator.FocusAsync().ConfigureAwait(false);
+        var runes = text.EnumerateRunes().ToArray();
+        for (var index = 0; index < runes.Length; index++)
+        {
+            deadline.Token.ThrowIfCancellationRequested();
+            if (locator.Page.IsClosed)
+            {
+                throw new InvalidOperationException("The page closed during human-paced typing.");
+            }
+
+            await locator.Page.Keyboard.TypeAsync(runes[index].ToString()).ConfigureAwait(false);
+            if (index + 1 < runes.Length)
+            {
+                await DelayAsync(_options.KeyMinimumDelayMilliseconds, _options.KeyMaximumDelayMilliseconds, deadline.Token).ConfigureAwait(false);
+            }
+        }
+    }
+
     private async Task<(IPage Page, double X, double Y)> MoveToLocatorAsync(
         ILocator locator,
         CancellationToken cancellationToken)
@@ -228,37 +301,11 @@ public sealed class HumanActions
         double targetY,
         CancellationToken cancellationToken)
     {
-        var distance = Math.Sqrt(Math.Pow(targetX - startX, 2) + Math.Pow(targetY - startY, 2));
-        var duration = Math.Clamp(
-            (int)(_options.MouseMinimumDurationMilliseconds + distance * NextDouble(0.35, 0.75)),
-            _options.MouseMinimumDurationMilliseconds,
-            _options.MouseMaximumDurationMilliseconds);
-        var steps = Math.Clamp(duration / 12, 8, 60);
-        var normalX = -(targetY - startY);
-        var normalY = targetX - startX;
-        var normalLength = Math.Max(1, Math.Sqrt(normalX * normalX + normalY * normalY));
-        var bend = Math.Min(100, distance * NextDouble(-0.18, 0.18));
-        var control1X = startX + (targetX - startX) * 0.33 + normalX / normalLength * bend;
-        var control1Y = startY + (targetY - startY) * 0.33 + normalY / normalLength * bend;
-        var control2X = startX + (targetX - startX) * 0.72 - normalX / normalLength * bend * 0.45;
-        var control2Y = startY + (targetY - startY) * 0.72 - normalY / normalLength * bend * 0.45;
-
-        for (var index = 1; index <= steps; index++)
+        foreach (var point in _trajectory.Create(startX, startY, targetX, targetY, _random, _options))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var t = index / (double)steps;
-            var eased = t * t * (3 - 2 * t);
-            var inverse = 1 - eased;
-            var x = inverse * inverse * inverse * startX +
-                    3 * inverse * inverse * eased * control1X +
-                    3 * inverse * eased * eased * control2X +
-                    eased * eased * eased * targetX;
-            var y = inverse * inverse * inverse * startY +
-                    3 * inverse * inverse * eased * control1Y +
-                    3 * inverse * eased * eased * control2Y +
-                    eased * eased * eased * targetY;
-            await page.Mouse.MoveAsync((float)x, (float)y).ConfigureAwait(false);
-            await Task.Delay(Math.Max(1, duration / steps), cancellationToken).ConfigureAwait(false);
+            await page.Mouse.MoveAsync((float)point.X, (float)point.Y).ConfigureAwait(false);
+            await Task.Delay(point.DelayMilliseconds, cancellationToken).ConfigureAwait(false);
         }
     }
 
