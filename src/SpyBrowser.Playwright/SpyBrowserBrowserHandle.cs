@@ -24,9 +24,10 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
         _playwright = playwright;
         RawBrowser = rawBrowser;
         Identity = identity;
-        Browser = humanizer?.Wrap(rawBrowser) ?? rawBrowser;
         _contextFactory = contextFactory;
         _pageFactory = pageFactory;
+        var configured = ConfiguredBrowserProxy.Create(rawBrowser, contextFactory, pageFactory, humanizer);
+        Browser = configured;
     }
 
     public BrowserIdentity Identity { get; }

@@ -20,6 +20,8 @@ public sealed class PlaywrightHumanizer
         _scope = new HumanizationScope(options ?? new HumanInteractionOptions());
     }
 
+    internal HumanizationScope Scope => _scope;
+
     public T Wrap<T>(T original)
         where T : class
     {
@@ -86,6 +88,11 @@ internal sealed class HumanizationScope
             return pages.Select(page => (IPage)WrapValue(page, typeof(IPage), page)!).ToArray();
         }
 
+        if (value is IReadOnlyList<ILocator> locators)
+        {
+            return locators.Select(locator => (ILocator)WrapValue(locator, typeof(ILocator), pageHint)!).ToArray();
+        }
+
         if (value is IReadOnlyList<IFrame> frames)
         {
             return frames.Select(frame => (IFrame)WrapValue(frame, typeof(IFrame), frame.Page)!).ToArray();
@@ -103,12 +110,17 @@ internal sealed class HumanizationScope
             IPage page => GetOrCreate(page, page),
             IFrame frame => GetOrCreate(frame, frame.Page),
             ILocator locator => GetOrCreate(locator, locator.Page),
+            IFrameLocator frameLocator => GetOrCreate(frameLocator, pageHint),
             IElementHandle handle => GetOrCreate(handle, pageHint),
             IMouse mouse when pageHint is not null => GetOrCreate(mouse, pageHint),
             IKeyboard keyboard when pageHint is not null => GetOrCreate(keyboard, pageHint),
             _ => value
         };
     }
+
+    internal object? WrapEventValue(object? value) => value is null
+        ? null
+        : WrapValue(value, value.GetType(), ResolvePage(value, null));
 
     public bool TryHumanize(
         object target,
@@ -364,6 +376,8 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
     private T _target = null!;
     private HumanizationScope _scope = null!;
     private IPage? _pageHint;
+    private readonly object _eventLock = new();
+    private readonly List<(string Name, Delegate Handler, Delegate Bridge)> _eventHandlers = [];
 
     public object Original => _target;
 
@@ -385,6 +399,27 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         }
 
         var arguments = args ?? Array.Empty<object?>();
+        if (arguments.ElementAtOrDefault(0) is Delegate eventHandler)
+        {
+            if (targetMethod.Name.StartsWith("add_", StringComparison.Ordinal))
+            {
+                var bridge = PlaywrightEventBridge.Adapt(eventHandler, _scope);
+                lock (_eventLock) _eventHandlers.Add((targetMethod.Name[4..], eventHandler, bridge));
+                arguments[0] = bridge;
+            }
+            else if (targetMethod.Name.StartsWith("remove_", StringComparison.Ordinal))
+            {
+                lock (_eventLock)
+                {
+                    var index = _eventHandlers.FindLastIndex(entry => entry.Name == targetMethod.Name[7..] && entry.Handler == eventHandler);
+                    if (index >= 0)
+                    {
+                        arguments[0] = _eventHandlers[index].Bridge;
+                        _eventHandlers.RemoveAt(index);
+                    }
+                }
+            }
+        }
         for (var index = 0; index < arguments.Length; index++)
         {
             if (arguments[index] is IHumanizedPlaywrightObject wrapped)

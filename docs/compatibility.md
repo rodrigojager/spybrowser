@@ -11,6 +11,26 @@ of standard interaction calls. Passing advanced non-default action options uses
 the raw Playwright call. `RawBrowser`, `RawContext`, and
 `PlaywrightHumanizer.Unwrap` make this distinction explicit.
 
+Contexts created through either `SpyBrowserBrowserHandle.NewContextAsync` or
+its public `IBrowser.NewContextAsync` use the same identity-configured factory.
+The browser-facing `NewPageAsync` routes through that factory as well. Defaults
+are filled only where options are unset; a caller callback runs afterward and
+can override them. Supplied options objects are shallow-copied before defaults
+and callbacks, so caller fields are preserved and the caller's instance is not
+mutated. `RawBrowser` is an intentional unconfigured bypass. `Humanize = false`
+turns off decoration, not identity defaults.
+
+When humanization is enabled, frames, frame locators, locator collections,
+context/page backlinks and the supported browser/context/page events are bridged
+through a per-launch weak wrapper cache. Event callbacks are synchronous, and
+only Playwright interface values in their arguments are adapted. Arbitrary
+Evaluate results and user payloads are not recursively rewritten. Objects
+created outside SpyBrowser's factories may be wrapped when observed, but are
+not retroactively identity-configured. Humanization covers only documented
+interaction calls; a wrapper does not promise interception of every Playwright
+method. Disposal owns and closes the same raw Playwright resources; wrappers do
+not extend their lifetime intentionally.
+
 Compatibility is continuously checked against Playwright 1.61.0 and the latest
 stable NuGet release on Windows and Linux. That is not a guarantee that an
 arbitrary future release will work before its CI lane passes.

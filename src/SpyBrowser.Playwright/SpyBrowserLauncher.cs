@@ -150,30 +150,44 @@ public static class SpyBrowserLauncher
 
             async Task<IBrowserContext> CreateConfiguredContextAsync(BrowserNewContextOptions? supplied)
             {
-                var contextOptions = supplied ?? CreateContextOptions(identity);
-                if (supplied is not null)
-                {
-                    ApplyContextDefaults(contextOptions, identity);
-                }
-
+                var contextOptions = supplied is null
+                    ? CreateContextOptions(identity)
+                    : CloneOptions(supplied);
+                ApplyContextDefaults(contextOptions, identity);
                 options.ConfigureContext?.Invoke(contextOptions);
                 var rawContext = await capturedBrowser.NewContextAsync(contextOptions).ConfigureAwait(false);
-                await ConfigureContextRuntimeAsync(rawContext, capturedState, options).ConfigureAwait(false);
-                return capturedState.Humanizer?.Wrap(rawContext) ?? rawContext;
+                try
+                {
+                    await ConfigureContextRuntimeAsync(rawContext, capturedState, options).ConfigureAwait(false);
+                    return capturedState.Humanizer?.Wrap(rawContext) ?? rawContext;
+                }
+                catch
+                {
+                    try { await rawContext.CloseAsync().ConfigureAwait(false); }
+                    catch { /* Preserve the preparation failure. */ }
+                    throw;
+                }
             }
 
             async Task<IPage> CreateConfiguredPageAsync(BrowserNewPageOptions? supplied)
             {
-                var pageOptions = supplied ?? CreatePageOptions(identity);
-                if (supplied is not null)
-                {
-                    ApplyPageDefaults(pageOptions, identity);
-                }
-
+                var pageOptions = supplied is null
+                    ? CreatePageOptions(identity)
+                    : CloneOptions(supplied);
+                ApplyPageDefaults(pageOptions, identity);
                 options.ConfigurePage?.Invoke(pageOptions);
                 var rawPage = await capturedBrowser.NewPageAsync(pageOptions).ConfigureAwait(false);
-                await ConfigureContextRuntimeAsync(rawPage.Context, capturedState, options).ConfigureAwait(false);
-                return capturedState.Humanizer?.Wrap(rawPage) ?? rawPage;
+                try
+                {
+                    await ConfigureContextRuntimeAsync(rawPage.Context, capturedState, options).ConfigureAwait(false);
+                    return capturedState.Humanizer?.Wrap(rawPage) ?? rawPage;
+                }
+                catch
+                {
+                    try { await rawPage.Context.CloseAsync().ConfigureAwait(false); }
+                    catch { /* Preserve the preparation failure. */ }
+                    throw;
+                }
             }
 
             return new SpyBrowserBrowserHandle(
@@ -303,6 +317,12 @@ public static class SpyBrowserLauncher
             Proxy = ProxyConfiguration.Resolve(state.Identity.Network),
             AcceptDownloads = true
         };
+
+    private static T CloneOptions<T>(T options) where T : class
+    {
+        var clone = typeof(object).GetMethod("MemberwiseClone", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        return (T)clone.Invoke(options, null)!;
+    }
 
     private static BrowserNewContextOptions CreateContextOptions(BrowserIdentity identity)
     {

@@ -54,7 +54,13 @@ var browserContext = session.ExistingContext
 `RpaContext.Page` remains `Microsoft.Playwright.IPage`; existing blocks and new
 application-specific blocks keep ordinary Playwright code. Set `Humanize = true`
 at launch to pace supported calls transparently, or unwrap a specific object for
-raw behavior.
+raw behavior. `Humanize = false` still applies identity defaults on factory-made
+contexts/pages while exposing raw Playwright objects, matching the existing
+RpaBlockly expectation. `RawBrowser` bypasses those configured factories; prefer
+`SpyBrowserBrowserHandle.Browser` (or the handle's own factory methods) for
+normal creation. The native `IBrowser` and handle creation paths share one
+factory and one wrapper cache, so contexts/pages observed via lists and supported
+events preserve reference identity.
 
 ## Process model
 
