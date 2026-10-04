@@ -382,27 +382,25 @@ public static class SpyBrowserLauncher
         BrowserSurfaceDiagnostics? diagnostics = null;
         var shouldProbe = options.RunGpuProbe ||
             state.GpuPolicy is GpuPolicy.RequireHardware or GpuPolicy.ExperimentalMask;
-        IPage? probePage = null;
-        var createdProbePage = false;
         if (shouldProbe)
         {
-            probePage = context.Pages.FirstOrDefault();
-            if (probePage is null)
+            // Never navigate or reuse an application/restored tab for diagnostics.
+            var probePage = await context.NewPageAsync().ConfigureAwait(false);
+            try
             {
-                probePage = await context.NewPageAsync().ConfigureAwait(false);
-                createdProbePage = true;
+                probePage.SetDefaultTimeout(10_000);
+                diagnostics = await GpuProbe.RunAsync(probePage, cancellationToken).ConfigureAwait(false);
             }
-
-            diagnostics = await GpuProbe.RunAsync(probePage, cancellationToken).ConfigureAwait(false);
+            finally
+            {
+                try { await probePage.CloseAsync().ConfigureAwait(false); }
+                catch { /* Keep probe/cancellation failures primary; context teardown owns final cleanup. */ }
+            }
         }
 
         var consistency = diagnostics is null
             ? new ConsistencyReport(Array.Empty<ConsistencyFinding>())
             : IdentityConsistencyValidator.Validate(state.Identity, state.GpuPolicy, diagnostics);
-        if (createdProbePage && probePage is not null)
-        {
-            await probePage.CloseAsync().ConfigureAwait(false);
-        }
 
         if (options.FailOnConsistencyErrors && consistency.HasErrors)
         {

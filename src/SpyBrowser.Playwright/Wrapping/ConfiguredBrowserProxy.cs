@@ -4,7 +4,7 @@ using Microsoft.Playwright;
 namespace SpyBrowser.Playwright;
 
 /// <summary>Routes public browser factories through the launch identity configuration.</summary>
-internal class ConfiguredBrowserProxy : DispatchProxy
+internal class ConfiguredBrowserProxy : DispatchProxy, IHumanizedPlaywrightObject
 {
     private IBrowser _browser = null!;
     private Func<BrowserNewContextOptions?, Task<IBrowserContext>> _contexts = null!;
@@ -12,6 +12,8 @@ internal class ConfiguredBrowserProxy : DispatchProxy
     private PlaywrightHumanizer? _humanizer;
     private readonly object _eventLock = new();
     private readonly List<(string Name, Delegate Handler, Delegate Bridge)> _eventHandlers = [];
+
+    object IHumanizedPlaywrightObject.Original => _browser;
 
     public static IBrowser Create(
         IBrowser browser,
@@ -25,6 +27,7 @@ internal class ConfiguredBrowserProxy : DispatchProxy
         implementation._contexts = contexts;
         implementation._pages = pages;
         implementation._humanizer = humanizer;
+        humanizer?.Scope.RegisterAlias(browser, proxy);
         return proxy;
     }
 
@@ -34,7 +37,8 @@ internal class ConfiguredBrowserProxy : DispatchProxy
         var arguments = args ?? [];
         if (_humanizer is not null && arguments.ElementAtOrDefault(0) is Delegate handler)
         {
-            if (method.Name.StartsWith("add_", StringComparison.Ordinal))
+            if (method.Name.StartsWith("add_", StringComparison.Ordinal) &&
+                PlaywrightEventBridge.IsSupported(_browser.GetType(), method.Name[4..]))
             {
                 var bridge = PlaywrightEventBridge.Adapt(handler, _humanizer.Scope);
                 lock (_eventLock) _eventHandlers.Add((method.Name[4..], handler, bridge));

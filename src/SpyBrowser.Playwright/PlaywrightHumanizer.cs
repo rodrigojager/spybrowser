@@ -65,6 +65,12 @@ internal sealed class HumanizationScope
         _options = options;
     }
 
+    internal void RegisterAlias(object rawObject, object publicObject)
+    {
+        _proxies.Remove(rawObject);
+        _proxies.Add(rawObject, publicObject);
+    }
+
     public object? WrapValue(object? value, Type declaredType, IPage? pageHint)
     {
         if (value is null)
@@ -81,6 +87,11 @@ internal sealed class HumanizationScope
         {
             var resultType = declaredType.GetGenericArguments()[0];
             return WrapTaskMethod.MakeGenericMethod(resultType).Invoke(this, [value, pageHint]);
+        }
+
+        if (value is IReadOnlyList<IBrowserContext> contexts)
+        {
+            return contexts.Select(context => (IBrowserContext)WrapValue(context, typeof(IBrowserContext), pageHint)!).ToArray();
         }
 
         if (value is IReadOnlyList<IPage> pages)
@@ -401,7 +412,8 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         var arguments = args ?? Array.Empty<object?>();
         if (arguments.ElementAtOrDefault(0) is Delegate eventHandler)
         {
-            if (targetMethod.Name.StartsWith("add_", StringComparison.Ordinal))
+            if (targetMethod.Name.StartsWith("add_", StringComparison.Ordinal) &&
+                PlaywrightEventBridge.IsSupported(_target.GetType(), targetMethod.Name[4..]))
             {
                 var bridge = PlaywrightEventBridge.Adapt(eventHandler, _scope);
                 lock (_eventLock) _eventHandlers.Add((targetMethod.Name[4..], eventHandler, bridge));

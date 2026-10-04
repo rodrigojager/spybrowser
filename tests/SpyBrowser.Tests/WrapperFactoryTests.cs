@@ -32,11 +32,22 @@ public sealed class WrapperFactoryTests
         var page = await context.NewPageAsync();
         Assert.Same(page, announcedPage);
         Assert.Same(context, page.Context);
+        Assert.Same(handle.Browser, context.Browser);
         Assert.Equal("en-US", await page.EvaluateAsync<string>("navigator.language"));
-        await page.SetContentAsync("<iframe id='child' srcdoc=\"<button id='go'>go</button>\"></iframe><button id='open' onclick=\"window.open('about:blank')\">open</button>");
-        var frameButton = page.FrameLocator("#child").Locator("#go");
+        await page.SetContentAsync("<iframe id='child' srcdoc=\"<iframe id='nested' srcdoc='<button id=go>go</button>'></iframe>\"></iframe><button class='go'>main</button><button id='open' onclick=\"window.open('about:blank')\">open</button>");
+
+        var frameButton = page.FrameLocator("#child").FrameLocator("#nested").Locator("#go");
         await frameButton.ClickAsync();
         Assert.Same(page, frameButton.Page);
+        var frames = page.Frames;
+        Assert.Same(page.MainFrame, frames[0]);
+        Assert.Equal(3, frames.Count);
+        Assert.Same(frames[2], page.Frames[2]);
+        var locators = await page.Locator(".go").AllAsync();
+        Assert.Single(locators);
+        await locators[0].ClickAsync();
+        var rawLocator = PlaywrightHumanizer.Unwrap(locators[0]);
+        Assert.Same(rawLocator, PlaywrightHumanizer.Unwrap(rawLocator));
 
         IPage? popupEventPage = null;
         page.Popup += (_, popup) => popupEventPage = popup;

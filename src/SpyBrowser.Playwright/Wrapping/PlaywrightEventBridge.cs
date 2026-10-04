@@ -5,6 +5,15 @@ namespace SpyBrowser.Playwright;
 
 internal static class PlaywrightEventBridge
 {
+    private static readonly HashSet<string> SupportedEvents = new(StringComparer.Ordinal)
+    {
+        "Context", "Page", "Popup", "Close", "FrameAttached", "FrameDetached", "FrameNavigated"
+    };
+
+    public static bool IsSupported(Type targetType, string eventName) =>
+        SupportedEvents.Contains(eventName) &&
+        targetType.GetEvents().Any(eventInfo => eventInfo.Name == eventName);
+
     private static readonly MethodInfo ForwardMethod = typeof(PlaywrightEventBridge)
         .GetMethod(nameof(Forward), BindingFlags.Static | BindingFlags.NonPublic)!;
 
