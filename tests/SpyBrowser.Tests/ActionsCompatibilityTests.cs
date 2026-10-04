@@ -24,7 +24,7 @@ public sealed class ActionsCompatibilityTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new HumanActions(new HumanInteractionOptions { TypingDeadlineMilliseconds = 0 }));
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type()
     {
         await using var browser = await LaunchChromiumAsync();

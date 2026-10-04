@@ -6,10 +6,9 @@ namespace SpyBrowser.Tests;
 
 public sealed class WrapperFactoryTests
 {
-    [Fact]
+    [BrowserFact]
     public async Task Public_browser_factories_events_frames_and_popups_share_wrappers()
     {
-        if (!string.Equals(Environment.GetEnvironmentVariable("SPYBROWSER_RUN_BROWSER_TESTS"), "1", StringComparison.Ordinal)) return;
         using var temp = new TemporaryDirectory();
         var identity = BrowserIdentity.Create("wrapper-factory");
         await using var handle = await SpyBrowserLauncher.LaunchBrowserAsync(new SpyBrowserLaunchOptions
@@ -62,10 +61,9 @@ public sealed class WrapperFactoryTests
         Assert.Empty(handle.Browser.Contexts);
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Humanize_disabled_browser_factory_returns_raw_playwright_objects()
     {
-        if (!string.Equals(Environment.GetEnvironmentVariable("SPYBROWSER_RUN_BROWSER_TESTS"), "1", StringComparison.Ordinal)) return;
         using var temp = new TemporaryDirectory();
         var identity = BrowserIdentity.Create("wrapper-raw");
         await using var handle = await SpyBrowserLauncher.LaunchBrowserAsync(new SpyBrowserLaunchOptions
