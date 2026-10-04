@@ -459,6 +459,21 @@ public sealed class HumanActions
     private async Task ClickCurrentPositionAsync(IPage page, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        var state = _mouseStates.GetValue(page, _ => new PageMouseState());
+        if (state.HasButtonDown)
+        {
+            // An observed down belongs to the caller (or its drag); do not issue
+            // SDK cleanup against it. The requested native click needs a confirmed
+            // coordinate and may naturally affect button state as part of that action.
+            if (!state.HasKnownPosition)
+            {
+                throw new InvalidOperationException("Cannot perform a native click while a caller-owned mouse button is down and the pointer position is unknown.");
+            }
+
+            await page.Mouse.ClickAsync((float)state.X!.Value, (float)state.Y!.Value).ConfigureAwait(false);
+            return;
+        }
+
         await page.Mouse.DownAsync().ConfigureAwait(false);
         try
         {
@@ -467,11 +482,17 @@ public sealed class HumanActions
                 _options.ClickHoldMaximumMilliseconds,
                 cancellationToken).ConfigureAwait(false);
         }
-        finally
+        catch
         {
-            // This method releases only the button it pressed; it never spans public calls.
-            await page.Mouse.UpAsync().ConfigureAwait(false);
+            // A completed Down is ours. Cleanup is best-effort and must not mask
+            // the cancellation/failure that caused this path; never retry the click.
+            try { await page.Mouse.UpAsync().ConfigureAwait(false); }
+            catch { }
+            throw;
         }
+
+        // On the success path an Up failure is the action failure and must propagate.
+        await page.Mouse.UpAsync().ConfigureAwait(false);
     }
 
     private async Task MoveMouseAsync(
