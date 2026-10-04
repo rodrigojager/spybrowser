@@ -10,7 +10,7 @@ PIN = "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca"
 DEFAULT_CONSUMER = pathlib.Path(r"C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-rpablockly-review")
 PROJECTS = ("SpyBrowser.Core", "SpyBrowser.Cursory", "SpyBrowser.Playwright")
 REQUIRED_CHECKS = {
-    "humanize-on, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
+    "Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
     "StorageStatePath write on local loopback origin",
     "Screenshot, navigation and local loopback served page",
     "RpaBlockly popup plus nested-frame wrapper propagation and working loopback page",
@@ -130,7 +130,7 @@ def main():
     ET.indent(nuget, space="  ")
     ET.ElementTree(nuget).write(isolated / "NuGet.Config", encoding="utf-8", xml_declaration=True)
     tests = isolated / "tests/ConsumerContract"; tests.mkdir(parents=True)
-    (tests / "ConsumerContract.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">\n<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup>\n<ItemGroup><ProjectReference Include="../../src/RpaFlow.Playwright/RpaFlow.Playwright.csproj" /><Content Include="fixtures/**/*.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>\n</Project>\n''', encoding="utf-8")
+    (tests / "ConsumerContract.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">\n<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup>\n<ItemGroup><ProjectReference Include="../../src/RpaFlow.Playwright/RpaFlow.Playwright.csproj" /><ProjectReference Include="../RpaFlow.Legacy.Playwright/RpaFlow.Legacy.Playwright.csproj" /><Content Include="fixtures/**/*.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>\n</Project>\n''', encoding="utf-8")
     shutil.copytree(pathlib.Path(__file__).with_name("fixtures"), tests / "fixtures")
     harness = pathlib.Path(__file__).with_name("Program.cs").read_text(encoding="utf-8")
     (tests / "Program.cs").write_text(harness, encoding="utf-8")
@@ -178,7 +178,7 @@ def main():
       "requiredLocalCheckNames": sorted(REQUIRED_CHECKS), "missingRequiredLocalCheckNames": missing_required_names,
       "unexpectedPassedLocalCheckNames": unexpected_passed_names,
       "excludedCoverage": [{"name": "Full mixed CAPTCHA/provider/end-to-end suite", "status": "not-run", "reason": "Explicitly excluded; not part of the mandatory local subset."}],
-      "sourceIsolationChanges": ["SpyBrowser.Playwright package version", "isolated BrowserLauncher HumanInteraction configuration only", "Directory.Build.props modified to disable external CPM", "Directory.Packages.props added to shadow parent CPM", "NuGet.Config local feed and package source mapping", "test-only ConsumerContract project"],
+      "sourceIsolationChanges": ["SpyBrowser.Playwright package version", "isolated BrowserLauncher HumanInteraction configuration only", "Directory.Build.props modified to disable external CPM", "Directory.Packages.props added to shadow parent CPM", "NuGet.Config local feed and package source mapping", "test-only ConsumerContract project referencing the pinned existing RpaFlow.Legacy.Playwright project for the excluded V1 route"],
       "limitations": ["Existing CAPTCHA/provider/end-to-end suite not run by this local subset.", "Final package parity is false unless expected commit, manifest declaredFinalCommit, source SHA, and all package repository commits match."] + (["Missing required checks: " + ", ".join(missing_required_names)] if missing_required else []) + (["Unexpected passed check names: " + ", ".join(unexpected_passed_names)] if unexpected_passed_names else [])
     }
     evidence_path.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")

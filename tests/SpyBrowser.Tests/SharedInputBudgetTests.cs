@@ -75,6 +75,24 @@ public sealed class SharedInputBudgetTests
     }
 
     [Fact]
+    public async Task Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts()
+    {
+        var page = FakePage.Create();
+        var state = PageInputState.For(page);
+        state.SetDefaultTimeout(10_000);
+        int? remaining = null;
+
+        await state.RunAsync(token =>
+        {
+            remaining = PageInputState.GetRemainingBudgetMilliseconds(page, token);
+            return Task.CompletedTask;
+        }, 100);
+
+        Assert.NotNull(remaining);
+        Assert.InRange(remaining.Value, 1, 100);
+    }
+
+    [Fact]
     public async Task Compatible_typing_focus_receives_the_shared_default_budget_not_a_fresh_typing_budget()
     {
         var page = FakePage.Create();

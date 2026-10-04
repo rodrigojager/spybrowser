@@ -49,7 +49,7 @@ try
     Require(environment[0] == BrowserTimeZone(), $"Timezone local/UTC observed as {environment[0]}");
     Require(environment[1].StartsWith("pt-BR", StringComparison.OrdinalIgnoreCase), $"Locale preserved as {environment[1]}");
     Require(environment[2] == "1173" && environment[3] == "777", "Explicit viewport preserved");
-    checks.Add(Pass("humanize-on, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection"));
+    checks.Add(Pass("Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection"));
 
     var statePath = Path.Combine(output, "storage-state.json");
     await page.GotoAsync(origin);
@@ -83,7 +83,7 @@ try
     Require(await frame.Locator("#frame-value").InnerTextAsync() == "frame-ok", "Nested frame content reachable");
     checks.Add(Pass("RpaBlockly popup plus nested-frame wrapper propagation and working loopback page"));
     var v1Json = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "v1-frame-flow.json"));
-    var v1 = JsonSerializer.Deserialize<FlowDefinition>(v1Json) ?? throw new InvalidOperationException("V1 frame fixture could not be parsed");
+    var v1 = JsonSerializer.Deserialize<RpaFlow.Contracts.FlowDefinition>(v1Json) ?? throw new InvalidOperationException("V1 frame fixture could not be parsed");
     v1.Actions[0].Value = JsonSerializer.SerializeToElement(origin);
     var v1Result = await new PlaywrightFlowExecutor(v1, options).ExecuteAsync(Request("real-v1-frame"), CancellationToken.None);
     Require(v1Result.Output["frameResult"]?.GetValue<string>() == "frame-ok" && v1Result.ExecutedActions == 2,

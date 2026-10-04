@@ -47,7 +47,7 @@ internal sealed class PageInputState
         var nativeOwnsTimeout = explicitTimeoutMilliseconds.HasValue || (nativeDefaultTimeoutApplies && observedDefault <= 0);
         var budget = explicitTimeoutMilliseconds.HasValue ? Timeout.Infinite :
             nativeDefaultTimeoutApplies ? (observedDefault > 0 ? observedDefault : Timeout.Infinite) :
-            selectedTimeout > 0 ? selectedTimeout : configuredBudgetMilliseconds;
+            selectedTimeout > 0 ? Math.Min(selectedTimeout, configuredBudgetMilliseconds) : configuredBudgetMilliseconds;
         var operationStarted = Stopwatch.GetTimestamp();
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetimeToken, cancellationToken);
         if (!nativeOwnsTimeout && budget > 0) deadline.CancelAfter(budget);
