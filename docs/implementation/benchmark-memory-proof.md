@@ -24,4 +24,11 @@ dotnet run --project tools/native-motion-benchmark/NativeMotion.Benchmark.csproj
 PATH=/home/rodrigo/.dotnet-spybrowser:$PATH dotnet run --project tools/native-motion-benchmark/NativeMotion.Benchmark.csproj -c Release -- artifacts/goal/benchmark-memory-proof/wsl
 ```
 
-Each successful report must record 14/14 real DOM runs and all pages completed. These are local observations, not historical package-consumer evidence, a cross-OS equivalence claim, or a promise about trajectory reproducibility or CAPTCHA/humanness outcomes.
+## Independently executed results
+
+The parent ran fresh Windows and WSL processes from clean commit `179a69a936059a767e188a1476528cda2f890f7e`. Linux used a Git bundle/clone of that exact commit, not a Windows worktree pointer or an overridden revision. Both reports record `sourceDirty:false`, dataset SHA-256 `1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203`, .NET SDK 8.0.319/runtime 8.0.22, Playwright 1.61 and Chromium 149.0.7827.55. Each has **14/14 completed real DOM runs**, all fourteen with before/after CDP target memory measurements.
+
+- Windows: cold first call 376.16 ms, 36,805,656 allocated bytes, managed-heap snapshot delta 18,820,968 bytes; warm p50/p95 12.01/34.24 ms, 2,943,844 bytes/trajectory.
+- Ubuntu 20.04: cold 250.00 ms, 36,795,376 allocated bytes, heap delta 18,829,984 bytes; warm p50/p95 9.80/45.77 ms, 2,943,844 bytes/trajectory.
+
+The 10 ms initial p95 investigation target was **not met** on this shared host. No hard timing gate or humanness conclusion is inferred. Reports: `artifacts/goal/benchmark-memory-{windows,linux}-current/motion-quality.{json,md}` in the parent repository. Full commands/output are retained alongside them. These are local observations, not historical installed-package comparison, a cross-OS timing-equivalence claim, exclusive per-page RSS, or CAPTCHA/detection outcomes.

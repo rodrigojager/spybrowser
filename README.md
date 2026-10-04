@@ -218,8 +218,11 @@ See [architecture](docs/architecture.md),
 
 ## License and responsible use
 
-SpyBrowser code is MIT licensed. Chrome/Edge and Playwright retain their own
-licenses and are not relicensed by SpyBrowser; see `THIRD_PARTY_NOTICES.md`.
+SpyBrowser's integration code is MIT licensed. The separately linked
+`SpyBrowser.Cursory` DLL is LGPL-3.0-or-later and retains its upstream notices
+and corresponding source; see [Cursory packaging](docs/cursory-packaging.md).
+Chrome/Edge and Playwright retain their own licenses and are not relicensed by
+SpyBrowser; see `THIRD_PARTY_NOTICES.md`.
 Redistribution rights for the bundled Cursory trajectory dataset and its
 upstream-derived materials are **unverified**; repository and package metadata
 are not legal clearance. Until an independent rights review explicitly clears

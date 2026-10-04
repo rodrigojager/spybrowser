@@ -14,7 +14,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>Vinyzu; Jake Writer; SpyBrowser contributors</Authors>
     <Copyright>Upstream Cursory and cursory-js contributors; see NOTICE</Copyright>
-    <Description>Experimental native .NET 8 port of the Cursory recorded mouse-trajectory generator. Not integrated with SpyBrowser automation.</Description>
+    <Description>Experimental native .NET 8 Cursory trajectory generator with seeded recorded motion. Playwright-independent library, separately linked by the opt-in SpyBrowser.Playwright integration.</Description>
     <Company />
     <PackageTags>cursory;trajectory;experimental</PackageTags>
     <PackageProjectUrl>https://github.com/rodrigojager/spybrowser</PackageProjectUrl>

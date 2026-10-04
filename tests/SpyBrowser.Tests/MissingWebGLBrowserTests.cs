@@ -8,6 +8,7 @@ public sealed class MissingWebGLBrowserTests
     [BrowserFact]
     public async Task Disabled_WebGL_is_live_unverified_warning_not_hardware_failure_and_leaves_user_pages_untouched()
     {
+        using var temporary = new TemporaryDirectory();
         var identity = BrowserIdentity.Create("missing-webgl-live") with
         {
             Gpu = new GpuIdentitySettings { Policy = GpuPolicy.RequireHardware }
@@ -16,6 +17,7 @@ public sealed class MissingWebGLBrowserTests
         {
             IdentityId = identity.Id,
             IdentityOverride = identity,
+            IdentitiesRoot = temporary.Path,
             Headless = true,
             RunGpuProbe = true,
             // Chromium flags cause the real browser to expose neither WebGL context.
