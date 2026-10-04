@@ -67,12 +67,35 @@ useful for Linux deployment/isolation but is not required for concurrency.
 pool exhaustion explicitly. It has no server or license dependency; profile
 leases remain the cross-process source of truth.
 
+## Installed-distribution verification (tickets 23/24)
+
+Use the already-produced final local feed; the verifier does not rebuild candidate packages from source. It creates its consumer and clean NuGet cache under a temporary directory outside the checkout, with package sources restricted to the supplied local feeds. The browser executable/Playwright browser cache is a normal prerequisite and is not confused with a Cursory sidecar.
+
+```sh
+python tools/verification/distribution-checks/run.py \
+  --repository . \
+  --feed artifacts/packages \
+  --candidate-version 0.2.0-beta.1 \
+  --dependency-feed "$HOME/.nuget/packages" \
+  --output artifacts/distribution-checks \
+  --evidence-input artifacts/rpablockly/evidence.json \
+  --evidence-input artifacts/benchmarks/report.json
+```
+
+The command builds the previous SpyBrowser.Core/Playwright packages from baseline `e217359d19a29635f2b3b5ba54664d299fd16d36` into a distinct previous-version feed. To consume a previously built baseline instead, pass `--previous-feed PATH --previous-version VERSION` (and omit `--repository`). The consumer installs via package references from local feeds, reuses one identity manifest and profile directory while switching candidate Cursory, candidate Bézier, candidate `Humanize=false`, and previous-package rollback; it checks storage-state cookie rehydration through the installed Playwright API, manifest checksum, storage-state checksum and one-click behavior. `Microsoft.Playwright` remains the official package/driver; the verifier does not assert that the driver has no Node process.
+
+Set `SPYBROWSER_BROWSER_EXECUTABLE` to an installed Chrome/Chromium executable if it is not discoverable by Playwright, and provision the normal browser cache before running. The consumer CWD and app are temporary and do not need source-workspace access. `distribution-evidence.json` hashes package/nuspec, runtime DLL, source/license entries and symbol packages, records commands and evidence-input paths, and distinguishes PASS/PENDING/FAIL/BLOCKED. Exit status is nonzero for any pending or blocked item; `allPassed` is never true unless every criterion is PASS.
+
+Snapshot tests are conditional on the installed artifact actually exposing the approved `DiagnosticSnapshotStore` API. Until the ticket 19 API is integrated into a final package, they are explicitly PENDING; the harness does not vendor/copy SDK implementation into the consumer. External distribution remains BLOCKED pending accepted dataset redistribution clearance. No command here publishes or pushes artifacts.
+
 ## Release checklist
 
 1. Build and test the Playwright baseline and current stable version.
 2. Run installed-Chrome integration tests on Windows and Linux.
 3. Pack established release artifacts and inspect dependencies/content; pack Cursory only for gated verification until provenance/legal review clears external distribution.
-4. Install the CLI from the produced local package and run `version`/`help`.
-5. Rebuild a Cloak-migration sample against the compatibility package.
-6. Confirm license and third-party notices.
-7. Tag only after the version/changelog match the artifacts.
+4. Run the installed-distribution command above against the final feed, baseline rollback package, and shared profile; retain `distribution-evidence.json`.
+5. Confirm LGPL/provenance and dataset redistribution clearance; a package layout or successful local test is not legal clearance.
+6. Install the CLI from the produced local package and run `version`/`help`.
+7. Rebuild a Cloak-migration sample against the compatibility package without adding it to the RpaBlockly package graph.
+8. Associate RpaBlockly, browser-contract, parity and benchmark evidence by exact candidate artifact hashes.
+9. Tag only after the version/changelog match the artifacts and external publication has separate operational approval.
