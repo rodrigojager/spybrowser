@@ -6,7 +6,8 @@
       "commit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
       "version": "2.0.1",
       "license": "LGPL-3.0-or-later",
-      "licenseFileSha256": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059",
+      "licenseFileSha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "reviewCheckoutLicenseFileSha256CrLf": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059",
       "noticeSha256": "96f17d3ef1a202482f3f1d188d1388676bfc112b780be30c2c6b66889578bde4"
     },
     "cursoryPython": {
@@ -71,7 +72,8 @@
       "license": "PSF-2",
       "copyright": "Copyright (c) 2001 Python Software Foundation; All Rights Reserved.",
       "licenseText": "Licenses/PSF-2.txt",
-      "licenseTextSha256": "ccedf6b82e8c6e4a163f3352e77b0b1fbc3d90bbf030e63790d22c673211818d",
+      "licenseTextSha256": "8a54c8287138ffef35ecec20e2d3db8d3f2ffe86da69d8f7a2199e07b252cbec",
+      "reviewCheckoutLicenseTextSha256CrLf": "ccedf6b82e8c6e4a163f3352e77b0b1fbc3d90bbf030e63790d22c673211818d",
       "sourceLicenseFileSha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
     }
   ],
@@ -92,7 +94,8 @@
       "file": "COPYING.LESSER",
       "license": "LGPL-3.0",
       "source": "https://github.com/JWriter20/cursory-js/blob/16fff97fab05bb6b0c6753b2dc136a7692634cec/LICENSE",
-      "sha256": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059"
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "encoding": "UTF-8, LF; hash of the committed upstream blob, not a platform-converted checkout"
     }
   ],
   "fixtures": {

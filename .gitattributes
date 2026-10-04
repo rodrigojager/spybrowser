@@ -1,2 +1,7 @@
 # Reference fixtures are hashed byte-for-byte across Windows and Linux.
 tests/**/Fixtures/*.json text eol=lf
+# Provenance manifests carry byte hashes of these upstream license texts.
+src/SpyBrowser.Cursory/COPYING* text eol=lf
+src/SpyBrowser.Cursory/LICENSE text eol=lf
+src/SpyBrowser.Cursory/NOTICE text eol=lf
+src/SpyBrowser.Cursory/Licenses/*.txt text eol=lf

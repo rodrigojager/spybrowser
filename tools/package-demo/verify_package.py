@@ -63,11 +63,12 @@ def main() -> None:
             raise SystemExit("Packaged source dataset hash mismatch")
         license_hashes = {
             "LICENSE/COPYING": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
-            "LICENSE/COPYING.LESSER": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059",
+            # Committed upstream bytes (LF); Windows checkout conversion has a different hash.
+            "LICENSE/COPYING.LESSER": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
             "LICENSE/third-party/APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
             "LICENSE/third-party/NUMPY-BSD-3-CLAUSE.txt": "1be1df33863f97a7bc1c4d67980bd6c69c9a6fef0a5ee76e6ad6cb91e56e8491",
             "LICENSE/third-party/PCG-MIT.txt": "290a0ab1748090ac60ee5451da0e2cbf4bfacf532af568c77a3de8d4e6a48440",
-            "LICENSE/third-party/PSF-2.txt": "ccedf6b82e8c6e4a163f3352e77b0b1fbc3d90bbf030e63790d22c673211818d",
+            "LICENSE/third-party/PSF-2.txt": "8a54c8287138ffef35ecec20e2d3db8d3f2ffe86da69d8f7a2199e07b252cbec",
         }
         for name, expected_hash in license_hashes.items():
             if hashlib.sha256(z.read(name)).hexdigest() != expected_hash:
@@ -109,7 +110,7 @@ def main() -> None:
     consumer_xml = ET.parse(consumer_project).getroot()
     if consumer_xml.findall(".//ProjectReference") or not consumer_xml.findall(".//PackageReference[@Include='SpyBrowser.Cursory']"):
         raise SystemExit("Demo must consume only the NuGet package, never a ProjectReference")
-    git = subprocess.run(["git", "-C", str(args.project), "rev-parse", "HEAD"],
+    git = subprocess.run(["git", "-c", f"safe.directory={args.project.resolve().as_posix()}", "-C", str(args.project), "rev-parse", "HEAD"],
                          check=True, capture_output=True, text=True).stdout.strip()
     manifest = {
         "schemaVersion": 1,
