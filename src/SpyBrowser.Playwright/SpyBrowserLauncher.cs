@@ -54,7 +54,9 @@ public static class SpyBrowserLauncher
                 prepared.Diagnostics,
                 prepared.Consistency,
                 prepared.Expectations,
-                state.Humanizer);
+                state.Humanizer,
+                BrowserRuntimeProvenance.Create(identity, persistentOptions.Channel, context.Browser?.Version ?? "unavailable",
+                    options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null));
         }
         catch
         {
@@ -109,7 +111,9 @@ public static class SpyBrowserLauncher
                 prepared.Diagnostics,
                 prepared.Consistency,
                 prepared.Expectations,
-                state.Humanizer);
+                state.Humanizer,
+                BrowserRuntimeProvenance.Create(identity, browserOptions.Channel, browser.Version,
+                    options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null));
         }
         catch
         {
@@ -201,6 +205,8 @@ public static class SpyBrowserLauncher
                 browser,
                 identity,
                 state.Humanizer,
+                BrowserRuntimeProvenance.Create(identity, browserOptions.Channel, browser.Version,
+                    options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null),
                 CreateConfiguredContextAsync,
                 CreateConfiguredPageAsync);
         }

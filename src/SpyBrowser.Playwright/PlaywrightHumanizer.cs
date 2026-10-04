@@ -21,6 +21,10 @@ public sealed class PlaywrightHumanizer
     }
 
     internal HumanizationScope Scope => _scope;
+    internal Action? DiagnosticFailureHookForTesting
+    {
+        set { if (_scope.DiagnosticsForTesting is { } recorder) recorder.FailureHookForTesting = value; }
+    }
 
     public T Wrap<T>(T original)
         where T : class
@@ -97,10 +101,11 @@ internal sealed class HumanizationScope
     {
         options.Validate();
         _options = options;
-        _diagnostics = options.EnableDiagnostics ? new HumanizationDiagnosticsRecorder(options.DiagnosticsCapacity) : null;
+        _diagnostics = options.EnableDiagnostics ? new HumanizationDiagnosticsRecorder(options.DiagnosticsCapacity, options.MouseAlgorithm) : null;
     }
 
     internal HumanizationDiagnosticsSnapshot? GetDiagnosticsSnapshot() => _diagnostics?.Snapshot();
+    internal HumanizationDiagnosticsRecorder? DiagnosticsForTesting => _diagnostics;
 
     internal HumanizationDiagnosticsRecorder.Invocation? BeginDiagnostic(
         object target, IPage? pageHint, MethodInfo method, object?[] arguments)

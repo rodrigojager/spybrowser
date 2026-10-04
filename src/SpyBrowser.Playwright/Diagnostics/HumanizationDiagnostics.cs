@@ -20,6 +20,7 @@ public sealed record HumanizationDiagnosticsProvenance(
     string SpyBrowserVersion,
     string PlaywrightVersion,
     string BrowserVersion,
+    string BrowserVersionSource,
     string Algorithm,
     string DatasetVersion);
 
@@ -58,13 +59,19 @@ internal sealed class HumanizationDiagnosticsRecorder
     private int _count;
     private long _dropped;
     private readonly string _sessionId = Guid.NewGuid().ToString("N");
-    private readonly HumanizationDiagnosticsProvenance _provenance = CreateProvenance();
+    private readonly HumanizationDiagnosticsProvenance _provenance;
     private string _browserVersion = "unavailable";
+    internal Action? FailureHookForTesting { get; set; }
 
-    internal HumanizationDiagnosticsRecorder(int capacity) => _records = new HumanizationDiagnosticRecord[capacity];
+    internal HumanizationDiagnosticsRecorder(int capacity, MouseTrajectoryAlgorithm algorithm)
+    {
+        _records = new HumanizationDiagnosticRecord[capacity];
+        _provenance = CreateProvenance(algorithm);
+    }
 
     internal Invocation Begin(IPage? page, string method, string mode, string reason, string algorithm)
     {
+        FailureHookForTesting?.Invoke();
         var pageId = page is null ? "unscoped" : _pages.GetValue(page, _ => new PageCorrelation()).Id;
         if (page is not null)
         {
@@ -93,6 +100,7 @@ internal sealed class HumanizationDiagnosticsRecorder
 
     private void Complete(Invocation invocation, string outcome)
     {
+        FailureHookForTesting?.Invoke();
         var duration = (Stopwatch.GetTimestamp() - invocation.Started) * 1000d / Stopwatch.Frequency;
         var item = new HumanizationDiagnosticRecord(_sessionId, invocation.PageId, invocation.ActionId,
             invocation.Method, invocation.Mode, invocation.Algorithm, outcome, invocation.Reason,
@@ -113,16 +121,18 @@ internal sealed class HumanizationDiagnosticsRecorder
         }
     }
 
-    private static HumanizationDiagnosticsProvenance CreateProvenance()
+    private static HumanizationDiagnosticsProvenance CreateProvenance(MouseTrajectoryAlgorithm algorithm)
     {
         var asm = typeof(PlaywrightHumanizer).Assembly.GetName();
         var playwright = typeof(IPage).Assembly.GetName();
+        var cursory = algorithm == MouseTrajectoryAlgorithm.Cursory;
         return new HumanizationDiagnosticsProvenance(
             asm.Version?.ToString() ?? "unknown",
             playwright.Version?.ToString() ?? "unknown",
             "unavailable",
-            "bezier:legacy-v1;cursory:upstream-16fff97fab05bb6b0c6753b2dc136a7692634cec",
-            "cursory-js-16fff97fab05bb6b0c6753b2dc136a7692634cec:2356");
+            "playwright.browser.version",
+            cursory ? "cursory" : "bezier:legacy-v1",
+            cursory ? "cursory-js-16fff97fab05bb6b0c6753b2dc136a7692634cec:2356" : "none");
     }
 
     private sealed class PageCorrelation { internal string Id { get; } = Guid.NewGuid().ToString("N"); }

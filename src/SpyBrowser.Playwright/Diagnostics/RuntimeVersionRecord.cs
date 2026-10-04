@@ -6,7 +6,10 @@ public sealed record RuntimeVersionRecord
     public string SpyBrowser { get; init; } = "unknown";
     public string Playwright { get; init; } = "unknown";
     public string BrowserFamily { get; init; } = "unknown";
+    public string BrowserFamilySource { get; init; } = "unknown";
+    public string? BrowserChannel { get; init; }
     public string BrowserVersion { get; init; } = "unknown";
+    public string BrowserVersionSource { get; init; } = "unknown";
     public string Algorithm { get; init; } = "unknown";
     public string Dataset { get; init; } = "unknown";
 }

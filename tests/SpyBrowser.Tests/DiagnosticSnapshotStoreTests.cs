@@ -35,6 +35,8 @@ public sealed class DiagnosticSnapshotStoreTests
         }
         var comparison = DiagnosticSnapshotStore.Compare(baseline, current);
         Assert.Contains(comparison.Changes, change => change.Field == "browser.version" && change.Severity == ConsistencySeverity.Information);
+        Assert.DoesNotContain("password-sentinel-cookie-token", System.Text.Json.JsonSerializer.Serialize(comparison), StringComparison.Ordinal);
+        Assert.DoesNotContain("baseline-not-secret", System.Text.Json.JsonSerializer.Serialize(comparison), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -44,7 +46,7 @@ public sealed class DiagnosticSnapshotStoreTests
         const string sentinel = "secret-sentinel https://private.invalid C:\\Users\\private\\failure";
         var source = Snapshot(sentinel, sentinel) with
         {
-            Versions = new RuntimeVersionRecord { SpyBrowser = sentinel, Playwright = sentinel, BrowserFamily = sentinel, BrowserVersion = sentinel, Algorithm = sentinel, Dataset = sentinel },
+            Versions = new RuntimeVersionRecord { SpyBrowser = sentinel, Playwright = sentinel, BrowserFamily = sentinel, BrowserFamilySource = sentinel, BrowserChannel = sentinel, BrowserVersion = sentinel, BrowserVersionSource = sentinel, Algorithm = sentinel, Dataset = sentinel },
             Expectations = new ConsistencyExpectations { Locale = sentinel, TimezoneId = sentinel, UserAgent = sentinel, BrowserFamily = sentinel, Platform = sentinel },
             Characteristics = new BrowserSurfaceDiagnostics
             {
@@ -61,6 +63,9 @@ public sealed class DiagnosticSnapshotStoreTests
         Assert.DoesNotContain(sentinel, json, StringComparison.Ordinal);
         var safe = await DiagnosticSnapshotStore.ReadAsync(path);
         Assert.Equal("unknown", safe.Versions.BrowserFamily);
+        Assert.Equal("unknown", safe.Versions.BrowserFamilySource);
+        Assert.Null(safe.Versions.BrowserChannel);
+        Assert.Equal("unknown", safe.Versions.BrowserVersionSource);
         Assert.Equal("diagnostic.other", safe.Findings[0].Code);
         Assert.Null(safe.Characteristics.WebGpu.Error);
     }

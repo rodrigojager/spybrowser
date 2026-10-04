@@ -129,10 +129,15 @@ public sealed class DiagnosticSnapshotStore
         ArgumentNullException.ThrowIfNull(current);
         if (baseline.SchemaVersion != DiagnosticSnapshot.CurrentSchemaVersion || current.SchemaVersion != DiagnosticSnapshot.CurrentSchemaVersion)
             throw new InvalidDataException("Cannot compare an unsupported diagnostic snapshot schema.");
+        baseline = Sanitize(baseline);
+        current = Sanitize(current);
         var changes = new List<DiagnosticSnapshotChange>();
         Add("spybrowser.version", baseline.Versions.SpyBrowser, current.Versions.SpyBrowser, ConsistencySeverity.Information);
         Add("browser.family", baseline.Versions.BrowserFamily, current.Versions.BrowserFamily, ConsistencySeverity.Information);
+        Add("browser.family-source", baseline.Versions.BrowserFamilySource, current.Versions.BrowserFamilySource, ConsistencySeverity.Information);
+        Add("browser.channel", baseline.Versions.BrowserChannel, current.Versions.BrowserChannel, ConsistencySeverity.Information);
         Add("browser.version", baseline.Versions.BrowserVersion, current.Versions.BrowserVersion, ConsistencySeverity.Information);
+        Add("browser.version-source", baseline.Versions.BrowserVersionSource, current.Versions.BrowserVersionSource, ConsistencySeverity.Information);
         Add("playwright.version", baseline.Versions.Playwright, current.Versions.Playwright, ConsistencySeverity.Information);
         Add("algorithm", baseline.Versions.Algorithm, current.Versions.Algorithm, ConsistencySeverity.Information);
         Add("dataset", baseline.Versions.Dataset, current.Versions.Dataset, ConsistencySeverity.Information);
@@ -172,7 +177,10 @@ public sealed class DiagnosticSnapshotStore
             SpyBrowser = SafeVersion(snapshot.Versions.SpyBrowser),
             Playwright = SafeVersion(snapshot.Versions.Playwright),
             BrowserFamily = SafeFamily(snapshot.Versions.BrowserFamily),
+            BrowserFamilySource = SafeProvenanceSource(snapshot.Versions.BrowserFamilySource),
+            BrowserChannel = SafeChannel(snapshot.Versions.BrowserChannel),
             BrowserVersion = SafeVersion(snapshot.Versions.BrowserVersion),
+            BrowserVersionSource = SafeProvenanceSource(snapshot.Versions.BrowserVersionSource),
             Algorithm = SafeAlgorithm(snapshot.Versions.Algorithm),
             Dataset = SafeDataset(snapshot.Versions.Dataset)
         },
@@ -217,6 +225,17 @@ public sealed class DiagnosticSnapshotStore
         Vendor = SafeGpuLabel(value.Vendor), Renderer = SafeGpuLabel(value.Renderer),
         Version = SafeGpuLabel(value.Version), ShadingLanguageVersion = SafeGpuLabel(value.ShadingLanguageVersion),
         CanvasSampleHash = null
+    };
+
+    private static string? SafeChannel(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "chrome" => "chrome", "msedge" => "msedge", "chromium" => "chromium", _ => null
+    };
+
+    private static string SafeProvenanceSource(string? value) => value switch
+    {
+        "playwright.launch-configuration" or "playwright.browser.version" => value,
+        _ => "unknown"
     };
 
     private static string SafeVersion(string? value) => value is not null &&

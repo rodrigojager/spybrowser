@@ -16,12 +16,14 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
         IBrowser rawBrowser,
         BrowserIdentity identity,
         PlaywrightHumanizer? humanizer,
+        BrowserRuntimeProvenance runtimeProvenance,
         Func<BrowserNewContextOptions?, Task<IBrowserContext>> contextFactory,
         Func<BrowserNewPageOptions?, Task<IPage>> pageFactory)
     {
         _playwright = playwright;
         RawBrowser = rawBrowser;
         Identity = identity;
+        RuntimeProvenance = runtimeProvenance;
         var configured = ConfiguredBrowserProxy.Create(rawBrowser, contextFactory, pageFactory, humanizer);
         Browser = configured;
     }
@@ -40,6 +42,9 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
     public IBrowser Browser { get; }
 
     public IBrowser RawBrowser { get; }
+
+    /// <summary>Immutable launch facts sourced from the selected configuration and running browser process, not User-Agent.</summary>
+    public BrowserRuntimeProvenance RuntimeProvenance { get; }
 
     public Task<IBrowserContext> NewContextAsync(BrowserNewContextOptions? options = null) =>
         Browser.NewContextAsync(options);

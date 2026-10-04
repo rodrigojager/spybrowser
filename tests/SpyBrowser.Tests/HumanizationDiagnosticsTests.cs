@@ -10,7 +10,9 @@ public sealed class HumanizationDiagnosticsTests
     [Fact]
     public void Diagnostics_are_opt_in_and_capacity_is_validated()
     {
-        Assert.Null(new PlaywrightHumanizer().GetDiagnosticsSnapshot());
+        var disabled = new PlaywrightHumanizer();
+        Assert.Null(disabled.GetDiagnosticsSnapshot());
+        Assert.Null(disabled.Scope.DiagnosticsForTesting);
         Assert.Throws<ArgumentOutOfRangeException>(() => new PlaywrightHumanizer(new HumanInteractionOptions
         {
             EnableDiagnostics = true,
@@ -48,6 +50,27 @@ public sealed class HumanizationDiagnosticsTests
         Assert.Contains(snapshot.Records, record => record.Outcome == "error");
         Assert.Contains(snapshot.Records, record => record.Reason == "humanization.unsupported-surface");
         Assert.DoesNotContain(snapshot.Records, record => record.Method.Contains(secret, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task Recorder_failures_never_fail_or_repeat_the_consumer_action()
+    {
+        var raw = DispatchProxy.Create<IPage, FakePage>();
+        ((FakePage)(object)raw).Title = "consumer-result";
+        var humanizer = new PlaywrightHumanizer(new HumanInteractionOptions { EnableDiagnostics = true });
+        var wrapped = humanizer.Wrap(raw);
+        var calls = 0;
+        var failAt = 1;
+        humanizer.DiagnosticFailureHookForTesting = () =>
+        {
+            if (Interlocked.Increment(ref calls) == failAt) throw new InvalidOperationException("recorder failure");
+        };
+
+        Assert.Equal("consumer-result", await wrapped.TitleAsync()); // Begin recorder failure.
+        calls = 0;
+        failAt = 2;
+        Assert.Equal("consumer-result", await wrapped.TitleAsync()); // Completion recorder failure.
+        Assert.Equal(2, ((FakePage)(object)raw).TitleCalls);
     }
 
     [Fact]
@@ -105,9 +128,42 @@ public sealed class HumanizationDiagnosticsTests
         Assert.Contains(snapshot.Records, item => item.Mode == "native-preserved-compatible-fill");
         Assert.Contains(snapshot.Records, item => item.Reason == "humanization.unsupported-options");
         Assert.Equal(browser.Version, snapshot.Provenance.BrowserVersion);
+        Assert.Equal("cursory", snapshot.Provenance.Algorithm);
+        Assert.StartsWith("cursory-js-", snapshot.Provenance.DatasetVersion, StringComparison.Ordinal);
+        Assert.Equal("playwright.browser.version", snapshot.Provenance.BrowserVersionSource);
         Assert.DoesNotContain(secret, json, StringComparison.Ordinal);
         Assert.DoesNotContain("private-selector", json, StringComparison.Ordinal);
         Assert.True(await rawPage.EvaluateAsync<int>("moves") > 1);
+    }
+
+    [BrowserFact]
+    public async Task Launch_handle_exposes_actual_browser_version_and_selected_channel_not_user_agent()
+    {
+        var identity = SpyBrowser.Core.BrowserIdentity.Create("runtime-provenance") with
+        {
+            Browser = new SpyBrowser.Core.BrowserIdentitySettings
+            {
+                Engine = SpyBrowser.Core.BrowserEngine.Chromium,
+                UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/999.0.0.0"
+            }
+        };
+        await using var handle = await SpyBrowserLauncher.LaunchContextAsync(new SpyBrowserLaunchOptions
+        {
+            IdentityId = identity.Id,
+            IdentityOverride = identity,
+            Headless = true,
+            Humanize = true,
+            RunGpuProbe = false
+        });
+
+        Assert.Equal("chromium", handle.RuntimeProvenance.BrowserFamily);
+        Assert.Equal("playwright.launch-configuration", handle.RuntimeProvenance.BrowserFamilySource);
+        Assert.Null(handle.RuntimeProvenance.BrowserChannel);
+        Assert.Equal(handle.RawBrowser!.Version, handle.RuntimeProvenance.BrowserVersion);
+        Assert.Equal("playwright.browser.version", handle.RuntimeProvenance.BrowserVersionSource);
+        Assert.Equal("bezier:legacy-v1", handle.RuntimeProvenance.Algorithm);
+        Assert.Equal("none", handle.RuntimeProvenance.Dataset);
+        Assert.DoesNotContain("999.0.0.0", handle.RuntimeProvenance.BrowserVersion);
     }
 
     [Fact]
@@ -131,6 +187,20 @@ public sealed class HumanizationDiagnosticsTests
     }
 
     [Fact]
+    public async Task Concurrent_records_remain_bounded_and_count_overwrites()
+    {
+        var raw = DispatchProxy.Create<IPage, FakePage>();
+        var humanizer = new PlaywrightHumanizer(new HumanInteractionOptions { EnableDiagnostics = true, DiagnosticsCapacity = 20 });
+        var page = humanizer.Wrap(raw);
+        await Task.WhenAll(Enumerable.Range(0, 200).Select(_ => page.WaitForTimeoutAsync(0)));
+
+        var snapshot = humanizer.GetDiagnosticsSnapshot()!;
+        Assert.Equal(20, snapshot.Records.Count);
+        Assert.Equal(180, snapshot.DroppedRecords);
+        Assert.Equal(20, snapshot.Records.Select(record => record.ActionId).Distinct().Count());
+    }
+
+    [Fact]
     public async Task Correlations_are_distinct_per_page_and_concurrent_invocation()
     {
         var humanizer = new PlaywrightHumanizer(new HumanInteractionOptions { EnableDiagnostics = true });
@@ -151,6 +221,7 @@ public sealed class HumanizationDiagnosticsTests
         internal int FailOnTitleCall = 1;
         internal bool Canceled;
         private int _titleCalls;
+        internal int TitleCalls => Volatile.Read(ref _titleCalls);
         private readonly IBrowserContext _context = DispatchProxy.Create<IBrowserContext, FakeContext>();
 
         protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
@@ -158,8 +229,9 @@ public sealed class HumanizationDiagnosticsTests
             if (targetMethod?.Name == "get_Context") return _context;
             if (targetMethod?.Name == nameof(IPage.TitleAsync))
             {
+                var call = Interlocked.Increment(ref _titleCalls);
                 if (Canceled) return Task.FromCanceled<string>(new CancellationToken(canceled: true));
-                if (Error is not null && Interlocked.Increment(ref _titleCalls) >= FailOnTitleCall) return Task.FromException<string>(Error);
+                if (Error is not null && call >= FailOnTitleCall) return Task.FromException<string>(Error);
                 return Task.FromResult(Title ?? "");
             }
             if (targetMethod?.ReturnType == typeof(Task)) return Task.CompletedTask;

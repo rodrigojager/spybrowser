@@ -25,7 +25,8 @@ public class SpyBrowserContextHandle : IAsyncDisposable
         BrowserSurfaceDiagnostics? diagnostics,
         ConsistencyReport consistency,
         ConsistencyExpectations effectiveExpectations,
-        PlaywrightHumanizer? humanizer)
+        PlaywrightHumanizer? humanizer,
+        BrowserRuntimeProvenance runtimeProvenance)
     {
         _playwright = playwright;
         _identityLease = identityLease;
@@ -37,6 +38,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
         Diagnostics = diagnostics;
         Consistency = consistency;
         EffectiveExpectations = effectiveExpectations;
+        RuntimeProvenance = runtimeProvenance;
         Context = humanizer?.Wrap(rawContext) ?? rawContext;
         Browser = rawBrowser is null ? null : humanizer?.Wrap(rawBrowser) ?? rawBrowser;
     }
@@ -60,6 +62,9 @@ public class SpyBrowserContextHandle : IAsyncDisposable
 
     /// <summary>Context configuration after caller callbacks; safe to reuse for additional validation.</summary>
     public ConsistencyExpectations EffectiveExpectations { get; }
+
+    /// <summary>Immutable launch/runtime facts, sourced from the selected Playwright launch and browser process (not the spoofable UA).</summary>
+    public BrowserRuntimeProvenance RuntimeProvenance { get; }
 
     public IReadOnlyList<IPage> Pages => ProbePageRegistry.For(RawContext).Filter(Context.Pages);
 

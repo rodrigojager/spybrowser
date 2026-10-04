@@ -16,7 +16,8 @@ public sealed class SpyBrowserSession : SpyBrowserContextHandle
         BrowserSurfaceDiagnostics? diagnostics,
         ConsistencyReport consistency,
         ConsistencyExpectations effectiveExpectations,
-        PlaywrightHumanizer? humanizer)
+        PlaywrightHumanizer? humanizer,
+        BrowserRuntimeProvenance runtimeProvenance)
         : base(
             playwright,
             rawContext,
@@ -27,7 +28,8 @@ public sealed class SpyBrowserSession : SpyBrowserContextHandle
             diagnostics,
             consistency,
             effectiveExpectations,
-            humanizer)
+            humanizer,
+            runtimeProvenance)
     {
     }
 }

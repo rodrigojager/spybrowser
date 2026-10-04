@@ -21,7 +21,32 @@ spybrowser probe my-identity --headless --snapshot-dir ./diagnostics --baseline 
 
 Writes use a same-directory temporary file followed by an atomic rename. On Unix the file mode is owner read/write (`0600`). On Windows, the file inherits the destination directory's ACL; place the directory in a user-private location. Retention applies only to generated `snapshot-*.json` files in the chosen directory and keeps the newest configured count (default 20). The explicitly selected `--baseline` is passed to retention and protected even when it is inside that directory. A per-directory exclusive lock coordinates publish/prune across concurrent processes; temporary names are unique. Corrupt or unsupported-schema files fail with an error and are not repaired or overwritten. Snapshots are optional local artifacts; deleting them does not affect profiles or identities. Concurrent runs receive unique filenames rather than sharing an IdentityId-based path.
 
-API consumers can use `DiagnosticSnapshotStore.SaveAsync`, `ReadAsync`, and `Compare` directly. `RuntimeVersionRecord` accepts caller-supplied version strings. CLI entries use actual loaded assembly and browser version data where available; browser family comes from the selected identity engine, while humanization metadata reports the CLI's selected default Bézier algorithm only when enabled and never claims a dataset was loaded. A caller must opt into persistence by constructing the store and invoking `SaveAsync`.
+API consumers can use `DiagnosticSnapshotStore.SaveAsync`, `ReadAsync`, and `Compare` directly. `RuntimeVersionRecord` accepts caller-supplied version strings. Launch handles expose immutable `RuntimeProvenance`: family and effective channel are taken from the selected launch configuration (with explicit provenance labels), while browser version comes from Playwright's running browser process, never the spoofable User-Agent. CLI snapshots use those same handle facts and the actual selected humanization strategy; Bézier reports dataset `none`, Cursory records its bundled dataset revision without loading trajectory data for diagnostics, and non-humanized launches report algorithm/dataset `none`. Provenance/channel values are projected through the snapshot's safe allowlist. A caller must opt into persistence by constructing the store and invoking `SaveAsync`.
+
+## Validation evidence
+
+On the assigned Windows worktree, with output isolated from source `bin/obj/artifacts`, the focused suite passed (16 passed, 2 browser-gated skipped):
+
+```text
+cd /d/SpyBrowser-work/monitor-evidence-final
+export PATH=/home/rodrigo/.dotnet-spybrowser:$PATH
+dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj --artifacts-path /tmp/spybrowser-monitor-evidence-bin --filter 'FullyQualifiedName~HumanizationDiagnosticsTests|FullyQualifiedName~DiagnosticSnapshotStoreTests'
+```
+
+With `SPYBROWSER_RUN_BROWSER_TESTS=1`, the targeted runtime-provenance and humanization-recorder browser tests passed (2 passed). A real CLI two-run check created identity `diag-e2e` with `--engine chromium`, saved its first `probe` snapshot, and ran the same probe with the first file explicitly selected as `--baseline`; the second run saved a distinct snapshot and reported `comparison: { changes: [] }` for the unchanged runtime. The persisted snapshot reported family `chromium` from `playwright.launch-configuration`, browser version `149.0.7827.55` from `playwright.browser.version`, and algorithm/dataset `none`. Exact invocation sequence (the second probe was repeated after rebuilding the compare privacy fix):
+
+```text
+cd /d/SpyBrowser-work/monitor-evidence-final
+export PATH=/home/rodrigo/.dotnet-spybrowser:$PATH
+dotnet build src/SpyBrowser.Cli/SpyBrowser.Cli.csproj --artifacts-path /tmp/spybrowser-monitor-evidence-bin
+dotnet C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-bin\bin\SpyBrowser.Cli\debug\SpyBrowser.Cli.dll identity create diag-e2e --engine chromium --root C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-cli-e2e\identities
+dotnet C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-bin\bin\SpyBrowser.Cli\debug\SpyBrowser.Cli.dll probe diag-e2e --headless --allow-inconsistent --root C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-cli-e2e\identities --snapshot-dir C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-cli-e2e\snapshots --snapshot-retention 10
+dotnet C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-bin\bin\SpyBrowser.Cli\debug\SpyBrowser.Cli.dll probe diag-e2e --headless --allow-inconsistent --root C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-cli-e2e\identities --snapshot-dir C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-cli-e2e\snapshots --snapshot-retention 10 --baseline C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-monitor-evidence-cli-e2e\snapshots\snapshot-20261004T064314.1201547Z-b8461e8a10f142af8d20f082aa4b07c6.json
+```
+
+The final comparison run (after rebuilding the effective-channel provenance changes) wrote `snapshot-20261004T065050.1173868Z-e9b81efa99c04c2c9fb3532df1f0544b.json`.
+
+A whole-solution run was also attempted with isolated artifacts; the 15 Cursory tests passed, but the Playwright project had 6 failures: five `ContextEventContractsTests` were run without their required `SPYBROWSER_RUN_BROWSER_TESTS=1`, and `PlaywrightApiAuditTests` resolves the solution root from the moved test assembly and cannot find `SpyBrowser.sln`. The test project otherwise reported 68 passed and 41 gated skips. A second browser-enabled Playwright run excluding only `PlaywrightApiAuditTests` reported 112 passed and 5 browser tests failed with `TargetClosedException`/weak-reference assertions under the shared concurrent browser lane. The focused recorder/provenance browser tests pass separately. These whole-project failures remain reported; neither run is represented as a passing full suite.
 
 ## Validation boundaries
 
