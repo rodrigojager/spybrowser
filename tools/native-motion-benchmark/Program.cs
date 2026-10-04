@@ -11,6 +11,8 @@ const int seed = 21021;
 const int warmRuns = 40;
 const int plannedMilliseconds = 300;
 var runStartedUtc = DateTimeOffset.UtcNow;
+var sourceRevision = await GitAsync("rev-parse", "HEAD");
+var sourceDirtyState = await GitAsync("status", "--porcelain=v1", "--untracked-files=all");
 var outputDirectory = args.FirstOrDefault() ?? Path.Combine("artifacts", "motion-quality");
 Directory.CreateDirectory(outputDirectory);
 var datasetPath = FindDatasetPath();
@@ -48,6 +50,7 @@ var cases = new[]
     new MotionCase("concurrent-independent-pages", 35, 40, 600, 350, "concurrent")
 };
 var results = new List<object>();
+var realDomRunCount = 0;
 foreach (var algorithm in Enum.GetValues<MouseTrajectoryAlgorithm>())
 foreach (var motionCase in cases)
 {
@@ -62,7 +65,7 @@ foreach (var motionCase in cases)
         var endX = motionCase.EndX + (pageIndex * 35);
         var endY = motionCase.EndY + (pageIndex * 25);
         await page.SetContentAsync(motionCase.Kind == "button"
-            ? $"<button id='target' style='position:absolute;left:{endX - 45}px;top:{endY - 20}px;width:90px;height:40px'>activate</button><script>window.samples=[];window.clicks=0;addEventListener('mousemove',e=>samples.push([performance.now(),e.clientX,e.clientY]));document.querySelector('#target').addEventListener('click',()=>window.clicks++);</script>"
+            ? $"<button id='target' style='position:absolute;left:{endX - 45}px;top:{endY - 20}px;width:90px;height:40px'>activate</button><script>window.samples=[];window.hovers=0;window.clicks=0;addEventListener('mousemove',e=>samples.push([performance.now(),e.clientX,e.clientY]));document.querySelector('#target').addEventListener('mouseenter',()=>window.hovers++);document.querySelector('#target').addEventListener('click',()=>window.clicks++);</script>"
             : "<script>window.samples=[];addEventListener('mousemove',e=>samples.push([performance.now(),e.clientX,e.clientY]));</script>");
         var pageHeapBefore = await page.EvaluateAsync<double?>("performance.memory?.usedJSHeapSize ?? null");
         IPage actionPage = motionCase.Kind == "slow" ? SlowMousePageProxy.Create(page, 12) : page;
@@ -80,6 +83,7 @@ foreach (var motionCase in cases)
         tasks.Add(ObserveMoveAsync(page, wrapped, algorithm, motionCase, endX, endY, pageIndex, plannedMilliseconds, pageHeapBefore));
     }
     results.Add(new { algorithm = algorithm.ToString(), caseName = motionCase.Name, pages = await Task.WhenAll(tasks) });
+    realDomRunCount += tasks.Count;
     foreach (var context in contexts) await context.CloseAsync();
 }
 var processAfterBrowser = Process.GetCurrentProcess().WorkingSet64;
@@ -87,8 +91,15 @@ var totalManagedAllocatedAfterBrowser = GC.GetTotalAllocatedBytes(true);
 
 var report = new
 {
-    schemaVersion = 1,
-    run = new { startedUtc = runStartedUtc, seed, datasetSha256 = datasetHash, datasetFile = "src/SpyBrowser.Cursory/Data/trajectories.json.gz", datasetProvenance = "The repository's embedded cursory-js dataset; gzip bytes hashed." },
+    schemaVersion = 2,
+    run = new { startedUtc = runStartedUtc, seed, sourceRevision, sourceDirty = sourceDirtyState.Length != 0, sourceDirtyState, datasetSha256 = datasetHash, datasetFile = "src/SpyBrowser.Cursory/Data/trajectories.json.gz", datasetProvenance = "The repository's embedded cursory-js dataset; gzip bytes hashed.", realDomRunCount },
+    classifications = new
+    {
+        functional = "PASS only when each measured DOM task completed, chronological is true, and all serialized metrics are finite; this is functional correctness evidence, not equivalence of paths.",
+        performance = "Descriptive measurements (cold/warm generation, allocations, browser dispatch, DOM rhythm); 10 ms p95 is an investigation target, never a shared-runner hard gate.",
+        regression = "No regression verdict without a paired report from the same machine/browser/settings and an explicit baseline revision; differences otherwise remain contextual observations.",
+        context = "Compare source revision and dirty state, OS/runtime/browser/dataset/seed, concurrency, and case names before interpreting timing deltas."
+    },
     environment = new
     {
         machine = Environment.MachineName,
@@ -133,10 +144,11 @@ var jsonPath = Path.Combine(outputDirectory, "motion-quality.json");
 var reportJson = JsonSerializer.Serialize(report, jsonOptions);
 using (var validation = JsonDocument.Parse(reportJson))
 {
+    if (realDomRunCount != 14) throw new InvalidOperationException($"Expected 14 real DOM measurements; got {realDomRunCount}.");
     foreach (var page in validation.RootElement.GetProperty("cases").EnumerateArray().SelectMany(group => group.GetProperty("pages").EnumerateArray()))
     {
         if (!page.GetProperty("chronological").GetBoolean() || !page.GetProperty("taskCompleted").GetBoolean())
-            throw new InvalidOperationException("Benchmark validation failed: task incomplete or DOM timestamps out of order.");
+            throw new InvalidOperationException($"Benchmark validation failed: algorithm={page.GetProperty("algorithm").GetString()}, case={page.GetProperty("taskKind").GetString()}, hover={page.GetProperty("hoverCompleted").GetBoolean()}, complete={page.GetProperty("taskCompleted").GetBoolean()}, chronological={page.GetProperty("chronological").GetBoolean()}.");
         ValidateFiniteNumbers(page);
     }
 }
@@ -149,10 +161,15 @@ static async Task<object> ObserveMoveAsync(IPage rawPage, IPage wrappedPage, Mou
     var start = Stopwatch.StartNew();
     await wrappedPage.Mouse.MoveAsync((float)endX, (float)endY);
     var completed = true;
+    var hovered = motionCase.Kind != "button";
+    var clicked = motionCase.Kind != "button";
     if (motionCase.Kind == "button")
     {
+        await rawPage.Locator("#target").HoverAsync();
+        hovered = await rawPage.EvaluateAsync<bool>("window.hovers > 0");
         await rawPage.Locator("#target").ClickAsync();
-        completed = await rawPage.EvaluateAsync<bool>("window.clicks === 1");
+        clicked = await rawPage.EvaluateAsync<bool>("window.clicks === 1");
+        completed = hovered && clicked;
     }
     start.Stop();
     var raw = await rawPage.EvaluateAsync<string>("JSON.stringify({samples,clicks:window.clicks||0})");
@@ -197,6 +214,8 @@ static async Task<object> ObserveMoveAsync(IPage rawPage, IPage wrappedPage, Mou
         accelerationMethod = "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
         pausesOver50Milliseconds = intervals.Count(value => value >= 50),
         taskCompleted = completed,
+        hoverCompleted = hovered,
+        clickCompleted = clicked,
         chromiumPageJavaScriptHeapBytesBefore = pageHeapBefore,
         chromiumPageJavaScriptHeapBytesAfter = await rawPage.EvaluateAsync<double?>("performance.memory?.usedJSHeapSize ?? null"),
         taskKind = motionCase.Kind,
@@ -248,6 +267,21 @@ static double Percentile(double[] values, double fraction)
     if (values.Length == 0) return 0;
     var sorted = values.Order().ToArray();
     return sorted[Math.Clamp((int)Math.Ceiling(fraction * sorted.Length) - 1, 0, sorted.Length - 1)];
+}
+
+static async Task<string> GitAsync(params string[] arguments)
+{
+    try
+    {
+        var start = new ProcessStartInfo("git") { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
+        foreach (var argument in arguments) start.ArgumentList.Add(argument);
+        using var process = Process.Start(start);
+        if (process is null) return "unavailable";
+        var output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
+        return process.ExitCode == 0 ? output.TrimEnd() : "unavailable";
+    }
+    catch { return "unavailable"; }
 }
 
 static async Task<string> GetDotnetSdkAsync()

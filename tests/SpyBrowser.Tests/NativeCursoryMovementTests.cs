@@ -1,11 +1,38 @@
 using Microsoft.Playwright;
 using SpyBrowser.Cursory;
 using SpyBrowser.Playwright;
+using SpyBrowser.Playwright.Humanization;
 
 namespace SpyBrowser.Tests;
 
 public sealed class NativeCursoryMovementTests
 {
+    [Fact]
+    public void Duration_resize_preserves_selected_sample_order_and_point_frequency()
+    {
+        var strategy = new CursoryTrajectoryStrategy();
+        var source = strategy.Create(10, 20, 700, 450, new HumanInteractionOptions
+        {
+            MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
+            RandomSeed = 21021,
+            MouseMinimumDurationMilliseconds = 0,
+            MouseMaximumDurationMilliseconds = 10_000
+        });
+        var resized = strategy.Create(10, 20, 700, 450, new HumanInteractionOptions
+        {
+            MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
+            RandomSeed = 21021,
+            MouseMinimumDurationMilliseconds = 1_000,
+            MouseMaximumDurationMilliseconds = 1_000
+        });
+
+        Assert.Equal(source.Count, resized.Count);
+        Assert.Equal(source.Select(point => (point.X, point.Y)), resized.Select(point => (point.X, point.Y)));
+        Assert.True(source[^1].OffsetMilliseconds < resized[^1].OffsetMilliseconds);
+        Assert.All(resized.Zip(resized.Skip(1)), pair => Assert.True(pair.Second.OffsetMilliseconds >= pair.First.OffsetMilliseconds));
+        Assert.Equal(1_000, resized[^1].OffsetMilliseconds, 6);
+    }
+
     [BrowserTheory]
     [InlineData(1d)]
     [InlineData(1.25d)]
@@ -58,11 +85,32 @@ public sealed class NativeCursoryMovementTests
     }
 
     [BrowserFact]
+    public async Task Closing_browser_page_during_cursory_movement_stops_the_inflight_action()
+    {
+        await using var runtime = await OwnedBrowserRuntime.LaunchAsync();
+        var rawPage = await runtime.Browser.NewPageAsync();
+        await rawPage.SetContentAsync("<script>window.moves=0;addEventListener('mousemove',()=>moves++);</script>");
+        var humanizer = new PlaywrightHumanizer(new HumanInteractionOptions
+        {
+            MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
+            MouseMinimumDurationMilliseconds = 1_500,
+            MouseMaximumDurationMilliseconds = 1_500,
+            CursoryMovementDeadlineMilliseconds = 5_000
+        });
+        var page = humanizer.Wrap(rawPage);
+        await page.Mouse.MoveAsync(10, 10);
+        var movement = page.Mouse.MoveAsync(900, 600);
+        await Task.Delay(50);
+        await rawPage.CloseAsync();
+        await Assert.ThrowsAnyAsync<Exception>(() => movement);
+    }
+
+    [BrowserFact]
     public async Task Cursory_unknown_position_and_observed_pressed_button_use_single_native_moves()
     {
         await using var runtime = await OwnedBrowserRuntime.LaunchAsync();
         var rawPage = await runtime.Browser.NewPageAsync();
-        await rawPage.SetContentAsync("<script>window.moves=[];addEventListener('mousemove',e=>moves.push([e.clientX,e.clientY]));</script>");
+        await rawPage.SetContentAsync("<script>window.moves=[];addEventListener('mousemove',e=>moves.push([e.clientX,e.clientY,e.buttons]));</script>");
         var humanizer = new PlaywrightHumanizer(new HumanInteractionOptions { MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory });
         var page = humanizer.Wrap(rawPage);
 
@@ -71,10 +119,11 @@ public sealed class NativeCursoryMovementTests
         await page.Mouse.DownAsync();
         await page.Mouse.MoveAsync(20, 21);
         Assert.Equal(2, await rawPage.EvaluateAsync<int>("moves.length"));
+        Assert.Equal(1, (await rawPage.EvaluateAsync<double[][]>("moves")) [^1][2]);
         await page.Mouse.UpAsync();
         await page.Mouse.MoveAsync(100, 120);
         Assert.True(await rawPage.EvaluateAsync<int>("moves.length") > 3);
-        Assert.Equal(new[] { 100d, 120d }, (await rawPage.EvaluateAsync<double[][]>("moves"))[^1]);
+        Assert.Equal(new[] { 100d, 120d }, (await rawPage.EvaluateAsync<double[][]>("moves"))[^1].Take(2));
 
         await PlaywrightHumanizer.Unwrap(page).Mouse.MoveAsync(15, 16);
         humanizer.InvalidateMousePosition(page);
