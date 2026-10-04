@@ -5,6 +5,7 @@ using SpyBrowser.Cursory;
 
 namespace SpyBrowser.Tests;
 
+[Collection(TimedInputCollection.Name)]
 public sealed class SDKDatasetAdmissionFaultTests
 {
     [Theory]
@@ -182,6 +183,12 @@ public sealed class SDKDatasetAdmissionFaultTests
         {
             Type optionsType = _sdk.GetType("SpyBrowser.Playwright.HumanInteractionOptions", throwOnError: true)!;
             object options = Activator.CreateInstance(optionsType)!;
+            // These are admission/path tests, not wall-clock cadence tests. Keep actual
+            // generated points and dispatch assertions while eliminating nominal pacing;
+            // allow the real Cursory path room under a loaded runner.
+            optionsType.GetProperty("MouseMinimumDurationMilliseconds")!.SetValue(options, 0);
+            optionsType.GetProperty("MouseMaximumDurationMilliseconds")!.SetValue(options, 0);
+            optionsType.GetProperty("CursoryMovementDeadlineMilliseconds")!.SetValue(options, 10_000);
             Type enumType = _sdk.GetType("SpyBrowser.Playwright.MouseTrajectoryAlgorithm", throwOnError: true)!;
             optionsType.GetProperty("MouseAlgorithm")!.SetValue(options, Enum.Parse(enumType, algorithm));
             if (playwrightCompatible)
