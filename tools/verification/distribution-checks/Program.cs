@@ -5,16 +5,23 @@ using Microsoft.Playwright;
 using SpyBrowser.Core;
 using SpyBrowser.Playwright;
 
-if (args.Length >= 2 && args[0] == "--snapshot-interrupt-worker")
+if (args.Length >= 3 && args[0] is "--snapshot-process-save" or "--snapshot-interrupt-worker")
 {
-    var directory = args[1];
-    Directory.CreateDirectory(directory);
-    var path = Path.Combine(directory, $".interrupted-{Guid.NewGuid():N}.tmp");
-    using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough);
+    var snapshotAssembly = Assembly.Load("SpyBrowser.Playwright");
+    var workerStoreType = snapshotAssembly.GetType("SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshotStore", throwOnError: true)!;
+    var workerRecordType = snapshotAssembly.GetType("SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshot", throwOnError: true)!;
+    var workerStore = Activator.CreateInstance(workerStoreType, args[1], 2)!;
+    var workerSnapshot = JsonSerializer.Deserialize("{}", workerRecordType, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+    var workerSave = workerStoreType.GetMethod("SaveAsync", new[] { workerRecordType, typeof(string), typeof(CancellationToken) })!;
     Console.WriteLine("READY");
     Console.Out.Flush();
-    var buffer = new byte[4096];
-    while (true) { stream.Write(buffer); stream.Flush(flushToDisk: true); }
+    do
+    {
+        var saved = await (Task<string>)workerSave.Invoke(workerStore, new object?[] { workerSnapshot, args[2], CancellationToken.None })!;
+        Console.WriteLine($"SAVED|{saved}");
+        Console.Out.Flush();
+    } while (args[0] == "--snapshot-interrupt-worker");
+    return;
 }
 
 var phase = Arg("--phase");
@@ -96,18 +103,6 @@ finally
 if (Hash(manifestPath) != manifestHashBefore) throw new InvalidDataException("Identity manifest changed during package switch test.");
 Console.WriteLine("PASS: context disposed and identity manifest unchanged.");
 
-if (args.Length >= 2 && args[0] == "--snapshot-interrupt-worker")
-{
-    var directory = args[1];
-    Directory.CreateDirectory(directory);
-    var path = Path.Combine(directory, $".interrupted-{Guid.NewGuid():N}.tmp");
-    using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough);
-    Console.WriteLine("READY");
-    Console.Out.Flush();
-    var buffer = new byte[4096];
-    while (true) { stream.Write(buffer); stream.Flush(flushToDisk: true); }
-}
-
 // Snapshot API is deliberately discovered from the installed assembly. This scaffold does not copy or emulate pending SDK APIs.
 var assembly = typeof(SpyBrowserLauncher).Assembly;
 var snapshotType = assembly.GetType("SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshotStore", throwOnError: false);
@@ -151,7 +146,7 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     var characteristicsProperty = recordType.GetProperty("Characteristics")
         ?? throw new InvalidDataException("Snapshot record has no browser characteristics.");
     var characteristicsType = characteristicsProperty.PropertyType;
-    var baselineCharacteristics = JsonSerializer.Deserialize("{\"timezoneId\":\"UTC\",\"languages\":[\"en-US\"],\"userAgent\":\"baseline-agent\",\"platform\":\"Linux\",\"webGl1\":{\"renderer\":\"baseline-gpu\",\"canvasSampleHash\":\"PRIVATE_CANVAS_HASH_1\"},\"webGl2\":{\"renderer\":\"baseline-gpu\",\"canvasSampleHash\":\"PRIVATE_CANVAS_HASH_2\"},\"webGpu\":{\"device\":\"baseline-device\",\"error\":\"PRIVATE_GPU_ERROR\"}}", characteristicsType, serializerOptions)!;
+    var baselineCharacteristics = JsonSerializer.Deserialize("{\"timezoneId\":\"UTC\",\"languages\":[\"en-US\"],\"userAgent\":\"baseline-agent\",\"platform\":\"Linux\",\"webGl1\":{\"renderer\":\"Intel baseline adapter\",\"canvasSampleHash\":\"PRIVATE_CANVAS_HASH_1\"},\"webGl2\":{\"renderer\":\"Intel baseline adapter\",\"canvasSampleHash\":\"PRIVATE_CANVAS_HASH_2\"},\"webGpu\":{\"device\":\"baseline-device\",\"error\":\"PRIVATE_GPU_ERROR\"}}", characteristicsType, serializerOptions)!;
     characteristicsProperty.SetValue(baseline, baselineCharacteristics);
     var constructor = storeType.GetConstructor(new[] { typeof(string), typeof(int) })!;
     var store = constructor.Invoke(new object[] { snapshotDir, 2 });
@@ -169,7 +164,7 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     var currentVersions = JsonSerializer.Deserialize("{\"spyBrowser\":\"candidate\",\"playwright\":\"1.61.0\",\"browserFamily\":\"chromium\",\"browserVersion\":\"2\",\"algorithm\":\"Cursory\",\"dataset\":\"candidate\"}", runtimeVersionsType, serializerOptions)!;
     var current = JsonSerializer.Deserialize("{}", recordType, serializerOptions)!;
     recordType.GetProperty("Versions")?.SetValue(current, currentVersions);
-    characteristicsProperty.SetValue(current, JsonSerializer.Deserialize("{\"timezoneId\":\"UTC\",\"languages\":[\"en-US\"],\"userAgent\":\"candidate-agent\",\"platform\":\"Linux\",\"webGl1\":{\"renderer\":\"candidate-gpu\"},\"webGl2\":{\"renderer\":\"candidate-gpu\"},\"webGpu\":{\"device\":\"candidate-device\"}}", characteristicsType, serializerOptions)!);
+    characteristicsProperty.SetValue(current, JsonSerializer.Deserialize("{\"timezoneId\":\"UTC\",\"languages\":[\"en-US\"],\"userAgent\":\"candidate-agent\",\"platform\":\"Linux\",\"webGl1\":{\"renderer\":\"NVIDIA candidate adapter\"},\"webGl2\":{\"renderer\":\"NVIDIA candidate adapter\"},\"webGpu\":{\"device\":\"candidate-device\"}}", characteristicsType, serializerOptions)!);
     var currentPath = await (Task<string>)save.Invoke(store, new object?[] { current, baselinePath, CancellationToken.None })!;
     var baselineReadTask = (Task)read.Invoke(null, new object[] { baselinePath, CancellationToken.None })!;
     var currentReadTask = (Task)read.Invoke(null, new object[] { currentPath, CancellationToken.None })!;
@@ -183,12 +178,17 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     var changesJson = JsonSerializer.Serialize(changes, serializerOptions);
     if (changesJson.Contains("\"severity\":\"error\"", StringComparison.OrdinalIgnoreCase))
         throw new InvalidDataException("Informational version/GPU/context changes were classified as malicious/incoherent.");
-    var secondStore = constructor.Invoke(new object[] { snapshotDir, 2 });
-    var concurrent = await Task.WhenAll(
-        ((Task<string>)save.Invoke(store, new object?[] { current, baselinePath, CancellationToken.None })!),
-        ((Task<string>)save.Invoke(secondStore, new object?[] { current, baselinePath, CancellationToken.None })!));
-    if (concurrent.Distinct(StringComparer.Ordinal).Count() != 2 || concurrent.Any(path => !File.Exists(path)))
-        throw new IOException("Concurrent snapshot saves did not produce unique complete files.");
+    var gpuChange = changes.Cast<object>().Any(change =>
+        (string?)change.GetType().GetProperty("Field")?.GetValue(change) == "webgl1.renderer" &&
+        change.GetType().GetProperty("Severity")?.GetValue(change)?.ToString() == "Information");
+    if (!gpuChange)
+        throw new InvalidDataException("Installed snapshot comparison did not emit the expected informational webgl1.renderer field change.");
+    Console.WriteLine("PASS: snapshot-gpu-context-information field=webgl1.renderer severity=Information");
+    var concurrent = await RunConcurrentSnapshotProcesses(snapshotDir, baselinePath);
+    if (concurrent.Distinct(StringComparer.Ordinal).Count() != 2 || concurrent.Any(path => !File.Exists(path)) ||
+        !File.Exists(baselinePath) || Hash(baselinePath) != protectedBaselineHash)
+        throw new IOException("Concurrent SDK consumer processes did not preserve the selected baseline and produce unique complete files.");
+    Console.WriteLine("PASS: concurrent SDK snapshot saves used two consumer processes; baseline retained.");
     var unknown = Path.Combine(snapshotDir, "unknown-schema.json");
     var json = await File.ReadAllTextAsync(baselinePath);
     var unknownNode = System.Text.Json.Nodes.JsonNode.Parse(json)!;
@@ -205,22 +205,48 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     if (!cancellationHonored) throw new InvalidDataException("Cancelled snapshot save unexpectedly succeeded.");
     if (!File.Exists(baselinePath) || Hash(baselinePath) != protectedBaselineHash || Directory.GetFiles(snapshotDir, "*.tmp").Length != 0)
         throw new InvalidDataException("Cancellation changed/removed the protected baseline or left temporary snapshot files behind.");
-    var interruptProcess = new System.Diagnostics.ProcessStartInfo("dotnet")
+    var interruptStart = new System.Diagnostics.ProcessStartInfo("dotnet")
     {
         UseShellExecute = false,
         RedirectStandardOutput = true,
         RedirectStandardError = true,
-        ArgumentList = { Assembly.GetExecutingAssembly().Location, "--snapshot-interrupt-worker", snapshotDir }
+        ArgumentList = { Assembly.GetExecutingAssembly().Location, "--snapshot-interrupt-worker", snapshotDir, baselinePath }
     };
-    using (var child = System.Diagnostics.Process.Start(interruptProcess) ?? throw new InvalidOperationException("Could not start snapshot interruption worker."))
+    var interruptedDuringSdkWrite = false;
+    using (var child = System.Diagnostics.Process.Start(interruptStart) ?? throw new InvalidOperationException("Could not start installed SDK snapshot consumer."))
     {
-        await child.StandardOutput.ReadLineAsync();
-        child.Kill(entireProcessTree: true);
-        try { await child.WaitForExitAsync(); } catch (InvalidOperationException) { }
+        var readyTask = child.StandardOutput.ReadLineAsync();
+        if (await Task.WhenAny(readyTask, Task.Delay(TimeSpan.FromSeconds(10))) != readyTask || await readyTask != "READY")
+        {
+            if (!child.HasExited) child.Kill(entireProcessTree: true);
+            using var startupWait = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            try { await child.WaitForExitAsync(startupWait.Token); }
+            catch (OperationCanceledException) { throw new TimeoutException("SDK snapshot child did not exit after startup termination."); }
+            var startupError = await child.StandardError.ReadToEndAsync();
+            throw new TimeoutException($"SDK snapshot child did not reach its bounded READY checkpoint. stderr={startupError}");
+        }
+        var stdoutTask = child.StandardOutput.ReadToEndAsync();
+        var stderrTask = child.StandardError.ReadToEndAsync();
+        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(15);
+        while (DateTime.UtcNow < deadline && !child.HasExited)
+        {
+            if (Directory.GetFiles(snapshotDir, ".*.tmp").Length > 0) { interruptedDuringSdkWrite = true; break; }
+            await Task.Delay(10);
+        }
+        if (!child.HasExited) child.Kill(entireProcessTree: true);
+        using var waitTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        try { await child.WaitForExitAsync(waitTimeout.Token); }
+        catch (OperationCanceledException) { throw new TimeoutException("SDK snapshot worker did not exit after termination."); }
+        var stdout = await stdoutTask;
+        var stderr = await stderrTask;
+        Console.WriteLine($"SDK interruption worker completed {stdout.Split("SAVED|", StringSplitOptions.None).Length - 1} successful SDK saves before termination. {stderr}");
     }
-    foreach (var partial in Directory.GetFiles(snapshotDir, ".interrupted-*.tmp")) File.Delete(partial);
-    if (!File.Exists(baselinePath) || Hash(baselinePath) != protectedBaselineHash || Directory.GetFiles(snapshotDir, "*.tmp").Length != 0)
-        throw new InvalidDataException("Interrupted child writer changed/removed the selected baseline or left temporary files.");
+    if (!File.Exists(baselinePath) || Hash(baselinePath) != protectedBaselineHash)
+        throw new InvalidDataException("Terminating an installed SDK SaveAsync process changed/removed the selected baseline.");
+    var crashTemps = Directory.GetFiles(snapshotDir, ".*.tmp");
+    Console.WriteLine(interruptedDuringSdkWrite
+        ? $"PASS: OS-terminated SDK SaveAsync during actual temporary-file write; {crashTemps.Length} orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed)."
+        : "PENDING: bounded SDK SaveAsync worker did not expose an active temp-file write before termination.");
     if (OperatingSystem.IsLinux())
     {
         var deniedRoot = Path.Combine(profileRoot, "denied-snapshot-permissions");
@@ -242,14 +268,41 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
         Console.WriteLine(permissionDenied ? "PASS: real Linux chmod permission denial preserved the snapshot baseline." : "PENDING: process privileges bypassed real Linux chmod denial; no fake-file-block substitute used.");
     }
     else Console.WriteLine("PENDING: permission-denial verification requires real Linux chmod semantics.");
+    var storageStateHashBeforeDiscard = Hash(statePath);
     var filesBeforeDiscard = Directory.GetFiles(snapshotDir);
     foreach (var file in filesBeforeDiscard) File.Delete(file);
     Directory.Delete(snapshotDir);
     var browserProfile = Path.Combine(profileRoot, "identity-store", "identities", "distribution-verification", "profile");
-    if (!File.Exists(identityManifest) || !File.Exists(statePath) || !Directory.Exists(browserProfile) || Hash(identityManifest) != originalManifestHash)
-        throw new InvalidDataException("Discarding snapshots changed identity, profile, or storage-state files.");
-    Console.WriteLine("PASS: child-process write interruption preserved baseline and was cleaned up.");
-    Console.WriteLine("PASS: installed snapshot round-trip, explicit baseline comparison, unique concurrent store instances, unknown-schema rejection, cancellation cleanup and isolated discard.");
+    if (!File.Exists(identityManifest) || !File.Exists(statePath) || !Directory.Exists(browserProfile) ||
+        Hash(identityManifest) != originalManifestHash || Hash(statePath) != storageStateHashBeforeDiscard)
+        throw new InvalidDataException("Discarding snapshots changed identity, profile, or storage-state bytes.");
+    Console.WriteLine("PASS: installed snapshot round-trip, explicit baseline comparison, two-process concurrency, unknown-schema rejection, cancellation cleanup and isolated discard.");
+
+    async Task<string[]> RunConcurrentSnapshotProcesses(string directory, string protectedPath)
+    {
+        async Task<string> RunWorker()
+        {
+            var start = new System.Diagnostics.ProcessStartInfo("dotnet")
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                ArgumentList = { Assembly.GetExecutingAssembly().Location, "--snapshot-process-save", directory, protectedPath }
+            };
+            using var process = System.Diagnostics.Process.Start(start) ?? throw new InvalidOperationException("Could not start concurrent snapshot consumer.");
+            var stdoutTask = process.StandardOutput.ReadToEndAsync();
+            var stderrTask = process.StandardError.ReadToEndAsync();
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            try { await process.WaitForExitAsync(timeout.Token); }
+            catch (OperationCanceledException) { process.Kill(entireProcessTree: true); throw new TimeoutException("Concurrent SDK snapshot process exceeded 30 seconds."); }
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            if (process.ExitCode != 0) throw new IOException($"SDK consumer process failed ({process.ExitCode}): {stderr}");
+            var savedLine = stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries).SingleOrDefault(line => line.StartsWith("SAVED|", StringComparison.Ordinal));
+            return savedLine is null ? throw new IOException($"SDK consumer emitted no completed SaveAsync path: {stdout} {stderr}") : savedLine[6..].Trim();
+        }
+        return await Task.WhenAll(RunWorker(), RunWorker());
+    }
 }
 
 string Arg(string name)

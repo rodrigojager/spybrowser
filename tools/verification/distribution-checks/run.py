@@ -96,6 +96,9 @@ def main():
         ap.error("Feed manifest sourceCommit does not match --expected-source-commit")
     if provenance.get("declaredFinalCommit") != args.declared_final_commit:
         ap.error("Feed manifest declaredFinalCommit does not match --declared-final-commit")
+    is_final = provenance.get("isFinal", True)
+    if not isinstance(is_final, bool):
+        ap.error("Feed manifest isFinal must be a boolean")
     declared_hashes = provenance.get("packages")
     if not isinstance(declared_hashes, dict) or not declared_hashes:
         ap.error("Feed manifest must contain packages as {package filename: sha256}")
@@ -125,7 +128,15 @@ def main():
                 ap.error(f"Cannot read baseline {BASELINE}: {archive.stderr.decode(errors='replace')}")
             import tarfile, io
             with tarfile.open(fileobj=io.BytesIO(archive.stdout), mode="r:") as tar:
-                tar.extractall(baseline_tree, filter="data")
+                if sys.version_info >= (3, 12):
+                    tar.extractall(baseline_tree, filter="data")
+                else:
+                    # git archive produces a repository-controlled tree; older Python lacks the data filter.
+                    for member in tar.getmembers():
+                        target = (baseline_tree / member.name).resolve()
+                        if baseline_tree.resolve() not in target.parents and target != baseline_tree.resolve():
+                            raise RuntimeError(f"Unsafe path in git archive: {member.name}")
+                    tar.extractall(baseline_tree)
             try:
                 for project_name in ("SpyBrowser.Core", "SpyBrowser.Playwright"):
                     run(["dotnet", "pack", str(baseline_tree / "src" / project_name / (project_name + ".csproj")),
@@ -168,7 +179,7 @@ def main():
         (consumer / "NuGet.Config").write_text(
             "<?xml version=\"1.0\" encoding=\"utf-8\"?><configuration><packageSources><clear/>" +
             source_xml + "</packageSources></configuration>\n", encoding="utf-8")
-        profile = output / "shared-profile"  # same manifest/profile directory across package switches
+        profile = temp / "shared-profile"  # same clean consumer profile across package switches; local filesystem semantics
         identity_dir = profile / "identity-store/identities/distribution-verification"
         identity_dir.mkdir(parents=True, exist_ok=True)
         project = consumer / "DistributionChecks.csproj"
@@ -199,16 +210,20 @@ def main():
                 statuses.append({"check": name, "status": "PASS"})
             if "PASS: installed snapshot round-trip" in last_candidate_output:
                 statuses.append({"check": "snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard", "status": "PASS"})
-                if "PASS: child-process write interruption" in last_candidate_output:
-                    statuses.append({"check": "snapshot-interrupted-write-during-filesystem-write", "status": "PASS"})
+                if "PASS: OS-terminated SDK SaveAsync during actual temporary-file write" in last_candidate_output:
+                    statuses.append({"check": "snapshot-os-crash-during-sdk-write-baseline-preserved", "status": "PASS"})
                 else:
-                    statuses.append({"check": "snapshot-interrupted-write-during-filesystem-write", "status": "FAIL", "reason": "Consumer did not confirm interruption of an active child-process writer."})
+                    statuses.append({"check": "snapshot-os-crash-during-sdk-write-baseline-preserved", "status": "PENDING",
+                                     "reason": "The bounded child process did not expose an active SDK temporary-file write; no fake writer evidence was accepted."})
                 if "PASS: real Linux chmod" in last_candidate_output:
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PASS"})
                 else:
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PENDING", "reason": "The host cannot establish real Linux chmod denial or is not Linux; no fake file blocker was used."})
-                statuses.append({"check": "snapshot-gpu-context-information", "status": "FAIL",
-                                 "reason": "Snapshot API is present but no installed comparison evidence was emitted."})
+                if "PASS: snapshot-gpu-context-information field=webgl1.renderer severity=Information" in last_candidate_output:
+                    statuses.append({"check": "snapshot-gpu-context-information", "status": "PASS"})
+                else:
+                    statuses.append({"check": "snapshot-gpu-context-information", "status": "FAIL",
+                                     "reason": "Installed comparison did not emit the validated informational webgl1.renderer field change."})
             else:
                 statuses.append({"check": "snapshot-save-compare-retention-permissions-cancellation-concurrency-schema-secrets", "status": "PENDING",
                                  "reason": "Snapshot API is not present in this candidate artifact; consumer runtime reflection did not find the approved public API."})
@@ -216,8 +231,14 @@ def main():
             expected_state_hash = sha(state_path) if state_path.exists() else None
             if expected_state_hash:
                 env["EXPECTED_STORAGE_STATE_SHA256"] = expected_state_hash
-            phase(args.previous_version, "previous-bezier")
+            rollback_output = phase(args.previous_version, "previous-bezier")
             statuses.append({"check": "previous-bezier-rollback", "status": "PASS"})
+            if "PENDING: installed SpyBrowser.Playwright package does not contain DiagnosticSnapshotStore/DiagnosticSnapshot API" in rollback_output:
+                statuses.append({"check": "previous-package-snapshot-loader-compatibility", "status": "PENDING",
+                                 "reason": "The rollback package predates/excludes the snapshot API; it cannot load or explicitly reject a newer record. Identity/profile/storage-state rollback was verified separately."})
+            else:
+                statuses.append({"check": "previous-package-snapshot-loader-compatibility", "status": "PENDING",
+                                 "reason": "An older-record/newer-schema fixture was not exercised by the previous package."})
             phase(args.previous_version, "previous-off")
             statuses.append({"check": "previous-humanize-off", "status": "PASS"})
             statuses.append({"check": "browser-executable-and-official-driver", "status": "PASS",
@@ -231,6 +252,7 @@ def main():
         technical_all_passed = all(s["status"] == "PASS" for s in technical_statuses)
         manifest = {"schemaVersion": 1, "candidateVersion": args.candidate_version,
                     "sourceCommit": args.expected_source_commit, "declaredFinalCommit": args.declared_final_commit,
+                    "isFinal": is_final, "candidateProvenanceStatus": "final" if is_final else "preliminary-not-release-evidence",
                     "feedManifest": str(manifest_path), "feedManifestSha256": sha(manifest_path),
                     "previousVersion": args.previous_version,
                     "baselineCommit": BASELINE if args.repository else None, "playwrightVersion": PLAYWRIGHT,
