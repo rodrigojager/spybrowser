@@ -222,10 +222,16 @@ internal static class SpyBrowserCli
                 {
                     SpyBrowser = typeof(SpyBrowserCli).Assembly.GetName().Version?.ToString() ?? "unknown",
                     Playwright = typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version?.ToString() ?? "unknown",
-                    BrowserFamily = "unknown",
+                    BrowserFamily = session.Identity.Browser.Engine switch
+                    {
+                        BrowserEngine.Edge => "edge",
+                        BrowserEngine.Chrome => "chrome",
+                        BrowserEngine.Chromium or BrowserEngine.CustomChromium => "chromium",
+                        _ => "unknown"
+                    },
                     BrowserVersion = session.RawBrowser?.Version ?? "unknown",
-                    Algorithm = "not-assessed",
-                    Dataset = "not-assessed"
+                    Algorithm = command.Has("humanize") ? "bezier:legacy-v1" : "none",
+                    Dataset = "none"
                 },
                 Expectations = expectations,
                 Characteristics = currentDiagnostics,

@@ -38,11 +38,41 @@ public sealed class DiagnosticSnapshotStoreTests
     }
 
     [Fact]
+    public async Task Every_serialized_string_field_is_projected_to_bounded_safe_values()
+    {
+        using var directory = new TemporaryDirectory();
+        const string sentinel = "secret-sentinel https://private.invalid C:\\Users\\private\\failure";
+        var source = Snapshot(sentinel, sentinel) with
+        {
+            Versions = new RuntimeVersionRecord { SpyBrowser = sentinel, Playwright = sentinel, BrowserFamily = sentinel, BrowserVersion = sentinel, Algorithm = sentinel, Dataset = sentinel },
+            Expectations = new ConsistencyExpectations { Locale = sentinel, TimezoneId = sentinel, UserAgent = sentinel, BrowserFamily = sentinel, Platform = sentinel },
+            Characteristics = new BrowserSurfaceDiagnostics
+            {
+                UserAgent = sentinel, Platform = sentinel, ClientHintPlatform = sentinel, ClientHintArchitecture = sentinel,
+                ClientHintModel = sentinel, ClientHintBrands = [sentinel], Languages = [sentinel], TimezoneId = sentinel,
+                WebGl1 = new WebGlSurfaceDiagnostics { Vendor = sentinel, Renderer = sentinel, Version = sentinel, ShadingLanguageVersion = sentinel, CanvasSampleHash = sentinel },
+                WebGl2 = new WebGlSurfaceDiagnostics { Vendor = sentinel, Renderer = sentinel, Version = sentinel, ShadingLanguageVersion = sentinel, CanvasSampleHash = sentinel },
+                WebGpu = new WebGpuSurfaceDiagnostics { Vendor = sentinel, Architecture = sentinel, Device = sentinel, Description = sentinel, Error = sentinel }
+            },
+            Findings = [new ConsistencyFinding(ConsistencySeverity.Warning, sentinel, sentinel)]
+        };
+        var path = await new DiagnosticSnapshotStore(directory.Path).SaveAsync(source);
+        var json = await File.ReadAllTextAsync(path);
+        Assert.DoesNotContain(sentinel, json, StringComparison.Ordinal);
+        var safe = await DiagnosticSnapshotStore.ReadAsync(path);
+        Assert.Equal("unknown", safe.Versions.BrowserFamily);
+        Assert.Equal("diagnostic.other", safe.Findings[0].Code);
+        Assert.Null(safe.Characteristics.WebGpu.Error);
+    }
+
+    [Fact]
     public async Task Concurrent_saves_use_distinct_paths_and_retention_is_bounded()
     {
         using var directory = new TemporaryDirectory();
         var store = new DiagnosticSnapshotStore(directory.Path, retentionCount: 40);
-        var paths = await Task.WhenAll(Enumerable.Range(0, 24).Select(_ => store.SaveAsync(Snapshot("1", null))));
+        var secondStore = new DiagnosticSnapshotStore(directory.Path, retentionCount: 40);
+        var paths = await Task.WhenAll(Enumerable.Range(0, 24).Select(index =>
+            (index % 2 == 0 ? store : secondStore).SaveAsync(Snapshot("1", null))));
         Assert.Equal(paths.Length, paths.Distinct(StringComparer.Ordinal).Count());
         Assert.All(paths, path => Assert.True(File.Exists(path)));
 

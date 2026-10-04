@@ -167,16 +167,126 @@ public sealed class DiagnosticSnapshotStore
 
     private static DiagnosticSnapshot Sanitize(DiagnosticSnapshot snapshot) => snapshot with
     {
+        Versions = snapshot.Versions with
+        {
+            SpyBrowser = SafeVersion(snapshot.Versions.SpyBrowser),
+            Playwright = SafeVersion(snapshot.Versions.Playwright),
+            BrowserFamily = SafeFamily(snapshot.Versions.BrowserFamily),
+            BrowserVersion = SafeVersion(snapshot.Versions.BrowserVersion),
+            Algorithm = SafeAlgorithm(snapshot.Versions.Algorithm),
+            Dataset = SafeDataset(snapshot.Versions.Dataset)
+        },
+        Expectations = snapshot.Expectations with
+        {
+            Locale = SafeLocale(snapshot.Expectations.Locale),
+            TimezoneId = SafeTimezone(snapshot.Expectations.TimezoneId),
+            UserAgent = SafeFamily(snapshot.Expectations.UserAgent),
+            BrowserFamily = SafeFamily(snapshot.Expectations.BrowserFamily),
+            Platform = SafePlatform(snapshot.Expectations.Platform)
+        },
         Characteristics = snapshot.Characteristics with
         {
-            WebGl1 = snapshot.Characteristics.WebGl1 with { CanvasSampleHash = null },
-            WebGl2 = snapshot.Characteristics.WebGl2 with { CanvasSampleHash = null },
-            WebGpu = snapshot.Characteristics.WebGpu with { Error = null }
+            UserAgent = SafeFamily(snapshot.Characteristics.UserAgent),
+            Platform = SafePlatform(snapshot.Characteristics.Platform) ?? string.Empty,
+            ClientHintPlatform = SafePlatform(snapshot.Characteristics.ClientHintPlatform),
+            ClientHintArchitecture = null,
+            ClientHintModel = null,
+            ClientHintBrands = Array.Empty<string>(),
+            Languages = snapshot.Characteristics.Languages.Select(SafeLocale).Where(value => value is not null).Cast<string>().Take(16).ToArray(),
+            TimezoneId = SafeTimezone(snapshot.Characteristics.TimezoneId) ?? string.Empty,
+            WebGl1 = SafeWebGl(snapshot.Characteristics.WebGl1),
+            WebGl2 = SafeWebGl(snapshot.Characteristics.WebGl2),
+            WebGpu = snapshot.Characteristics.WebGpu with
+            {
+                Vendor = SafeGpuLabel(snapshot.Characteristics.WebGpu.Vendor),
+                Architecture = null,
+                Device = SafeGpuLabel(snapshot.Characteristics.WebGpu.Device),
+                Description = null,
+                Error = null
+            }
         },
         Findings = snapshot.Findings.Select(finding => finding with
         {
+            Code = SafeFindingCode(finding.Code),
             Message = "Finding details are omitted from snapshots; use the stable code and severity."
         }).ToArray()
+    };
+
+    private static WebGlSurfaceDiagnostics SafeWebGl(WebGlSurfaceDiagnostics value) => value with
+    {
+        Vendor = SafeGpuLabel(value.Vendor), Renderer = SafeGpuLabel(value.Renderer),
+        Version = SafeGpuLabel(value.Version), ShadingLanguageVersion = SafeGpuLabel(value.ShadingLanguageVersion),
+        CanvasSampleHash = null
+    };
+
+    private static string SafeVersion(string? value) => value is not null &&
+        System.Text.RegularExpressions.Regex.IsMatch(value, @"^[0-9]{1,6}(?:\.[0-9]{1,6}){0,4}(?:[-+][A-Za-z0-9.]{1,24})?$") ? value : "unknown";
+
+    private static string SafeFamily(string? value)
+    {
+        var text = value?.Trim().ToLowerInvariant() ?? string.Empty;
+        if (text.Contains("edg/", StringComparison.Ordinal) || text is "edge" or "microsoft edge") return "edge";
+        if (text.Contains("chrome/", StringComparison.Ordinal) || text is "chrome" or "google chrome") return "chrome";
+        if (text.Contains("chromium", StringComparison.Ordinal)) return "chromium";
+        if (text.Contains("firefox", StringComparison.Ordinal)) return "firefox";
+        if (text.Contains("safari", StringComparison.Ordinal)) return "safari";
+        return "unknown";
+    }
+
+    private static string SafeAlgorithm(string? value) => value?.ToLowerInvariant() switch
+    {
+        "none" => "none", "unknown" => "unknown", "not-assessed" => "not-assessed",
+        "bezier" or "bezier:legacy-v1" => "bezier:legacy-v1",
+        var text when text?.StartsWith("cursory:", StringComparison.Ordinal) == true => "cursory",
+        _ => "unknown"
+    };
+
+    private static string SafeDataset(string? value) => value?.ToLowerInvariant() switch
+    {
+        "none" => "none", "unknown" => "unknown", "not-assessed" => "not-assessed",
+        var text when text?.StartsWith("cursory-js-", StringComparison.Ordinal) == true => "cursory-js",
+        _ => "unknown"
+    };
+
+    private static string? SafeLocale(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        try
+        {
+            var locale = System.Globalization.CultureInfo.GetCultureInfo(value.Replace('_', '-')).Name;
+            return locale.Length is > 0 and <= 64 ? locale : null;
+        }
+        catch (System.Globalization.CultureNotFoundException) { return null; }
+    }
+
+    private static string? SafeTimezone(string? value) => value is not null &&
+        System.Text.RegularExpressions.Regex.IsMatch(value, @"^[A-Za-z_+-]{1,32}(?:/[A-Za-z_+-]{1,32}){0,3}$") ? value : null;
+
+    private static string? SafePlatform(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "windows" or "win32" or "win64" => "windows", "macintosh" or "macintel" or "macos" => "macos",
+        "linux x86_64" or "linux armv8l" or "linux" or "x11" => "linux",
+        "android" or "iphone" or "ipad" or "ios" => value.Trim().ToLowerInvariant(), _ => null
+    };
+
+    private static string? SafeGpuLabel(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        var text = value.ToLowerInvariant();
+        if (text.Contains("swiftshader", StringComparison.Ordinal) || text.Contains("llvmpipe", StringComparison.Ordinal) || text.Contains("software", StringComparison.Ordinal)) return "software";
+        foreach (var vendor in new[] { "nvidia", "amd", "radeon", "intel", "apple", "qualcomm", "arm", "mesa" })
+            if (text.Contains(vendor, StringComparison.Ordinal)) return vendor;
+        return "other";
+    }
+
+    private static string SafeFindingCode(string? code) => code switch
+    {
+        "identity.device-scale-mismatch" or "identity.locale-mismatch" or "identity.screen-mismatch" or
+        "identity.timezone-mismatch" or "identity.viewport-mismatch" or "browser.client-hints-platform-mismatch" or
+        "browser.family-ua-mismatch" or "browser.platform-mismatch" or "browser.ua-family-mismatch" or
+        "gpu.experimental-mask" or "gpu.hardware-required" or "gpu.surface-capability-difference" or
+        "gpu.webgl-unavailable" or "navigator.experimental-overrides" => code,
+        _ => "diagnostic.other"
     };
 
     private async Task<FileStream> AcquireRetentionLockAsync(CancellationToken cancellationToken)
