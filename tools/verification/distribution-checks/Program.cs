@@ -28,6 +28,7 @@ var phase = Arg("--phase");
 var root = Path.GetFullPath(Arg("--profile-root"));
 var identities = Path.Combine(root, "identity-store");
 var stateFile = Path.Combine(root, "storage-state.json");
+var rollbackSnapshotFile = Path.Combine(root, "snapshot-rollback-unsupported.json");
 var store = new IdentityStore(identities);
 var identity = File.Exists(store.GetManifestPath("distribution-verification"))
     ? await store.GetAsync("distribution-verification")
@@ -109,7 +110,15 @@ var snapshotType = assembly.GetType("SpyBrowser.Playwright.Diagnostics.Diagnosti
 var snapshotRecord = assembly.GetType("SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshot", throwOnError: false);
 if (snapshotType is null || snapshotRecord is null)
 {
-    Console.WriteLine("PENDING: installed SpyBrowser.Playwright package does not contain DiagnosticSnapshotStore/DiagnosticSnapshot API (ticket 19 integration not in this artifact).");
+    if (phase.StartsWith("previous-", StringComparison.Ordinal))
+    {
+        var expectedSnapshotHash = Environment.GetEnvironmentVariable("EXPECTED_ROLLBACK_SNAPSHOT_SHA256");
+        if (string.IsNullOrEmpty(expectedSnapshotHash) || !File.Exists(rollbackSnapshotFile) ||
+            Hash(rollbackSnapshotFile) != expectedSnapshotHash)
+            throw new InvalidDataException("Rollback modified or removed the unsupported newer snapshot fixture.");
+        Console.WriteLine("PASS: previous package without snapshot API ignores newer snapshot unchanged while opening identity/profile/storage state.");
+    }
+    else throw new InvalidDataException("Candidate package is missing the required snapshot API.");
 }
 else
 {
@@ -179,11 +188,11 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     if (changesJson.Contains("\"severity\":\"error\"", StringComparison.OrdinalIgnoreCase))
         throw new InvalidDataException("Informational version/GPU/context changes were classified as malicious/incoherent.");
     var gpuChange = changes.Cast<object>().Any(change =>
-        (string?)change.GetType().GetProperty("Field")?.GetValue(change) == "webgl1.renderer" &&
+        (string?)change.GetType().GetProperty("Field")?.GetValue(change) == "webgl1.renderer-category" &&
         change.GetType().GetProperty("Severity")?.GetValue(change)?.ToString() == "Information");
     if (!gpuChange)
-        throw new InvalidDataException("Installed snapshot comparison did not emit the expected informational webgl1.renderer field change.");
-    Console.WriteLine("PASS: snapshot-gpu-context-information field=webgl1.renderer severity=Information");
+        throw new InvalidDataException("Installed snapshot comparison did not emit the expected informational webgl1.renderer-category field change.");
+    Console.WriteLine("PASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information");
     var concurrent = await RunConcurrentSnapshotProcesses(snapshotDir, baselinePath);
     if (concurrent.Distinct(StringComparer.Ordinal).Count() != 2 || concurrent.Any(path => !File.Exists(path)) ||
         !File.Exists(baselinePath) || Hash(baselinePath) != protectedBaselineHash)
@@ -193,6 +202,10 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     var json = await File.ReadAllTextAsync(baselinePath);
     var unknownNode = System.Text.Json.Nodes.JsonNode.Parse(json)!;
     unknownNode["schemaVersion"] = 999;
+    // Leave an unsupported, privacy-projected snapshot next to the identity while
+    // the genuinely older package opens the same profile. It has no snapshot reader
+    // and must ignore this optional file, not require a fabricated parser.
+    await File.WriteAllTextAsync(rollbackSnapshotFile, unknownNode.ToJsonString());
     await File.WriteAllTextAsync(unknown, unknownNode.ToJsonString());
     var schemaRejected = false;
     try { await (Task)read.Invoke(null, new object[] { unknown, CancellationToken.None })!; }

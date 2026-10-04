@@ -69,7 +69,7 @@ def main():
     ap.add_argument("--feed", type=Path, required=True, help="Existing final local NuGet feed; never repacked from source")
     ap.add_argument("--candidate-version", required=True)
     ap.add_argument("--expected-source-commit", required=True, help="Source commit recorded by the feed manifest")
-    ap.add_argument("--declared-final-commit", required=True, help="Final integration commit recorded by the feed manifest")
+    ap.add_argument("--declared-final-commit", help="Required only for a genuinely final feed; preliminary manifests may declare no final commit")
     ap.add_argument("--feed-manifest", type=Path, required=True, help="Existing provenance manifest for the candidate feed")
     ap.add_argument("--previous-feed", type=Path)
     ap.add_argument("--previous-version", default="0.1.0-baseline.e217359")
@@ -99,6 +99,8 @@ def main():
     is_final = provenance.get("isFinal", True)
     if not isinstance(is_final, bool):
         ap.error("Feed manifest isFinal must be a boolean")
+    if is_final and (not args.declared_final_commit or args.declared_final_commit != args.expected_source_commit):
+        ap.error("A final feed must declare its exact verified source commit as final")
     declared_hashes = provenance.get("packages")
     if not isinstance(declared_hashes, dict) or not declared_hashes:
         ap.error("Feed manifest must contain packages as {package filename: sha256}")
@@ -219,11 +221,11 @@ def main():
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PASS"})
                 else:
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PENDING", "reason": "The host cannot establish real Linux chmod denial or is not Linux; no fake file blocker was used."})
-                if "PASS: snapshot-gpu-context-information field=webgl1.renderer severity=Information" in last_candidate_output:
+                if "PASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information" in last_candidate_output:
                     statuses.append({"check": "snapshot-gpu-context-information", "status": "PASS"})
                 else:
                     statuses.append({"check": "snapshot-gpu-context-information", "status": "FAIL",
-                                     "reason": "Installed comparison did not emit the validated informational webgl1.renderer field change."})
+                                     "reason": "Installed comparison did not emit the validated informational webgl1.renderer-category field change."})
             else:
                 statuses.append({"check": "snapshot-save-compare-retention-permissions-cancellation-concurrency-schema-secrets", "status": "PENDING",
                                  "reason": "Snapshot API is not present in this candidate artifact; consumer runtime reflection did not find the approved public API."})
@@ -231,14 +233,18 @@ def main():
             expected_state_hash = sha(state_path) if state_path.exists() else None
             if expected_state_hash:
                 env["EXPECTED_STORAGE_STATE_SHA256"] = expected_state_hash
+            rollback_snapshot = profile / "snapshot-rollback-unsupported.json"
+            if not rollback_snapshot.is_file():
+                raise RuntimeError("Candidate did not preserve an unsupported newer snapshot fixture for rollback.")
+            env["EXPECTED_ROLLBACK_SNAPSHOT_SHA256"] = sha(rollback_snapshot)
             rollback_output = phase(args.previous_version, "previous-bezier")
             statuses.append({"check": "previous-bezier-rollback", "status": "PASS"})
-            if "PENDING: installed SpyBrowser.Playwright package does not contain DiagnosticSnapshotStore/DiagnosticSnapshot API" in rollback_output:
-                statuses.append({"check": "previous-package-snapshot-loader-compatibility", "status": "PENDING",
-                                 "reason": "The rollback package predates/excludes the snapshot API; it cannot load or explicitly reject a newer record. Identity/profile/storage-state rollback was verified separately."})
+            if "PASS: previous package without snapshot API ignores newer snapshot unchanged" in rollback_output:
+                statuses.append({"check": "previous-package-ignores-newer-snapshot", "status": "PASS",
+                                 "reason": "The real pre-snapshot package opened the unchanged identity/profile/storage state while leaving a schema-999 optional snapshot byte-exact; no nonexistent reader compatibility is claimed."})
             else:
-                statuses.append({"check": "previous-package-snapshot-loader-compatibility", "status": "PENDING",
-                                 "reason": "An older-record/newer-schema fixture was not exercised by the previous package."})
+                statuses.append({"check": "previous-package-ignores-newer-snapshot", "status": "FAIL",
+                                 "reason": "Older package did not confirm the required ignore/reject contract with a preserved newer-schema fixture."})
             phase(args.previous_version, "previous-off")
             statuses.append({"check": "previous-humanize-off", "status": "PASS"})
             statuses.append({"check": "browser-executable-and-official-driver", "status": "PASS",
