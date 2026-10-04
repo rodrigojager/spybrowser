@@ -15,6 +15,7 @@ public sealed class SpyBrowserSession : SpyBrowserContextHandle
         IdentityLease identityLease,
         BrowserSurfaceDiagnostics? diagnostics,
         ConsistencyReport consistency,
+        ConsistencyExpectations effectiveExpectations,
         PlaywrightHumanizer? humanizer)
         : base(
             playwright,
@@ -25,6 +26,7 @@ public sealed class SpyBrowserSession : SpyBrowserContextHandle
             closeBrowser: false,
             diagnostics,
             consistency,
+            effectiveExpectations,
             humanizer)
     {
     }

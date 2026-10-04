@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using SpyBrowser.Core;
 using SpyBrowser.Playwright;
+using SpyBrowser.Playwright.Diagnostics;
 
 namespace SpyBrowser.Cli;
 
@@ -207,14 +208,49 @@ internal static class SpyBrowserCli
         }
 
         var currentDiagnostics = await GpuProbe.RunAsync(page).ConfigureAwait(false);
+        var expectations = session.EffectiveExpectations;
+        var currentReport = IdentityConsistencyValidator.Validate(session.Identity,
+            session.Identity.Gpu.Policy, currentDiagnostics, expectations);
+        string? snapshotPath = null;
+        DiagnosticSnapshotComparison? comparison = null;
+        if (command.Get("snapshot-dir") is { } snapshotDirectory)
+        {
+            var store = new DiagnosticSnapshotStore(snapshotDirectory, command.GetInt("snapshot-retention", 20));
+            var snapshot = new DiagnosticSnapshot
+            {
+                Versions = new RuntimeVersionRecord
+                {
+                    SpyBrowser = typeof(SpyBrowserCli).Assembly.GetName().Version?.ToString() ?? "unknown",
+                    Playwright = typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version?.ToString() ?? "unknown",
+                    BrowserFamily = "unknown",
+                    BrowserVersion = session.RawBrowser?.Version ?? "unknown",
+                    Algorithm = "not-assessed",
+                    Dataset = "not-assessed"
+                },
+                Expectations = expectations,
+                Characteristics = currentDiagnostics,
+                Findings = currentReport.Findings
+            };
+            var baselinePath = command.Get("baseline");
+            var baseline = baselinePath is null ? null : await DiagnosticSnapshotStore.ReadAsync(baselinePath).ConfigureAwait(false);
+            snapshotPath = await store.SaveAsync(snapshot, baselinePath).ConfigureAwait(false);
+            if (baseline is not null) comparison = DiagnosticSnapshotStore.Compare(baseline, snapshot);
+        }
+        else if (command.Has("baseline"))
+        {
+            throw new ArgumentException("--baseline requires --snapshot-dir so this probe can save a current snapshot.");
+        }
+
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             session.Identity.Id,
             InitialDiagnostics = session.Diagnostics,
             CurrentDiagnostics = currentDiagnostics,
-            session.Consistency
+            Consistency = currentReport,
+            Snapshot = snapshotPath,
+            Comparison = comparison
         }, JsonOptions));
-        return session.Consistency.HasErrors ? 2 : 0;
+        return currentReport.HasErrors ? 2 : 0;
     }
 
     private static async Task<int> RunOpenAsync(string[] args)
@@ -327,6 +363,7 @@ internal static class SpyBrowserCli
               spybrowser identity path <id> [--root path]
               spybrowser doctor [--root path]
               spybrowser probe <id> [--headless] [--url URL] [--root path]
+                [--snapshot-dir path] [--baseline snapshot.json] [--snapshot-retention N]
               spybrowser open <id> [--url URL] [--root path]
               spybrowser version
 
@@ -347,6 +384,9 @@ internal static class SpyBrowserCli
               --proxy-user-env NAME --proxy-password-env NAME
               --experimental-navigator --platform TEXT
               --hardware-concurrency N --device-memory N
+
+            Snapshots are opt-in local JSON files. --baseline is read only and is never
+            replaced; --snapshot-dir writes a unique current snapshot after the local probe.
 
             SPYBROWSER_HOME changes the default identity root. Proxy credentials
             are read from the named environment variables and never stored in JSON.

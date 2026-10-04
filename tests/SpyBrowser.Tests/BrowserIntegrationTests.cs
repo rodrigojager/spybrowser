@@ -77,7 +77,10 @@ public sealed class BrowserIntegrationTests
     {
 
         using var temporary = new TemporaryDirectory();
-        var identity = BrowserIdentity.Create("launch-modes");
+        var identity = BrowserIdentity.Create("launch-modes") with
+        {
+            Browser = new BrowserIdentitySettings { Engine = BrowserEngine.Chromium, Channel = null }
+        };
         var common = new SpyBrowserLaunchOptions
         {
             IdentityId = identity.Id,
@@ -86,11 +89,18 @@ public sealed class BrowserIntegrationTests
             Headless = BrowserTestSettings.Headless,
             ChannelOverride = BrowserTestSettings.Channel,
             RunGpuProbe = false,
-            FailOnConsistencyErrors = false
+            FailOnConsistencyErrors = false,
+            ConfigureContext = context =>
+            {
+                context.Locale = "fr-FR";
+                context.TimezoneId = "UTC";
+            }
         };
 
         await using (var contextHandle = await SpyBrowserLauncher.LaunchContextAsync(common))
         {
+            Assert.Equal("fr-FR", contextHandle.EffectiveExpectations.Locale);
+            Assert.Equal("UTC", contextHandle.EffectiveExpectations.TimezoneId);
             var page = await contextHandle.NewPageAsync();
             await page.SetContentAsync("<h1>context</h1>");
             Assert.Equal("context", await page.Locator("h1").InnerTextAsync());

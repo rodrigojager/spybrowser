@@ -24,6 +24,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
         bool closeBrowser,
         BrowserSurfaceDiagnostics? diagnostics,
         ConsistencyReport consistency,
+        ConsistencyExpectations effectiveExpectations,
         PlaywrightHumanizer? humanizer)
     {
         _playwright = playwright;
@@ -35,6 +36,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
         Identity = identity;
         Diagnostics = diagnostics;
         Consistency = consistency;
+        EffectiveExpectations = effectiveExpectations;
         Context = humanizer?.Wrap(rawContext) ?? rawContext;
         Browser = rawBrowser is null ? null : humanizer?.Wrap(rawBrowser) ?? rawBrowser;
     }
@@ -55,6 +57,9 @@ public class SpyBrowserContextHandle : IAsyncDisposable
 
     /// <summary>Returns bounded interaction diagnostics when humanization diagnostics were enabled; otherwise null.</summary>
     public HumanizationDiagnosticsSnapshot? GetHumanizationDiagnosticsSnapshot() => _humanizer?.GetDiagnosticsSnapshot();
+
+    /// <summary>Context configuration after caller callbacks; safe to reuse for additional validation.</summary>
+    public ConsistencyExpectations EffectiveExpectations { get; }
 
     public IReadOnlyList<IPage> Pages => ProbePageRegistry.For(RawContext).Filter(Context.Pages);
 

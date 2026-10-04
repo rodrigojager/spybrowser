@@ -43,7 +43,9 @@ public static class SpyBrowserLauncher
             context = await state.BrowserType.LaunchPersistentContextAsync(
                 userDataDirectory,
                 persistentOptions).ConfigureAwait(false);
-            var prepared = await PrepareContextAsync(context, state, options, cancellationToken).ConfigureAwait(false);
+            var prepared = await PrepareContextAsync(context, state, options, cancellationToken,
+                CreateExpectations(identity, persistentOptions.Locale, persistentOptions.TimezoneId, persistentOptions.ViewportSize,
+                    persistentOptions.ScreenSize, persistentOptions.DeviceScaleFactor, persistentOptions.UserAgent)).ConfigureAwait(false);
             return new SpyBrowserSession(
                 state.Playwright,
                 context,
@@ -51,6 +53,7 @@ public static class SpyBrowserLauncher
                 lease,
                 prepared.Diagnostics,
                 prepared.Consistency,
+                prepared.Expectations,
                 state.Humanizer);
         }
         catch
@@ -93,7 +96,9 @@ public static class SpyBrowserLauncher
             var contextOptions = CreateContextOptions(identity);
             options.ConfigureContext?.Invoke(contextOptions);
             context = await browser.NewContextAsync(contextOptions).ConfigureAwait(false);
-            var prepared = await PrepareContextAsync(context, state, options, cancellationToken).ConfigureAwait(false);
+            var prepared = await PrepareContextAsync(context, state, options, cancellationToken,
+                CreateExpectations(identity, contextOptions.Locale, contextOptions.TimezoneId, contextOptions.ViewportSize,
+                    contextOptions.ScreenSize, contextOptions.DeviceScaleFactor, contextOptions.UserAgent)).ConfigureAwait(false);
             return new SpyBrowserContextHandle(
                 state.Playwright,
                 context,
@@ -103,6 +108,7 @@ public static class SpyBrowserLauncher
                 closeBrowser: true,
                 prepared.Diagnostics,
                 prepared.Consistency,
+                prepared.Expectations,
                 state.Humanizer);
         }
         catch
@@ -376,7 +382,8 @@ public static class SpyBrowserLauncher
         IBrowserContext context,
         LaunchState state,
         SpyBrowserLaunchOptions options,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        ConsistencyExpectations expectations)
     {
         await ConfigureContextRuntimeAsync(context, state, options).ConfigureAwait(false);
         BrowserSurfaceDiagnostics? diagnostics = null;
@@ -388,7 +395,7 @@ public static class SpyBrowserLauncher
 
         var consistency = diagnostics is null
             ? new ConsistencyReport(Array.Empty<ConsistencyFinding>())
-            : IdentityConsistencyValidator.Validate(state.Identity, state.GpuPolicy, diagnostics);
+            : IdentityConsistencyValidator.Validate(state.Identity, state.GpuPolicy, diagnostics, expectations);
 
         if (options.FailOnConsistencyErrors && consistency.HasErrors)
         {
@@ -399,7 +406,30 @@ public static class SpyBrowserLauncher
                     .Select(finding => $"- [{finding.Code}] {finding.Message}")));
         }
 
-        return new PreparedContext(diagnostics, consistency);
+        return new PreparedContext(diagnostics, consistency, expectations);
+    }
+
+    private static ConsistencyExpectations CreateExpectations(
+        BrowserIdentity identity,
+        string? locale,
+        string? timezoneId,
+        ViewportSize? viewport,
+        ScreenSize? screen,
+        float? deviceScaleFactor,
+        string? userAgent)
+    {
+        var defaults = ConsistencyExpectations.FromIdentity(identity);
+        return defaults with
+        {
+            Locale = locale,
+            TimezoneId = timezoneId,
+            ViewportWidth = viewport?.Width,
+            ViewportHeight = viewport?.Height,
+            ScreenWidth = screen?.Width,
+            ScreenHeight = screen?.Height,
+            DeviceScaleFactor = deviceScaleFactor,
+            UserAgent = userAgent
+        };
     }
 
     private static async Task ConfigureContextRuntimeAsync(
@@ -487,5 +517,6 @@ public static class SpyBrowserLauncher
 
     private sealed record PreparedContext(
         BrowserSurfaceDiagnostics? Diagnostics,
-        ConsistencyReport Consistency);
+        ConsistencyReport Consistency,
+        ConsistencyExpectations Expectations);
 }

@@ -91,6 +91,8 @@ public static class GpuProbe
             Screen: {
               Width: screen.width,
               Height: screen.height,
+              ViewportWidth: window.innerWidth,
+              ViewportHeight: window.innerHeight,
               AvailableWidth: screen.availWidth,
               AvailableHeight: screen.availHeight,
               DevicePixelRatio: devicePixelRatio

@@ -12,6 +12,17 @@ public sealed record BrowserSurfaceDiagnostics
 
     public string Platform { get; init; } = string.Empty;
 
+    /// <summary>Optional client-hint values. Empty/unavailable values are not treated as conflicts.</summary>
+    public bool ClientHintsAvailable { get; init; }
+
+    public string? ClientHintPlatform { get; init; }
+
+    public string? ClientHintArchitecture { get; init; }
+
+    public string? ClientHintModel { get; init; }
+
+    public string[] ClientHintBrands { get; init; } = Array.Empty<string>();
+
     public int HardwareConcurrency { get; init; }
 
     public double? DeviceMemoryGb { get; init; }
@@ -88,6 +99,10 @@ public sealed record ScreenSurfaceDiagnostics
     public int AvailableWidth { get; init; }
 
     public int AvailableHeight { get; init; }
+
+    public int ViewportWidth { get; init; }
+
+    public int ViewportHeight { get; init; }
 
     public double DevicePixelRatio { get; init; }
 }
