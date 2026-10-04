@@ -1,21 +1,18 @@
 using SpyBrowser.Core;
 using SpyBrowser.Playwright;
 using CloakCompatibility = CloakBrowser;
+using Xunit.Abstractions;
 
 namespace SpyBrowser.Tests;
 
 public sealed class BrowserIntegrationTests
 {
-    [Fact]
+    private readonly ITestOutputHelper _output;
+
+    public BrowserIntegrationTests(ITestOutputHelper output) => _output = output;
+    [BrowserFact]
     public async Task Persistent_context_returns_official_playwright_interfaces_when_enabled()
     {
-        if (!string.Equals(
-                Environment.GetEnvironmentVariable("SPYBROWSER_RUN_BROWSER_TESTS"),
-                "1",
-                StringComparison.Ordinal))
-        {
-            return;
-        }
 
         using var temporary = new TemporaryDirectory();
         var store = new IdentityStore(temporary.Path);
@@ -24,10 +21,12 @@ public sealed class BrowserIntegrationTests
         {
             IdentityId = "integration",
             IdentitiesRoot = temporary.Path,
-            Headless = true,
+            Headless = BrowserTestSettings.Headless,
+            ChannelOverride = BrowserTestSettings.Channel,
             GpuPolicyOverride = GpuPolicy.AllowSoftware,
             FailOnConsistencyErrors = false
         });
+        ReportVersions(session, _output);
         var page = session.Pages.FirstOrDefault() ?? await session.NewPageAsync();
         await page.SetContentAsync("<button id='ok'>OK</button>");
 
@@ -35,13 +34,9 @@ public sealed class BrowserIntegrationTests
         Assert.NotNull(session.Context);
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Transparent_humanization_preserves_playwright_interfaces_and_interactions()
     {
-        if (!BrowserTestsEnabled())
-        {
-            return;
-        }
 
         using var temporary = new TemporaryDirectory();
         var store = new IdentityStore(temporary.Path);
@@ -50,12 +45,14 @@ public sealed class BrowserIntegrationTests
         {
             IdentityId = "humanized",
             IdentitiesRoot = temporary.Path,
-            Headless = true,
+            Headless = BrowserTestSettings.Headless,
+            ChannelOverride = BrowserTestSettings.Channel,
             Humanize = true,
             RunGpuProbe = false,
             GpuPolicyOverride = GpuPolicy.AllowSoftware,
             FailOnConsistencyErrors = false
         });
+        ReportVersions(session, _output);
         var page = await session.NewPageAsync();
         await page.SetContentAsync("""
             <input id="name">
@@ -75,13 +72,9 @@ public sealed class BrowserIntegrationTests
         Assert.Equal("yes", await page.Locator("#save").GetAttributeAsync("data-clicked"));
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Disposable_browser_and_context_launch_modes_work()
     {
-        if (!BrowserTestsEnabled())
-        {
-            return;
-        }
 
         using var temporary = new TemporaryDirectory();
         var identity = BrowserIdentity.Create("launch-modes");
@@ -90,7 +83,8 @@ public sealed class BrowserIntegrationTests
             IdentityId = identity.Id,
             IdentityOverride = identity,
             IdentitiesRoot = temporary.Path,
-            Headless = true,
+            Headless = BrowserTestSettings.Headless,
+            ChannelOverride = BrowserTestSettings.Channel,
             RunGpuProbe = false,
             FailOnConsistencyErrors = false
         };
@@ -110,13 +104,9 @@ public sealed class BrowserIntegrationTests
         }
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Cloak_shaped_facade_runs_ordinary_playwright_code()
     {
-        if (!BrowserTestsEnabled())
-        {
-            return;
-        }
 
         using var temporary = new TemporaryDirectory();
         await using var browser = await CloakCompatibility.CloakLauncher.LaunchAsync(
@@ -136,13 +126,9 @@ public sealed class BrowserIntegrationTests
         Assert.NotNull(browser.RawBrowser);
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Identity_pool_rotates_concurrent_sessions_and_reports_exhaustion()
     {
-        if (!BrowserTestsEnabled())
-        {
-            return;
-        }
 
         using var temporary = new TemporaryDirectory();
         var store = new IdentityStore(temporary.Path);
@@ -159,7 +145,8 @@ public sealed class BrowserIntegrationTests
             {
                 IdentityId = id,
                 IdentitiesRoot = temporary.Path,
-                Headless = true,
+                Headless = BrowserTestSettings.Headless,
+                ChannelOverride = BrowserTestSettings.Channel,
                 RunGpuProbe = false,
                 GpuPolicyOverride = GpuPolicy.AllowSoftware,
                 FailOnConsistencyErrors = false
@@ -197,8 +184,10 @@ public sealed class BrowserIntegrationTests
         }
     }
 
-    private static bool BrowserTestsEnabled() => string.Equals(
-        Environment.GetEnvironmentVariable("SPYBROWSER_RUN_BROWSER_TESTS"),
-        "1",
-        StringComparison.Ordinal);
+    private static void ReportVersions(SpyBrowser.Playwright.SpyBrowserSession session, ITestOutputHelper output)
+    {
+        output.WriteLine($"SDK: {Environment.GetEnvironmentVariable("SPYBROWSER_DOTNET_SDK_VERSION") ?? "unknown"}; .NET runtime: {Environment.Version}; OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
+        output.WriteLine($"Playwright: {typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version}");
+        output.WriteLine($"Browser: {session.Browser?.Version ?? "unavailable"}");
+    }
 }
