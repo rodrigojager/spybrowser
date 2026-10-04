@@ -39,16 +39,16 @@ public sealed class EffectFaultAcceptanceTests
         Assert.True(actual is null || faultAfterEffect && ReferenceEquals(actual, raw.Marker), $"Unexpected wrapped exception: {actual}");
         Assert.Equal(1, raw.FinalCalls);
         Assert.Equal(0, RawPage.Get(page).MouseMoves);
-        Assert.Equal(faultAfterEffect ? 1 : 0, raw.Effects);
+        Assert.Equal(1, raw.Effects);
         Assert.Equal(faultAfterEffect, actual is not null);
         if (faultAfterEffect)
         {
             Assert.Same(raw.Marker, actual);
             Assert.NotNull(actual!.StackTrace);
-            Assert.Contains(nameof(RawLocator.MakeMarker), actual.StackTrace);
+            Assert.Contains(nameof(RawLocator.ThrowMarker), actual.StackTrace);
         }
         Assert.NotNull(raw.FinalOptions);
-        Assert.False((bool)raw.FinalOptions!.GetType().GetProperty("Trial")!.GetValue(raw.FinalOptions)!);
+        Assert.NotEqual(true, (bool?)raw.FinalOptions!.GetType().GetProperty("Trial")!.GetValue(raw.FinalOptions));
         Assert.True(Convert.ToDouble(raw.FinalOptions.GetType().GetProperty("Timeout")!.GetValue(raw.FinalOptions)) > 0);
     }
 

@@ -5,6 +5,7 @@ using SpyBrowser.Playwright.Humanization;
 
 namespace SpyBrowser.Tests;
 
+[Collection(TimedInputCollection.Name)]
 public sealed class NativeCursoryMovementTests
 {
     [Fact]

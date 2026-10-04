@@ -4,6 +4,7 @@ using SpyBrowser.Playwright;
 
 namespace SpyBrowser.Tests;
 
+[Collection(TimedInputCollection.Name)]
 public sealed class FactoryStressAcceptanceTests
 {
     private static readonly TimeSpan BrowserTimeout = TimeSpan.FromSeconds(60);
