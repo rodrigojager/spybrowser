@@ -56,6 +56,30 @@ public sealed class ContextEventContractsTests
     }
 
     [Fact]
+    public async Task Context_close_race_never_announces_an_already_closed_context()
+    {
+        EnsureBrowserTestsEnabled();
+        using var temp = new TemporaryDirectory();
+        var identity = BrowserIdentity.Create("context-events-close-race");
+        await using var handle = await SpyBrowserLauncher.LaunchBrowserAsync(Options(temp.Path, identity));
+        Task? closeTask = null;
+        var closedAnnouncements = 0;
+        handle.RawBrowser.Context += (_, rawContext) => closeTask = rawContext.CloseAsync();
+        handle.Browser.Context += (_, context) =>
+        {
+            var raw = PlaywrightHumanizer.Unwrap(context);
+            if (!handle.RawBrowser.Contexts.Any(candidate => ReferenceEquals(candidate, raw)))
+                Interlocked.Increment(ref closedAnnouncements);
+        };
+
+        try { await handle.NewContextAsync(); }
+        catch (PlaywrightException) when (closeTask is not null) { }
+        Assert.NotNull(closeTask);
+        await closeTask!;
+        Assert.Equal(0, closedAnnouncements);
+    }
+
+    [Fact]
     public async Task Handler_exception_propagates_once_and_callbacks_can_reenter_browser()
     {
         EnsureBrowserTestsEnabled();
