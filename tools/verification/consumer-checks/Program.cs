@@ -1,7 +1,10 @@
 using System.Net;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.Playwright;
 using RpaFlow.Playwright;
+using RpaFlow.Runtime;
 using SpyBrowser.Playwright;
 
 var output = ArgumentValue(args, "--output") ?? Environment.CurrentDirectory;
@@ -73,6 +76,79 @@ try
     Require(await File.ReadAllTextAsync(downloaded) == "download-ok", "Loopback download body matches");
     checks.Add(Pass("Loopback download and saved artifact"));
 
+    var runnerOptions = options with { StorageStatePath = statePath };
+    var restoredCookie = string.Empty;
+    var restoreRunner = new RpaRunner([new ConsumerStep("restore cookie", async (rpa, token) =>
+    {
+        await rpa.Page.GotoAsync(origin);
+        restoredCookie = await rpa.Page.EvaluateAsync<string>("document.cookie");
+    })], runnerOptions);
+    await restoreRunner.RunAsync(Request("runner-storage-restore"), [], CancellationToken.None);
+    Require(restoredCookie.Contains("contract=loaded", StringComparison.Ordinal), "RpaRunner restored cookie using StorageStatePath");
+    checks.Add(Pass("Actual RpaRunner local flow restores StorageStatePath cookies"));
+
+    var cancellationStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+    IBrowserContext? cancelledContext = null;
+    Task? outstandingFill = null;
+    var cancellingRunner = new RpaRunner([new ConsumerStep("cancel pending fill", async (rpa, token) =>
+    {
+        await rpa.Page.GotoAsync(origin);
+        cancelledContext = rpa.Page.Context;
+        outstandingFill = rpa.Page.Locator("#fill-never-present").FillAsync("cancel-me");
+        cancellationStarted.TrySetResult();
+        await outstandingFill.WaitAsync(token);
+    })], options);
+    using (var fillCancellation = new CancellationTokenSource())
+    {
+        var runTask = cancellingRunner.RunAsync(Request("cancel-fill"), [], fillCancellation.Token);
+        await cancellationStarted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        fillCancellation.Cancel();
+        try { await runTask; throw new InvalidOperationException("Expected actual RpaRunner cancellation"); }
+        catch (OperationCanceledException) { }
+    }
+    if (outstandingFill is not null)
+    {
+        try { await outstandingFill.WaitAsync(TimeSpan.FromSeconds(5)); }
+        catch (Exception) { }
+    }
+    Require(cancelledContext is { IsClosed: true } && outstandingFill is { IsCompleted: true },
+        $"RpaRunner cancellation closes actual context and settles pending Fill; closed={cancelledContext?.IsClosed}, fill completed={outstandingFill?.IsCompleted}, faulted={outstandingFill?.IsFaulted}, canceled={outstandingFill?.IsCanceled}");
+    checks.Add(Pass("Fill cancellation closes actual RpaRunner context and observes underlying Fill task"));
+
+    var concurrentInputs = new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
+    async Task RunMemoryJob(string id, string marker)
+    {
+        var runner = new RpaRunner([new ConsumerStep("isolated memory input", async (rpa, token) =>
+        {
+            await rpa.Page.GotoAsync(origin);
+            var received = rpa.ExecutionRequest.Input["marker"]?.GetValue<string>() ?? "";
+            concurrentInputs[id] = received;
+            await rpa.Page.EvaluateAsync("value => document.body.dataset.marker = value", received);
+        })], options);
+        await runner.RunAsync(Request(id, marker), [], CancellationToken.None);
+    }
+    await Task.WhenAll(RunMemoryJob("memory-a", "input-a"), RunMemoryJob("memory-b", "input-b"));
+    Require(concurrentInputs.TryGetValue("memory-a", out var markerA) && markerA == "input-a" &&
+        concurrentInputs.TryGetValue("memory-b", out var markerB) && markerB == "input-b",
+        "Concurrent RpaRunner jobs preserve separate in-memory inputs with shared identity configuration");
+    checks.Add(Pass("Two concurrent actual RpaRunner jobs retain independent inputs without profile leases"));
+
+    var lateSession = await BrowserLauncher.LaunchAsync(options);
+    var deliveredSession = new TaskCompletionSource<BrowserSession>(TaskCreationOptions.RunContinuationsAsynchronously);
+    var cleanupHelper = typeof(BrowserLauncher).GetMethod("AwaitCancellableResourceAsync", BindingFlags.Static | BindingFlags.NonPublic)
+        ?? throw new InvalidOperationException("RpaBlockly cancellable-resource helper was not found");
+    var launchCancellation = new CancellationTokenSource();
+    var cleanupTask = (Task<BrowserSession>)cleanupHelper.MakeGenericMethod(typeof(BrowserSession)).Invoke(null,
+        [deliveredSession.Task, new Func<BrowserSession, Task>(s => s.DisposeAsync().AsTask()), launchCancellation.Token])!;
+    launchCancellation.Cancel();
+    try { await cleanupTask; throw new InvalidOperationException("Expected cancellation before late resource delivery"); }
+    catch (OperationCanceledException) { }
+    deliveredSession.SetResult(lateSession);
+    var cleanupDeadline = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+    while (lateSession.Browser.IsConnected && DateTime.UtcNow < cleanupDeadline) await Task.Delay(50);
+    Require(!lateSession.Browser.IsConnected, "RpaBlockly's delayed-result cleanup disconnected the actual native browser");
+    checks.Add(Pass("Actual RpaBlockly cancellation helper cleans a controlled late BrowserSession (native IsConnected=false)"));
+
     await context.CloseAsync();
     Require(!session.Browser.Contexts.Contains(context), "Closed context removed from Browser.Contexts");
     checks.Add(Pass("Context close removes collection entry"));
@@ -95,14 +171,8 @@ finally
     try { await server; } catch (HttpListenerException) { }
 }
 
-// These checks need upstream implementation work or deterministic seams not exposed by this pinned consumer.
-foreach (var title in new[] {
-    "Fill cancellation closes actual RpaRunner context and observes underlying Fill task",
-    "Late-completing browser launch is cleaned after cancellation",
-    "Two concurrent memory-identity jobs do not share input/session state",
-    "Input StorageStatePath cookie restore through RpaRunner",
-    "V1/V2 complete runner flow output contract (selectively not running the mixed CAPTCHA suite)"
-}) checks.Add(new { name = title, status = "incomplete", reason = "Not exercised by this isolated subset; pending implementation/dependencies are not inferred as passing." });
+// The mixed CAPTCHA/provider suite is deliberately excluded, so no full V2 output contract is inferred.
+checks.Add(new { name = "Full V2 DSL runner output contract (the mixed CAPTCHA/provider suite is intentionally excluded)", status = "incomplete", reason = "This local subset exercises RpaRunner but does not run the full V2 DSL/CAPTCHA/provider suite." });
 WriteEvidence(output, checks);
 Console.WriteLine($"Consumer subset: {checks.Count(x => ((dynamic)x).status == "passed")} passed; incomplete cases recorded in {Path.Combine(output, "harness-evidence.json")}");
 
@@ -130,5 +200,13 @@ static string BrowserTimeZone() { var id = TimeZoneInfo.Local.Id; if (OperatingS
 static int FreePort() { var l = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0); l.Start(); var p = ((System.Net.IPEndPoint)l.LocalEndpoint).Port; l.Stop(); return p; }
 static string? ArgumentValue(string[] a, string key) { var i = Array.IndexOf(a, key); return i >= 0 && i + 1 < a.Length ? a[i + 1] : null; }
 static object Pass(string name) => new { name, status = "passed" };
+static FlowExecutionRequest Request(string id, string? marker = null) => new(id,
+    marker is null ? new JsonObject() : new JsonObject { ["marker"] = marker }, new JsonObject(), new JsonObject());
 static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
 static void WriteEvidence(string output, List<object> checks) => File.WriteAllText(Path.Combine(output, "harness-evidence.json"), JsonSerializer.Serialize(new { checks, completedAtUtc = DateTimeOffset.UtcNow }, new JsonSerializerOptions { WriteIndented = true }));
+
+sealed class ConsumerStep(string name, Func<RpaContext, CancellationToken, Task> execute) : IRpaStep
+{
+    public string Name => name;
+    public Task ExecuteAsync(RpaContext context, CancellationToken cancellationToken) => execute(context, cancellationToken);
+}
