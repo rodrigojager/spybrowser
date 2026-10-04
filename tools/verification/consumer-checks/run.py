@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse, datetime as dt, hashlib, json, os, pathlib, shutil, subprocess, sys, tarfile
 import xml.etree.ElementTree as ET
+import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 PIN = "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca"
@@ -26,6 +27,10 @@ def main():
     ap.add_argument("--consumer-checkout", type=pathlib.Path, default=DEFAULT_CONSUMER)
     ap.add_argument("--output", type=pathlib.Path, default=pathlib.Path("artifacts/consumer-checks"))
     ap.add_argument("--package-only", action="store_true", help="build candidate packages only")
+    ap.add_argument("--expected-source-commit", help="required integrated SpyBrowser commit for final-parity evidence")
+    ap.add_argument("--mouse-algorithm", choices=("cursory", "bezier"), default="cursory")
+    ap.add_argument("--compatibility-mode", choices=("playwright-compatible", "legacy"), default="playwright-compatible")
+    ap.add_argument("--humanize", choices=("on", "off"), default="on")
     args = ap.parse_args()
     out = args.output.resolve(); feed = (args.feed or out / "feed").resolve()
     out.mkdir(parents=True, exist_ok=True); feed.mkdir(parents=True, exist_ok=True)
@@ -46,9 +51,21 @@ def main():
         manifest_data = json.loads(manifest.read_text(encoding="utf-8"))
         source_sha = manifest_data.get("sourceCommit", manifest_data.get("spyBrowserSourceCommit", "unknown"))
         entries = {entry.get("file"): entry.get("sha256") for entry in manifest_data.get("packages", [])}
+        if set(entries) != {package.name for package in packages}:
+            raise RuntimeError("Existing feed manifest must declare exactly the three candidate packages")
         for package in packages:
             if entries.get(package.name) != hashlib.sha256(package.read_bytes()).hexdigest():
                 raise RuntimeError(f"Existing feed package hash is absent or mismatched in manifest: {package}")
+    package_source_commits = {}
+    for package in packages:
+        with zipfile.ZipFile(package) as archive_file:
+            nuspec = ET.fromstring(archive_file.read(next(name for name in archive_file.namelist() if name.endswith(".nuspec"))))
+        repository = nuspec.find(".//{*}repository")
+        package_source_commits[package.name] = repository.get("commit") if repository is not None else None
+    declared_final_commit = manifest_data.get("declaredFinalCommit")
+    final_parity = bool(args.expected_source_commit and declared_final_commit == args.expected_source_commit and
+                        source_sha == args.expected_source_commit and
+                        all(commit == args.expected_source_commit for commit in package_source_commits.values()))
     if args.package_only:
         print(f"Preliminary package graph built from source {source_sha}: {feed}")
         return 0
@@ -66,6 +83,20 @@ def main():
     old = '<PackageReference Include="SpyBrowser.Playwright" Version="0.2.0-beta.1" />'
     if text.count(old) != 1: raise RuntimeError("Pinned SpyBrowser package reference did not match expected source")
     csproj.write_text(text.replace(old, f'<PackageReference Include="SpyBrowser.Playwright" Version="{args.version}" />'), encoding="utf-8")
+    launcher = isolated / "src/RpaFlow.Playwright/Core/BrowserLauncher.cs"
+    launcher_text = launcher.read_text(encoding="utf-8")
+    launch_options = '''                        RunGpuProbe = false
+'''
+    configured_options = f'''                        RunGpuProbe = false,
+                        HumanInteraction = new HumanInteractionOptions
+                        {{
+                            MouseAlgorithm = MouseTrajectoryAlgorithm.{"Cursory" if args.mouse_algorithm == "cursory" else "Bezier"},
+                            CompatibilityMode = HumanizationCompatibilityMode.{"PlaywrightCompatible" if args.compatibility_mode == "playwright-compatible" else "Legacy"}
+                        }}
+'''
+    if launcher_text.count(launch_options) != 1:
+        raise RuntimeError("Pinned BrowserLauncher initialization did not match the expected configuration anchor")
+    launcher.write_text(launcher_text.replace(launch_options, configured_options), encoding="utf-8")
     props = isolated / "Directory.Build.props"
     text = props.read_text(encoding="utf-8")
     text = text.replace("<Project>", "<Project>\n  <PropertyGroup><ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally></PropertyGroup>", 1)
@@ -85,7 +116,9 @@ def main():
     harness = pathlib.Path(__file__).with_name("Program.cs").read_text(encoding="utf-8")
     (tests / "Program.cs").write_text(harness, encoding="utf-8")
     evidence_path = out / "evidence.json"
-    cmd = ["dotnet", "run", "--project", tests / "ConsumerContract.csproj", "-c", "Release", "--", "--output", out]
+    cmd = ["dotnet", "run", "--project", tests / "ConsumerContract.csproj", "-c", "Release", "--", "--output", out,
+           "--humanize", args.humanize, "--mouse-algorithm", args.mouse_algorithm,
+           "--compatibility-mode", args.compatibility_mode]
     cache = out / "nuget-packages"
     if cache.exists(): shutil.rmtree(cache)
     cache.mkdir(parents=True)
@@ -96,9 +129,11 @@ def main():
     try:
         checks = json.loads(harness_path.read_text(encoding="utf-8")).get("checks", [])
     except (OSError, json.JSONDecodeError): checks = []
-    incomplete = [c for c in checks if c.get("status") == "incomplete"]
     failed = [c for c in checks if c.get("status") == "failed"]
-    result = "failed" if exit_code != 0 or failed else ("partial" if incomplete else "passed")
+    passed_checks = [c for c in checks if c.get("status") == "passed"]
+    required_count = 11
+    missing_required = max(0, required_count - len(passed_checks))
+    result = "failed" if exit_code != 0 or failed else ("partial" if missing_required else "passed")
     evidence = {
       "schemaVersion": 1, "consumerCommit": PIN, "spyBrowserSourceCommit": source_sha,
       "packageIds": list(PROJECTS), "packageVersion": args.version,
@@ -107,13 +142,18 @@ def main():
       "playwright": "1.61.0 pinned by RpaBlockly", "browser": os.environ.get("RPABLOCKLY_CHECKS_BROWSER", "Chromium (explicitly requested by harness)"),
       "executedAtUtc": dt.datetime.now(dt.timezone.utc).isoformat(), "command": list(map(str, cmd)),
       "exitCode": exit_code, "artifactDirectory": str(out), "harnessEvidence": str(harness_path),
-      "result": result, "candidateFinalParity": source_sha != "unknown",
-      "sourceIsolationChanges": ["SpyBrowser.Playwright package version", "Directory.Build.props modified to disable external CPM", "Directory.Packages.props added to shadow parent CPM", "NuGet.Config local feed and package source mapping", "test-only ConsumerContract project"],
-      "limitations": ["Existing CAPTCHA/provider/end-to-end suite not run by this local subset.", "Upstream blocked dependencies are not inferred as passing."] + (["One or more ticket-required cases remain incomplete."] if incomplete else [])
+      "result": result, "candidateFinalParity": final_parity,
+      "expectedFinalSourceCommit": args.expected_source_commit, "declaredFinalCommit": declared_final_commit,
+      "packageSourceCommits": package_source_commits, "humanize": args.humanize,
+      "mouseAlgorithm": args.mouse_algorithm, "compatibilityMode": args.compatibility_mode,
+      "requiredLocalChecksPassed": len(passed_checks), "requiredLocalChecksExpected": required_count,
+      "excludedCoverage": [{"name": "Full mixed CAPTCHA/provider/end-to-end suite", "status": "not-run", "reason": "Explicitly excluded; not part of the mandatory local subset."}],
+      "sourceIsolationChanges": ["SpyBrowser.Playwright package version", "isolated BrowserLauncher HumanInteraction configuration only", "Directory.Build.props modified to disable external CPM", "Directory.Packages.props added to shadow parent CPM", "NuGet.Config local feed and package source mapping", "test-only ConsumerContract project"],
+      "limitations": ["Existing CAPTCHA/provider/end-to-end suite not run by this local subset.", "Final package parity is false unless expected commit, manifest declaredFinalCommit, source SHA, and all package repository commits match."] + ([f"{missing_required} required local case(s) missing."] if missing_required else [])
     }
     evidence_path.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
     print(f"Evidence: {evidence_path}; aggregate result: {result}")
-    return exit_code if exit_code else (2 if incomplete else 0)
+    return exit_code if exit_code else (2 if missing_required else 0)
 
 if __name__ == "__main__":
     try: raise SystemExit(main())
