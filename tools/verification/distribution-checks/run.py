@@ -33,8 +33,15 @@ def run(command, *, cwd, env, log):
     return result.stdout
 
 
-def git_archive(repository: Path) -> bytes:
-    result = subprocess.run(["git", "-c", f"safe.directory={repository.as_posix()}", "-C", str(repository), "archive", BASELINE],
+def git_archive(repository: Path, line_endings: str = "lf") -> bytes:
+    # Git archive applies checkout conversion; ambient core.autocrlf differs by OS.
+    # Record and reproduce the exact export settings, never normalize an unknown
+    # archive or waive its byte-integrity check.
+    if line_endings not in ("lf", "crlf"):
+        raise RuntimeError("sourceArchiveLineEndings must be 'lf' or 'crlf'")
+    result = subprocess.run(["git", "-c", f"safe.directory={repository.as_posix()}",
+                             "-c", "core.autocrlf=" + ("true" if line_endings == "crlf" else "false"),
+                             "-c", "core.eol=" + line_endings, "-C", str(repository), "archive", BASELINE],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode:
         raise RuntimeError(f"Cannot read baseline {BASELINE}: {result.stderr.decode(errors='replace')}")
@@ -83,7 +90,7 @@ def verify_previous_feed(feed: Path, manifest_path: Path, repository: Path, vers
         except (OSError, zipfile.BadZipFile, ET.ParseError) as exc:
             raise RuntimeError(f"Invalid package metadata in {filename}: {exc}") from exc
     try:
-        archive = git_archive(repository)
+        archive = git_archive(repository, manifest.get("sourceArchiveLineEndings", "lf"))
     except RuntimeError as exc:
         raise RuntimeError(f"Cannot verify previous feed against repository baseline: {exc}") from exc
     archive_hash = hashlib.sha256(archive).hexdigest()

@@ -9,7 +9,7 @@ python3 tools/verification/distribution-checks/run.py \
   --repository . --feed artifacts/packages --candidate-version 0.2.0-beta.1 \
   --feed-manifest artifacts/packages/distribution-manifest.json \
   --expected-source-commit 0123456789abcdef0123456789abcdef01234567 \
-  --declared-final-commit 89abcdef0123456789abcdef0123456789abcdef \
+  --declared-final-commit 0123456789abcdef0123456789abcdef01234567 \
   --dependency-feed "$HOME/.nuget/packages" --output artifacts/distribution-checks \
   --evidence-input artifacts/rpablockly/evidence.json \
   --evidence-input artifacts/browser-contracts/result.json \
@@ -23,14 +23,14 @@ python tools/verification/distribution-checks/run.py `
   --repository . --feed artifacts/packages --candidate-version 0.2.0-beta.1 `
   --feed-manifest artifacts/packages/distribution-manifest.json `
   --expected-source-commit 0123456789abcdef0123456789abcdef01234567 `
-  --declared-final-commit 89abcdef0123456789abcdef0123456789abcdef `
+  --declared-final-commit 0123456789abcdef0123456789abcdef01234567 `
   --dependency-feed "$env:USERPROFILE/.nuget/packages" --output artifacts/distribution-checks `
   --evidence-input artifacts/rpablockly/evidence.json `
   --evidence-input artifacts/browser-contracts/result.json `
   --evidence-input artifacts/benchmarks/report.json
 ```
 
-The same command works from PowerShell 5.1 (use backticks instead of `\\` for line continuation). Replace the example commits with exact immutable provenance values from the supplied feed. Its existing JSON manifest must contain exactly `candidateVersion`, `sourceCommit`, `declaredFinalCommit`, and `packages` (a filename-to-SHA256 map); all candidate `.nupkg` files and hashes must match exactly. The verifier never repacks in `--feed` consumer mode. Python 3.12+, .NET 8 SDK, the final local NuGet feed, and an installed Playwright-compatible Chrome/Chromium are required. The regular Microsoft.Playwright driver/browser cache is expected; a Cursory-specific helper or generation process is not. Set `SPYBROWSER_BROWSER_EXECUTABLE` if browser discovery is not automatic. The local source configuration disallows NuGet.org during consumer restore. Candidate/previous artifacts and Microsoft.Playwright plus its pinned transitive NuGet packages must be available in the supplied local feed(s); pass `--dependency-feed PATH` for each additional offline feed (the hierarchical `$HOME/.nuget/packages` cache is usable as a local source while `NUGET_PACKAGES` is redirected to the clean temp cache). No NuGet.org source is added.
+The same command works from PowerShell 5.1 (use backticks instead of `\\` for line continuation). Replace the example commits with exact immutable provenance values from the supplied feed. Its existing JSON manifest must contain `candidateVersion`, `sourceCommit`, `declaredFinalCommit`, and `packages` (a filename-to-SHA256 map); all candidate `.nupkg` files and hashes must match exactly. The verifier never repacks in `--feed` consumer mode. Python 3.12+, .NET 8 SDK, the final local NuGet feed, and an installed Playwright-compatible Chrome/Chromium are required. The regular Microsoft.Playwright driver/browser cache is expected; a Cursory-specific helper or generation process is not. Set `SPYBROWSER_BROWSER_EXECUTABLE` if browser discovery is not automatic. The local source configuration disallows NuGet.org during consumer restore. Candidate/previous artifacts and Microsoft.Playwright plus its pinned transitive NuGet packages must be available in the supplied local feed(s); pass `--dependency-feed PATH` for each additional offline feed (the hierarchical `$HOME/.nuget/packages` cache is usable as a local source while `NUGET_PACKAGES` is redirected to the clean temp cache). No NuGet.org source is added.
 
 `--repository` builds the previous Core/Playwright packages from pinned baseline `e217359d19a29635f2b3b5ba54664d299fd16d36` using a version different from the candidate. Alternatively supply `--previous-feed`, `--previous-feed-manifest`, `--previous-version`, and `--repository` to independently verify a prebuilt baseline feed. The manifest must identify the pinned commit/version, exactly the Core and Playwright package filenames plus their hashes, and the SHA256 of a fresh `git archive` of that commit from the repository. Both package nuspecs must identify the exact package/version and repository commit. Any missing or mismatched evidence fails closed before consumer checks. Supplying only `--previous-feed` remains PENDING (never PASS); `--repository` without `--previous-feed` continues to build the pinned packages internally. This is a package install test, not a project-reference test. Consumer source/CWD, outputs and clean NuGet cache are all in a temporary directory outside the workspace.
 
@@ -59,7 +59,7 @@ python tools/verification/distribution-checks/run.py \
   --previous-version 0.1.0-baseline.e217359 ...
 ```
 
-The manifest format uses `sourceCommit`, `version`, `sourceArchiveSha256`, and `packageHashes`. This is verification, not trust in a directory name: `run.py` checks both exact package IDs and hashes, both nuspec repository-commit metadata records, and compares the archive hash with fresh output from `git archive e217359d19a29635f2b3b5ba54664d299fd16d36` in the supplied repository. The feed can only become a provenance PASS after all checks succeed.
+The manifest format uses `sourceCommit`, `version`, `sourceArchiveSha256`, and `packageHashes`. Optional `sourceArchiveLineEndings` is strictly `lf` (the deterministic default) or `crlf`; the fresh archive explicitly reproduces those Git export settings rather than inheriting host `core.autocrlf`. Exact archive bytes/hash must still match. See [the export investigation](implementation/baseline-archive-export-proof.md). This is verification, not trust in a directory name: `run.py` checks both exact package IDs and hashes, both nuspec repository-commit metadata records, and compares the archive hash with fresh output from `git archive e217359d19a29635f2b3b5ba54664d299fd16d36` in the supplied repository. The feed can only become a provenance PASS after all checks succeed.
 
 ## Parent review at `7ae11b5` (preliminary)
 

@@ -1,0 +1,13 @@
+# Baseline archive export settings
+
+Pinned source: `e217359d19a29635f2b3b5ba54664d299fd16d36`. The permanent baseline feed is `D:/Temp/spybrowser-baseline-feed-e217359/feed`, version `0.1.0-baseline.e217359`; its manifest retains exact package hashes and nuspec repository commits.
+
+The Windows-produced source archive hash `91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f` differed from an ambient WSL Git archive hash `93aca050ed4fe52ada89c0698db074c120cbe30319196981ce25d1daa5033a85`. Investigation compared all 71 exported paths, types, permissions and content hashes. Paths/types/permissions were equal; **all 71 content hashes differed**. Reading actual bytes showed CRLF Windows export versus LF Linux export. This was not assumed to be harmless container metadata.
+
+Recreating the Linux archive with explicit `-c core.autocrlf=true -c core.eol=crlf` produced the **exact same archive bytes/SHA-256** as Windows. The verified manifest now explicitly records `sourceArchiveLineEndings:"crlf"`. The verifier whitelists `lf`/`crlf`, overrides ambient Git conversion accordingly and still requires the full, exact archive hash. Unknown export settings and a wrong LF setting for this CRLF archive were both rejected. Package, commit and archive hash checks are not normalized or waived.
+
+New internal exports default to explicit LF settings. A supplied feed without an export-setting field follows that deterministic LF default; it must not silently inherit host conversion settings. Source archives and per-file investigation manifests are retained under `D:/Temp/spybrowser-baseline-feed-e217359/`.
+
+Parent Windows installed-consumer validation against the unchanged preliminary `1e9c3e9` feed and verified baseline completed **13 PASS, 0 PENDING, 0 technical FAIL** at `artifacts/goal/installed-verified-baseline-windows-d-temp/distribution-evidence.json`. Actual CLI, all three candidate modes, SDK snapshot writer interruption, OS ACL denial, concurrent writers, privacy/schema/discard, GPU information, old-package rollback/ignore/off and official driver checks executed. `isFinal:false`, `technicalAllPassed:true`, `allPassed:false`, `externalPublicationAllowed:false`; exit 2 is the external-rights gate. The initial host-disk-full failure is preserved separately at `artifacts/goal/installed-verified-baseline-windows/`; a measured, evidence-backed removal of completed-lane generated bin/obj directories and an owned D-drive temporary root recovered it. No assertion or package hash was changed.
+
+These changes only make verified local baseline reproduction cross-platform. They confer no dataset redistribution rights, publication approval, or final-candidate acceptance.
