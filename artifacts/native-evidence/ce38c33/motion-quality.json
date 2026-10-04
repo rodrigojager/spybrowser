@@ -1,0 +1,735 @@
+{
+  "schemaVersion": 2,
+  "run": {
+    "startedUtc": "2026-10-04T05:42:46.5785909+00:00",
+    "seed": 21021,
+    "sourceRevision": "ce38c3313021535ca8cac520cb841f6d9333ef65",
+    "sourceDirty": false,
+    "sourceDirtyState": "",
+    "datasetSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+    "datasetFile": "src/SpyBrowser.Cursory/Data/trajectories.json.gz",
+    "datasetProvenance": "The repository\u0027s embedded cursory-js dataset; gzip bytes hashed.",
+    "realDomRunCount": 14
+  },
+  "classifications": {
+    "functional": "PASS only when each measured DOM task completed, chronological is true, and all serialized metrics are finite; this is functional correctness evidence, not equivalence of paths.",
+    "performance": "Descriptive measurements (cold/warm generation, allocations, browser dispatch, DOM rhythm); 10 ms p95 is an investigation target, never a shared-runner hard gate.",
+    "regression": "No regression verdict without a paired report from the same machine/browser/settings and an explicit baseline revision; differences otherwise remain contextual observations.",
+    "context": "Compare source revision and dirty state, OS/runtime/browser/dataset/seed, concurrency, and case names before interpreting timing deltas."
+  },
+  "environment": {
+    "machine": "DESKTOP-KLQV3JP",
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "logicalProcessors": 16,
+    "os": "Microsoft Windows 10.0.19045",
+    "processArchitecture": "X64",
+    "framework": ".NET 8.0.22",
+    "sdk": "8.0.319",
+    "playwright": "1.61.0.0",
+    "browser": "149.0.7827.55",
+    "browserExecutable": "Playwright Chromium (headless)",
+    "benchmarkProcessId": 88784
+  },
+  "generation": {
+    "coldDatasetAndGeneration": {
+      "elapsedMs": 285.2216,
+      "pointCount": 4
+    },
+    "warmRuns": 40,
+    "warmP50Ms": 10.1464,
+    "warmP95Ms": 33.9008,
+    "deterministicSameSeedWithin1eMinus9": true,
+    "deterministicComparisonMethod": "two generated Cursory paths with identical seed compared point coordinates and timings with absolute tolerance 1e-9",
+    "managedAllocatedBytesPerTrajectory": 2943937,
+    "investigationTargetP95Ms": 10,
+    "investigationTargetMetOnThisRun": false,
+    "measurement": "Cursory generator only, cold first call in this fresh benchmark process; warm timings use Stopwatch. Allocations use current-thread GC delta.",
+    "benchmarkProcessWorkingSetDeltaBytes": 24342528,
+    "browserPhaseManagedAllocatedBytesAggregate": 39047168,
+    "browserPhaseAllocationMethod": "GC.GetTotalAllocatedBytes delta for the benchmark process, including asynchronous/Playwright overhead; not attributed per page or algorithm"
+  },
+  "cases": [
+    {
+      "algorithm": "Bezier",
+      "caseName": "short-subpixel",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 456.9252,
+          "domMoveCount": 25,
+          "chronological": true,
+          "observedLengthPixels": 1,
+          "observedDisplacementPixels": 1,
+          "intervalMilliseconds": {
+            "count": 24,
+            "min": 14.5,
+            "median": 15.899999976158142,
+            "p95": 29,
+            "max": 31.099999994039536,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 24,
+            "min": 0,
+            "median": 0,
+            "p95": 0,
+            "max": 58.8235294117647,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 23,
+            "min": 0,
+            "median": 0,
+            "p95": 0,
+            "max": 3554.291807997421,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "movement",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Bezier",
+      "caseName": "long",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 448.6619,
+          "domMoveCount": 25,
+          "chronological": true,
+          "observedLengthPixels": 1155.4092192217256,
+          "observedDisplacementPixels": 1153.2840066523077,
+          "intervalMilliseconds": {
+            "count": 24,
+            "min": 13.600000023841858,
+            "median": 15.900000005960464,
+            "p95": 28.19999998807907,
+            "max": 42.20000001788139,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 24,
+            "min": 360.9371138690464,
+            "median": 2773.886162848873,
+            "p95": 4838.517246377842,
+            "max": 5325.1744196351165,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 23,
+            "min": 1024.2410249812297,
+            "median": 34503.48622395612,
+            "p95": 79144.11864383878,
+            "max": 93445.05115404524,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "movement",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Bezier",
+      "caseName": "stable-button-activation",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 494.6424,
+          "domMoveCount": 27,
+          "chronological": true,
+          "observedLengthPixels": 114.8813763461536,
+          "observedDisplacementPixels": 114.12712210513327,
+          "intervalMilliseconds": {
+            "count": 26,
+            "min": 12.799999982118607,
+            "median": 15.799999982118607,
+            "p95": 36.70000001788139,
+            "max": 67.09999999403954,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 26,
+            "min": 0,
+            "median": 283.04657975068653,
+            "p95": 450.6939094329986,
+            "max": 474.41464188048957,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 25,
+            "min": 0,
+            "median": 2127.2767185236635,
+            "p95": 8540.280798902644,
+            "max": 9411.997213813775,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 1,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "button",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Bezier",
+      "caseName": "slow-transport-acknowledged-12ms-before-move",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 1037.5678,
+          "domMoveCount": 25,
+          "chronological": true,
+          "observedLengthPixels": 643.9140401965248,
+          "observedDisplacementPixels": 642.7044421816298,
+          "intervalMilliseconds": {
+            "count": 24,
+            "min": 28.799999982118607,
+            "median": 44.099999994039536,
+            "p95": 51.599999994039536,
+            "max": 53.400000005960464,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 24,
+            "min": 117.0633530541716,
+            "median": 672.0422878818293,
+            "p95": 1227.6159403221827,
+            "max": 1285.6163004010532,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 23,
+            "min": 65.10511112265733,
+            "median": 3460.450545633221,
+            "p95": 11259.28523092661,
+            "max": 13393.474303932644,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 5,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "slow",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Bezier",
+      "caseName": "concurrent-independent-pages",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 460.1338,
+          "domMoveCount": 25,
+          "chronological": true,
+          "observedLengthPixels": 643.9140401965248,
+          "observedDisplacementPixels": 642.7044421816298,
+          "intervalMilliseconds": {
+            "count": 24,
+            "min": 13.199999988079071,
+            "median": 16.400000005960464,
+            "p95": 29.400000005960464,
+            "max": 38.5,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 24,
+            "min": 273.14782414546704,
+            "median": 1358.2702084576815,
+            "p95": 2938.4178187734433,
+            "max": 3067.947985437423,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 23,
+            "min": 1113.8711514437791,
+            "median": 17829.306760192263,
+            "p95": 45149.496007271206,
+            "max": 62299.270106174765,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "concurrent",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        },
+        {
+          "pageIndex": 1,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 474.4566,
+          "domMoveCount": 25,
+          "chronological": true,
+          "observedLengthPixels": 685.4859910300856,
+          "observedDisplacementPixels": 684.0796737222938,
+          "intervalMilliseconds": {
+            "count": 24,
+            "min": 13.900000005960464,
+            "median": 16.200000017881393,
+            "p95": 36.19999998807907,
+            "max": 48.29999998211861,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 24,
+            "min": 236.0222029870479,
+            "median": 1657.595842991738,
+            "p95": 2721.9384657714822,
+            "max": 3134.2476117195943,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 23,
+            "min": 1092.682604845022,
+            "median": 19945.49226470686,
+            "p95": 37913.06294988824,
+            "max": 43185.52671333349,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "concurrent",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        },
+        {
+          "pageIndex": 2,
+          "algorithm": "Bezier",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 446.8126,
+          "domMoveCount": 25,
+          "chronological": true,
+          "observedLengthPixels": 728.2949273127774,
+          "observedDisplacementPixels": 726.8459259017691,
+          "intervalMilliseconds": {
+            "count": 24,
+            "min": 13.700000017881393,
+            "median": 16,
+            "p95": 28.400000005960464,
+            "max": 45,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 24,
+            "min": 210.81851067789196,
+            "median": 1859.6806079488447,
+            "p95": 2809.025631780529,
+            "max": 3115.1709254800667,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 23,
+            "min": 929.7356162254952,
+            "median": 19944.31881553194,
+            "p95": 49869.867310795205,
+            "max": 50600.32507834135,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "concurrent",
+          "measuredAlgorithm": "Bezier",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Cursory",
+      "caseName": "short-subpixel",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 323.7805,
+          "domMoveCount": 3,
+          "chronological": true,
+          "observedLengthPixels": 1,
+          "observedDisplacementPixels": 1,
+          "intervalMilliseconds": {
+            "count": 2,
+            "min": 151.09999999403954,
+            "median": 151.09999999403954,
+            "p95": 157.30000001192093,
+            "max": 157.30000001192093,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 2,
+            "min": 0,
+            "median": 0,
+            "p95": 6.3572790840700275,
+            "max": 6.3572790840700275,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 1,
+            "min": 41.22749081677795,
+            "median": 41.22749081677795,
+            "p95": 41.22749081677795,
+            "max": 41.22749081677795,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 2,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "movement",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Cursory",
+      "caseName": "long",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 347.0273,
+          "domMoveCount": 21,
+          "chronological": true,
+          "observedLengthPixels": 1195.7358275282322,
+          "observedDisplacementPixels": 1158.5875020903686,
+          "intervalMilliseconds": {
+            "count": 20,
+            "min": 14.100000023841858,
+            "median": 17,
+            "p95": 18,
+            "max": 18.100000023841858,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 20,
+            "min": 55.55555555555556,
+            "median": 529.4117647058823,
+            "p95": 11400.388507918839,
+            "max": 19723.18964794684,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 19,
+            "min": 983.70573781903,
+            "median": 57746.25530562524,
+            "p95": 725806.4350891854,
+            "max": 725806.4350891854,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "movement",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Cursory",
+      "caseName": "stable-button-activation",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 440.1337,
+          "domMoveCount": 22,
+          "chronological": true,
+          "observedLengthPixels": 121.36409137748028,
+          "observedDisplacementPixels": 114.12712210513327,
+          "intervalMilliseconds": {
+            "count": 21,
+            "min": 15.100000023841858,
+            "median": 17.099999994039536,
+            "p95": 38.69999998807907,
+            "max": 65.59999999403954,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 21,
+            "min": 0,
+            "median": 209.42236126989147,
+            "p95": 945.3104679770211,
+            "max": 1044.589563470254,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 20,
+            "min": 0,
+            "median": 6155.33654295072,
+            "p95": 21067.350681508437,
+            "max": 29140.474161216713,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 1,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "button",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Cursory",
+      "caseName": "slow-transport-acknowledged-12ms-before-move",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 336.6093,
+          "domMoveCount": 19,
+          "chronological": true,
+          "observedLengthPixels": 668.9817361399117,
+          "observedDisplacementPixels": 644.4571358903554,
+          "intervalMilliseconds": {
+            "count": 18,
+            "min": 13.800000011920929,
+            "median": 15.400000005960464,
+            "p95": 29.400000005960464,
+            "max": 29.400000005960464,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 18,
+            "min": 94.91366205610827,
+            "median": 1309.7921802925666,
+            "p95": 18304.46687912254,
+            "max": 18304.46687912254,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 17,
+            "min": 1375.6654896554394,
+            "median": 37128.074974125695,
+            "p95": 995817.7583866379,
+            "max": 995817.7583866379,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "slow",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    },
+    {
+      "algorithm": "Cursory",
+      "caseName": "concurrent-independent-pages",
+      "pages": [
+        {
+          "pageIndex": 0,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 333.4667,
+          "domMoveCount": 20,
+          "chronological": true,
+          "observedLengthPixels": 668.8119030873567,
+          "observedDisplacementPixels": 644.4571358903554,
+          "intervalMilliseconds": {
+            "count": 19,
+            "min": 15.700000017881393,
+            "median": 16.900000005960464,
+            "p95": 18.19999998807907,
+            "max": 18.19999998807907,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 19,
+            "min": 122.86087796507724,
+            "median": 1169.9579709629259,
+            "p95": 13251.647804785294,
+            "max": 13251.647804785294,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 18,
+            "min": 2533.2878693055018,
+            "median": 28076.54669141826,
+            "p95": 560202.7112456509,
+            "max": 560202.7112456509,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "concurrent",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        },
+        {
+          "pageIndex": 1,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 332.6221,
+          "domMoveCount": 17,
+          "chronological": true,
+          "observedLengthPixels": 699.9323168399851,
+          "observedDisplacementPixels": 687.1862920635132,
+          "intervalMilliseconds": {
+            "count": 16,
+            "min": 14,
+            "median": 16.899999976158142,
+            "p95": 46.20000001788139,
+            "max": 46.20000001788139,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 16,
+            "min": 0,
+            "median": 62.5,
+            "p95": 7926.86850010481,
+            "max": 7926.86850010481,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 15,
+            "min": 0,
+            "median": 9395.424836601307,
+            "p95": 353092.72580313974,
+            "max": 353092.72580313974,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "concurrent",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        },
+        {
+          "pageIndex": 2,
+          "algorithm": "Cursory",
+          "plannedDurationMilliseconds": 300,
+          "observedDispatchAndActionWallMilliseconds": 332.4857,
+          "domMoveCount": 20,
+          "chronological": true,
+          "observedLengthPixels": 750.8433329361234,
+          "observedDisplacementPixels": 729.9486283294189,
+          "intervalMilliseconds": {
+            "count": 19,
+            "min": 15.099999994039536,
+            "median": 16.899999976158142,
+            "p95": 18.19999998807907,
+            "max": 18.19999998807907,
+            "unit": "ms"
+          },
+          "velocityPixelsPerSecond": {
+            "count": 19,
+            "min": 56.81818183742402,
+            "median": 1353.8093935341549,
+            "p95": 8605.038051774916,
+            "max": 8605.038051774916,
+            "unit": "px/s"
+          },
+          "accelerationPixelsPerSecondSquared": {
+            "count": 18,
+            "min": 500.8553718715249,
+            "median": 45858.481723256155,
+            "p95": 307001.9334110111,
+            "max": 307001.9334110111,
+            "unit": "px/s^2"
+          },
+          "accelerationMethod": "absolute change in successive segment velocities divided by mean adjacent interval seconds; magnitude summary",
+          "pausesOver50Milliseconds": 0,
+          "taskCompleted": true,
+          "hoverCompleted": true,
+          "clickCompleted": true,
+          "chromiumPageJavaScriptHeapBytesBefore": 10000000,
+          "chromiumPageJavaScriptHeapBytesAfter": 10000000,
+          "taskKind": "concurrent",
+          "measuredAlgorithm": "Cursory",
+          "timingSource": "DOM event performance.now()"
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "Bezier is the existing baseline; Cursory is the native recorded-trajectory implementation. Differences describe implementation cost and observed rhythm, not human-likeness or detection outcomes.",
+    "Planned duration is the configured 300 ms path budget (Bezier resolves to this clamp; Cursory is scaled to this limit). Actual DOM timing is browser-observed and intentionally not bit-reproducible.",
+    "The slow transport case adds an explicit artificial 12 ms delay immediately before each IMouse.MoveAsync delegate call. This is not network/CDP latency.",
+    "Working set is process-level and includes benchmark, Playwright driver/browser-launch overhead; it is not attributable per page. No reliable per-page memory claim is made."
+  ]
+}

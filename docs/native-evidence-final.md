@@ -14,7 +14,7 @@ Scope is limited to native motion benchmark tooling, tests, and documentation. `
 
 ## Current measured run
 
-`artifacts/native-evidence/current-run/motion-quality.json` is a real Windows 10 / .NET 8.0.22 / Playwright 1.61 / Chromium 149 run with seed 21021 and all 14 real DOM cases. It captured source `5890749dc7fbdac40d0876e8f8dace07b8d36735` and listed the worktree dirty state at measurement time (benchmark/test/docs edits). Cursory cold load+generation measured 249.81 ms; warm p50/p95 was 9.14/24.16 ms across 40 trajectories, with 2,943,918 managed bytes allocated per trajectory. The p95 and allocation warrant optimization/investigation work; they are not a test failure threshold. Browser performance is context-specific and no 10 ms hard gate is applied.
+`artifacts/native-evidence/ce38c33/motion-quality.json` and `.md` are a real Windows 10 / .NET 8.0.22 / Playwright 1.61 / Chromium 149 run with seed 21021 and all 14 real DOM cases. Metadata captures source `ce38c3313021535ca8cac520cb841f6d9333ef65`, clean tracked/untracked state, and dataset SHA. Cursory cold load+generation measured 285.22 ms; warm p50/p95 was 10.15/33.90 ms across 40 trajectories, with 2,943,937 managed bytes allocated per trajectory. The p95 and allocation warrant optimization/investigation work; they are not a test failure threshold. Browser performance is context-specific and no 10 ms hard gate is applied.
 
 The all-DPR command ran without a competing full suite, max test host count 1:
 
