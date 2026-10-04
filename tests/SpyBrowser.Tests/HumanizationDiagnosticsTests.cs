@@ -151,10 +151,11 @@ public sealed class HumanizationDiagnosticsTests
         internal int FailOnTitleCall = 1;
         internal bool Canceled;
         private int _titleCalls;
+        private readonly IBrowserContext _context = DispatchProxy.Create<IBrowserContext, FakeContext>();
 
         protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
         {
-            if (targetMethod?.Name == nameof(IPage.Context)) return null;
+            if (targetMethod?.Name == "get_Context") return _context;
             if (targetMethod?.Name == nameof(IPage.TitleAsync))
             {
                 if (Canceled) return Task.FromCanceled<string>(new CancellationToken(canceled: true));
@@ -172,5 +173,11 @@ public sealed class HumanizationDiagnosticsTests
         }
 
         private static Task<T> Completed<T>() => Task.FromResult(default(T)!);
+    }
+
+    public class FakeContext : DispatchProxy
+    {
+        protected override object? Invoke(MethodInfo? targetMethod, object?[]? args) =>
+            targetMethod?.Name == "get_Pages" ? Array.Empty<IPage>() : null;
     }
 }
