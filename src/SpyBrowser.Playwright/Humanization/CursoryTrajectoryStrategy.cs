@@ -19,7 +19,8 @@ internal sealed class CursoryTrajectoryStrategy
             {
                 Frequency = options.CursoryFrequency,
                 FrequencyRandomizer = options.CursoryFrequencyRandomizer,
-                Directness = options.CursoryDirectness
+                Directness = options.CursoryDirectness,
+                Seed = options.RandomSeed is int seed ? (UInt128)(uint)seed : null
             });
 
         var sourceDuration = trajectory.Timings[^1];

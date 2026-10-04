@@ -25,7 +25,7 @@ public sealed class HumanActions
     {
         _options = options ?? new HumanInteractionOptions();
         _options.Validate();
-        _random = new Random(RandomNumberGenerator.GetInt32(int.MaxValue));
+        _random = new Random(_options.RandomSeed ?? RandomNumberGenerator.GetInt32(int.MaxValue));
     }
 
     public async Task ClickAsync(ILocator locator, CancellationToken cancellationToken = default)

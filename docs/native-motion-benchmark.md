@@ -1,19 +1,17 @@
-# Native mouse movement benchmark (local observation)
+# Reproducible local motion-quality benchmark
 
-Run with:
+From the repository root, run this single command in a **fresh `dotnet` process**:
 
-```sh
+```powershell
 dotnet run --project tools/native-motion-benchmark/NativeMotion.Benchmark.csproj -c Release
 ```
 
-This is a reproducible local diagnostic, not a CI threshold. It separates the first generation call from warmed generation, measures current-thread managed allocations across 100 trajectories, then observes DOM `mousemove` timestamps during a wrapped Cursory move. The DOM sample includes the documented one-point unknown-position anchor. It reports wall-clock time and browser-delivered events, not just the planned trajectory timestamps.
+It writes `artifacts/motion-quality/motion-quality.json` (complete machine-readable results) and `motion-quality.md` (short interpretation). Use an optional first argument to choose another output directory. The first generator invocation is the cold dataset load + Cursory generation in that fresh process. Warm Cursory generation p50/p95 and current-thread managed allocation are measured separately from browser dispatch. The benchmark does not impose a 10 ms pass/fail threshold; the plan's p95 <10 ms budget is an investigation target for a documented reference machine, not a shared-runner assertion.
 
-Observed during implementation in this worktree:
+The executable compares the existing Bézier baseline and native Cursory on the same local case definitions, seed (`21021`), start/end coordinates, headless Playwright Chromium settings, and configured 300 ms movement budget. Every case gets a fresh independent page; three pages run concurrently in the final case. Cursor positions are explicitly initialized on each real page before measurement. The cases cover short/subpixel, long, stable-button activation, deliberate slow transport, and concurrent independent pages. The button case verifies one actual DOM activation.
 
-```text
-Machine=DESKTOP-KLQV3JP; OS=Microsoft Windows 10.0.19045; ProcessArch=X64; Framework=.NET 8.0.22
-Cursory assembly=0.2.0.0; Playwright=1.61.0.0; coldMs=290.506; warmRuns=100; warmMeanMs=5.385; allocatedBytesPerTrajectory=868135; coldPointCount=48
-Browser=149.0.7827.55; generationAndDispatchWallMs=898.587; domMousemoveCount=40; domFirstMs=16.700; domLastMs=16.500
-```
+For each page the JSON reports planned and observed wall duration, observed DOM `mousemove` count, chronological ordering, path length and endpoint displacement in pixels, interval distribution in milliseconds, velocity distribution in px/s, acceleration magnitude derived from adjacent segment-velocity changes divided by mean adjacent interval in seconds (px/s²), pauses >=50ms, and completion. Zero-duration segments use zero velocity/acceleration; empty metric series report finite zero summaries. `performance.now()` is measured in the page; these timings are observations with OS/browser scheduling tolerance, not bit-for-bit reproducible promises. Planned time is the configured duration budget; Cursory is scaled to it and Bézier's duration is clamped to it. The configured minimum and maximum are identical for the benchmark.
 
-Values vary with machine load, OS scheduling, browser installation, and process state. The allocation count is a managed current-thread delta, not total process allocation. No performance target or real-time guarantee is inferred. This baseline is intended to feed the later benchmark/quality ticket; repeat on a documented reference machine before comparing revisions.
+The slow case inserts an explicitly acknowledged artificial 12 ms delay in a delegating `IPage`/`IMouse` adapter immediately before each real `IMouse.MoveAsync`. It is a real Chromium DOM movement with additional adapter latency, **not** CDP or network latency. JSON records the case label. Memory reporting includes benchmark-process working-set delta, an aggregate managed-allocation delta for the browser phase, and Chromium `performance.memory.usedJSHeapSize` before/after per page when exposed (otherwise null). These are snapshots, not peak or exclusive ownership; no browser-child-process attribution is claimed. The run validates that every page completed, DOM timestamps remained chronological, and every serialized numeric metric is finite before writing the artifacts.
+
+The JSON records CPU identifier when Windows provides it, logical processors, OS, process architecture, .NET runtime and SDK, Playwright and browser versions, seed and SHA-256 of the exact embedded gzip dataset. Browser-dispatch timing is reported separately from generator-only cold/warm data; total elapsed action is not presented as pure algorithm cost. Repeat on the same recorded reference hardware and browser for a meaningful comparison. Differences are functional/performance/observed-rhythm evidence only; there is no claim of improved humanness, stealth, CAPTCHA results, or detection avoidance, and no human movement recordings are collected.

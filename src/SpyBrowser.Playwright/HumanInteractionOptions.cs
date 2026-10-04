@@ -17,6 +17,9 @@ public sealed record HumanInteractionOptions
     /// <summary>Selects the mouse trajectory generator. Cursory is an experimental opt-in.</summary>
     public MouseTrajectoryAlgorithm MouseAlgorithm { get; init; } = MouseTrajectoryAlgorithm.Bezier;
 
+    /// <summary>Optional deterministic seed for generated interaction randomness; null uses OS entropy.</summary>
+    public int? RandomSeed { get; init; }
+
     /// <summary>Sampling frequency passed to the Cursory generator, in Hz.</summary>
     public double CursoryFrequency { get; init; } = 60;
 
