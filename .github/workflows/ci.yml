@@ -71,7 +71,7 @@ jobs:
         run: |
           dotnet test SpyBrowser.sln -c Release --no-build --logger "trx;LogFileName=tests.trx" --results-directory artifacts/test-results -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          foreach ($project in @('Core','Playwright','Compatibility.CloakBrowser','Cli')) {
+          foreach ($project in @('Core','Playwright','Cursory','Compatibility.CloakBrowser','Cli')) {
             dotnet pack "src/SpyBrowser.$project/SpyBrowser.$project.csproj" -c Release --no-build -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" -o artifacts/packages
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }

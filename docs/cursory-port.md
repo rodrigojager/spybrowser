@@ -72,4 +72,4 @@ included. Independent dataset terms/rights remain unverified. No independent
 legal clearance is claimed; publication and external redistribution stay blocked
 pending those artifacts and review.
 
-This preview is deliberately not referenced by `SpyBrowser.Playwright`.
+`SpyBrowser.Playwright` now references this preview through an experimental opt-in mouse adapter. The pure library remains Playwright-independent; upstream parity and dataset-rights review are still release gates.

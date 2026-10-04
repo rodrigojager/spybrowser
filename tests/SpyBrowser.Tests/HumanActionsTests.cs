@@ -16,6 +16,15 @@ public sealed class HumanActionsTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new HumanActions(options));
     }
 
+    [Fact]
+    public void Mouse_algorithm_defaults_to_legacy_bezier_and_native_options_are_validated()
+    {
+        Assert.Equal(MouseTrajectoryAlgorithm.Bezier, new HumanInteractionOptions().MouseAlgorithm);
+        Assert.Throws<ArgumentOutOfRangeException>(() => new HumanActions(new HumanInteractionOptions { CursoryFrequency = 0 }));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new HumanActions(new HumanInteractionOptions { CursoryFrequencyRandomizer = double.NaN }));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new HumanActions(new HumanInteractionOptions { CursoryDirectness = 1.01 }));
+    }
+
     [Theory]
     [InlineData(-0.01)]
     [InlineData(1.01)]

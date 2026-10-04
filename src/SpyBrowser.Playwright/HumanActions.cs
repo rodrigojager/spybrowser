@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Playwright;
@@ -13,9 +14,10 @@ public sealed class HumanActions
 {
     private readonly HumanInteractionOptions _options;
     private readonly Random _random;
-    private double? _cursorX;
-    private double? _cursorY;
+    private readonly ConditionalWeakTable<IPage, PageMouseState> _mouseStates = new();
     private readonly IMouseTrajectoryStrategy _trajectory = new BezierTrajectoryStrategy();
+    private readonly CursoryTrajectoryStrategy _cursory = new();
+    private readonly MonotonicMovementScheduler _movementScheduler = new();
 
     internal HumanizationCompatibilityMode CompatibilityMode => _options.CompatibilityMode;
 
@@ -76,12 +78,43 @@ public sealed class HumanActions
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
+        var state = _mouseStates.GetValue(page, _ => new PageMouseState());
+        cancellationToken.ThrowIfCancellationRequested();
+        if (page.IsClosed) throw new InvalidOperationException("The page is closed.");
+
+        if (_options.MouseAlgorithm == MouseTrajectoryAlgorithm.Cursory)
+        {
+            if (!state.HasKnownPosition || state.HasButtonDown)
+            {
+                // The cursor's physical position is unavailable. Bootstrap with one endpoint only;
+                // during an observed drag, avoid trajectory preparation and preserve button ownership.
+                await page.Mouse.MoveAsync((float)targetX, (float)targetY).ConfigureAwait(false);
+                state.ConfirmPosition(targetX, targetY);
+                return;
+            }
+
+            var path = _cursory.Create(state.X!.Value, state.Y!.Value, targetX, targetY, _options);
+            await _movementScheduler.ExecuteAsync(
+                () => page.IsClosed,
+                (x, y) => page.Mouse.MoveAsync((float)x, (float)y),
+                path,
+                TimeSpan.FromMilliseconds(_options.CursoryMovementDeadlineMilliseconds),
+                point => state.ConfirmPosition(point.X, point.Y),
+                cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
         var viewport = page.ViewportSize;
-        var startX = _cursorX ?? (viewport?.Width ?? 1280) / 2d;
-        var startY = _cursorY ?? (viewport?.Height ?? 720) / 2d;
-        await MoveMouseAsync(page, startX, startY, targetX, targetY, cancellationToken).ConfigureAwait(false);
-        _cursorX = targetX;
-        _cursorY = targetY;
+        var startX = state.X ?? (viewport?.Width ?? 1280) / 2d;
+        var startY = state.Y ?? (viewport?.Height ?? 720) / 2d;
+        await MoveMouseAsync(
+            page,
+            startX,
+            startY,
+            targetX,
+            targetY,
+            point => state.ConfirmPosition(point.X, point.Y),
+            cancellationToken).ConfigureAwait(false);
     }
 
     public async Task ClickAsync(
@@ -350,15 +383,25 @@ public sealed class HumanActions
         double startY,
         double targetX,
         double targetY,
+        Action<TrajectoryPoint> onConfirmed,
         CancellationToken cancellationToken)
     {
         foreach (var point in _trajectory.Create(startX, startY, targetX, targetY, _random, _options))
         {
             cancellationToken.ThrowIfCancellationRequested();
             await page.Mouse.MoveAsync((float)point.X, (float)point.Y).ConfigureAwait(false);
+            onConfirmed(point);
             await Task.Delay(point.DelayMilliseconds, cancellationToken).ConfigureAwait(false);
         }
     }
+
+    internal void InvalidateMousePosition(IPage page) => _mouseStates.GetValue(page, _ => new PageMouseState()).InvalidatePosition();
+
+    internal void ObserveRawMouseMove(IPage page, double x, double y) =>
+        _mouseStates.GetValue(page, _ => new PageMouseState()).ConfirmPosition(x, y);
+
+    internal void ObserveRawMouseButton(IPage page, string button, bool down) =>
+        _mouseStates.GetValue(page, _ => new PageMouseState()).ObserveButton(button, down);
 
     private double NextDouble(double minimum, double maximum) =>
         minimum + _random.NextDouble() * (maximum - minimum);

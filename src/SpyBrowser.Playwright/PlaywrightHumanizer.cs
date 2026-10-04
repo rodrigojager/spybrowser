@@ -36,6 +36,13 @@ public sealed class PlaywrightHumanizer
         return value is IHumanizedPlaywrightObject wrapped ? (T)wrapped.Original : value;
     }
 
+    /// <summary>Invalidates the tracked pointer position after movement through an unwrapped/raw API.</summary>
+    public void InvalidateMousePosition(IPage page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        _scope.InvalidateMousePosition(Unwrap(page));
+    }
+
     private static IPage? ResolvePage(object value) => value switch
     {
         IPage page => page,
@@ -58,6 +65,25 @@ internal sealed class HumanizationScope
     private readonly HumanInteractionOptions _options;
     private readonly ConditionalWeakTable<object, object> _proxies = new();
     private readonly ConditionalWeakTable<IPage, HumanActions> _actions = new();
+
+    internal void InvalidateMousePosition(IPage page) =>
+        _actions.GetValue(page, _ => new HumanActions(_options)).InvalidateMousePosition(page);
+
+    internal async Task ObserveRawMouseCallAsync(IPage page, string method, object?[] arguments, Task operation)
+    {
+        await operation.ConfigureAwait(false);
+        var actions = _actions.GetValue(page, _ => new HumanActions(_options));
+        if (method == nameof(IMouse.MoveAsync) && arguments.ElementAtOrDefault(0) is float x && arguments.ElementAtOrDefault(1) is float y)
+        {
+            actions.ObserveRawMouseMove(page, x, y);
+        }
+        else if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
+        {
+            var option = arguments.ElementAtOrDefault(0);
+            var button = option?.GetType().GetProperty("Button")?.GetValue(option) as string ?? "left";
+            actions.ObserveRawMouseButton(page, button, method == nameof(IMouse.DownAsync));
+        }
+    }
 
     public HumanizationScope(HumanInteractionOptions options)
     {
@@ -494,6 +520,12 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         try
         {
             var result = targetMethod.Invoke(_target, arguments);
+            if (_target is IMouse && _pageHint is not null && result is Task operation &&
+                targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
+            {
+                return _scope.ObserveRawMouseCallAsync(_pageHint, targetMethod.Name, arguments, operation);
+            }
+
             return _scope.WrapValue(result, targetMethod.ReturnType, _pageHint);
         }
         catch (TargetInvocationException exception) when (exception.InnerException is not null)

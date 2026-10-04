@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Playwright" />
     <ProjectReference Include="..\SpyBrowser.Core\SpyBrowser.Core.csproj" />
+    <ProjectReference Include="..\SpyBrowser.Cursory\SpyBrowser.Cursory.csproj" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
   </ItemGroup>
 </Project>

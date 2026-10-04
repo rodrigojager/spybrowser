@@ -2,7 +2,7 @@
 
 ## Artifacts
 
-The solution produces four independent packages:
+The solution builds five package projects. `SpyBrowser.Cursory` is an experimental LGPL preview and is not cleared for external distribution; the current release workflow still publishes the four established products.
 
 | Package | Purpose |
 |---|---|
@@ -10,10 +10,13 @@ The solution produces four independent packages:
 | `SpyBrowser.Playwright` | launch modes, humanization, GPU diagnostics |
 | `SpyBrowser.Compatibility.CloakBrowser` | migration assembly named `CloakBrowser.dll` |
 | `SpyBrowser.Cli` | global .NET tool named `spybrowser` |
+| `SpyBrowser.Cursory` | standalone native trajectory library; experimental, LGPL-3.0-or-later, external release gated |
 
-All packages target .NET 8 and can be consumed by .NET 8 or newer compatible
-applications. NuGet packages include README, MIT metadata, third-party notices,
-XML documentation, symbols, deterministic builds, and repository metadata.
+All projects target .NET 8 and can be consumed by .NET 8 or newer compatible
+applications. The four established release packages use MIT metadata; Cursory
+has separate LGPL-3.0-or-later metadata and license/NOTICE. Dataset provenance
+and redistribution review remain a gate before publishing either Cursory or a
+Playwright release that requires its package.
 
 The library packages are small and depend on `Microsoft.Playwright` normally.
 The global CLI tool package is currently about 205 MB because .NET tool packing
@@ -27,6 +30,7 @@ dotnet restore SpyBrowser.sln -p:MicrosoftPlaywrightVersion=1.61.0
 dotnet build SpyBrowser.sln -c Release --no-restore -p:MicrosoftPlaywrightVersion=1.61.0
 
 dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages
+dotnet pack src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj -c Release --no-build -o artifacts/packages
 dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages
 dotnet pack src/SpyBrowser.Compatibility.CloakBrowser/SpyBrowser.Compatibility.CloakBrowser.csproj -c Release --no-build -o artifacts/packages
 dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o artifacts/packages
@@ -67,7 +71,7 @@ leases remain the cross-process source of truth.
 
 1. Build and test the Playwright baseline and current stable version.
 2. Run installed-Chrome integration tests on Windows and Linux.
-3. Pack all four artifacts and inspect dependencies/content.
+3. Pack established release artifacts and inspect dependencies/content; pack Cursory only for gated verification until provenance/legal review clears external distribution.
 4. Install the CLI from the produced local package and run `version`/`help`.
 5. Rebuild a Cloak-migration sample against the compatibility package.
 6. Confirm license and third-party notices.
