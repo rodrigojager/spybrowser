@@ -43,6 +43,9 @@ public sealed class PlaywrightHumanizer
         _scope.InvalidateMousePosition(Unwrap(page));
     }
 
+    /// <summary>Returns a bounded diagnostics snapshot, or null when diagnostics are disabled.</summary>
+    public HumanizationDiagnosticsSnapshot? GetDiagnosticsSnapshot() => _scope.GetDiagnosticsSnapshot();
+
     private static IPage? ResolvePage(object value) => value switch
     {
         IPage page => page,
@@ -69,6 +72,7 @@ internal sealed class HumanizationScope
     private readonly ConditionalWeakTable<object, object> _proxies = new();
     private readonly ConditionalWeakTable<IPage, HumanActions> _actions = new();
     private readonly ConditionalWeakTable<IBrowserContext, ContextTimeoutState> _contextTimeouts = new();
+    private readonly HumanizationDiagnosticsRecorder? _diagnostics;
 
     internal void InvalidateMousePosition(IPage page) =>
         _actions.GetValue(page, _ => new HumanActions(_options)).InvalidateMousePosition(page);
@@ -93,7 +97,70 @@ internal sealed class HumanizationScope
     {
         options.Validate();
         _options = options;
+        _diagnostics = options.EnableDiagnostics ? new HumanizationDiagnosticsRecorder(options.DiagnosticsCapacity) : null;
     }
+
+    internal HumanizationDiagnosticsSnapshot? GetDiagnosticsSnapshot() => _diagnostics?.Snapshot();
+
+    internal HumanizationDiagnosticsRecorder.Invocation? BeginDiagnostic(
+        object target, IPage? pageHint, MethodInfo method, object?[] arguments)
+    {
+        if (_diagnostics is null || method.Name is "ToString" or "GetHashCode" or "Equals") return null;
+        var page = ResolvePage(target, pageHint);
+        var reason = "humanization.unsupported-surface";
+        var mode = "native";
+        var optionsPresent = arguments.Any(argument => argument is not null &&
+            argument.GetType().Name.EndsWith("Options", StringComparison.Ordinal));
+        if (optionsPresent)
+        {
+            reason = "humanization.unsupported-options";
+            mode = "explicit-options-raw";
+        }
+        else if (method.Name == nameof(IKeyboard.InsertTextAsync))
+        {
+            reason = "humanization.raw-insert-text";
+            mode = "native-raw-insert-text";
+        }
+        else if (target is IMouse && method.Name == nameof(IMouse.MoveAsync) && page is not null)
+        {
+            (mode, reason) = _actions.GetValue(page, _ => new HumanActions(_options)).DescribeMouseMove(page);
+        }
+        else if (method.Name is nameof(ILocator.FillAsync) or nameof(IPage.FillAsync) && _options.CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            reason = "humanization.native-compatible-fill";
+            mode = "native-preserved-compatible-fill";
+        }
+        else if (method.Name == nameof(ILocator.ClearAsync) && _options.CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            reason = "humanization.native-compatible-clear";
+            mode = "native-preserved-compatible-clear";
+        }
+        else if (method.Name == nameof(IKeyboard.PressAsync) && _options.CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            reason = "humanization.native-compatible-press";
+            mode = "native-preserved-compatible-press";
+        }
+        else if (method.Name == nameof(IMouse.WheelAsync) && _options.CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            reason = "humanization.compatible-wheel-native";
+            mode = "native-preserved-compatible-wheel";
+        }
+        else if (method.Name is "ClickAsync" or "DblClickAsync" or "HoverAsync" or "MoveAsync" or "TypeAsync" or "PressSequentiallyAsync" or "FillAsync" or "ClearAsync" or "PressAsync" or "WheelAsync")
+        {
+            mode = "humanized";
+            reason = "humanization.preparation-or-paced-action";
+        }
+        else if (method.Name == nameof(IKeyboard.InsertTextAsync)) mode = "native-raw-insert-text";
+        return _diagnostics.Begin(page, SafeMethod(method.Name), mode, reason,
+            _options.MouseAlgorithm == MouseTrajectoryAlgorithm.Cursory ? "cursory" : "bezier");
+    }
+
+    private static string SafeMethod(string method) => method is
+        "ClickAsync" or "DblClickAsync" or "HoverAsync" or "MoveAsync" or "FillAsync" or "ClearAsync" or
+        "TypeAsync" or "PressAsync" or "PressSequentiallyAsync" or "InsertTextAsync" or "WheelAsync" or
+        "DownAsync" or "UpAsync" or "ReadAsync" or "EvaluateAsync" or "ScreenshotAsync" or "GoToAsync" or
+        "WaitForTimeoutAsync" or "GotoAsync" or "TitleAsync" or "InputValueAsync" or "FocusAsync" or "CheckAsync" or "UncheckAsync" or "SelectOptionAsync" or
+        "SetInputFilesAsync" or "DragToAsync" ? method : "Other";
 
     internal void RegisterAlias(object rawObject, object publicObject)
     {
@@ -473,6 +540,8 @@ internal sealed class HumanizationScope
 internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightObject
     where T : class
 {
+    private static readonly MethodInfo MonitorGenericTaskMethod = typeof(HumanizingDispatchProxy<T>)
+        .GetMethod(nameof(MonitorGenericTaskAsync), BindingFlags.Static | BindingFlags.NonPublic)!;
     private T _target = null!;
     private HumanizationScope _scope = null!;
     private IPage? _pageHint;
@@ -492,6 +561,62 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
     }
 
     protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+    {
+        if (targetMethod is null) return InvokeCore(null, args);
+        var arguments = args ?? Array.Empty<object?>();
+        HumanizationDiagnosticsRecorder.Invocation? invocation;
+        try { invocation = _scope.BeginDiagnostic(_target, _pageHint, targetMethod, arguments); }
+        catch { invocation = null; }
+        using var diagnosticScope = invocation?.Activate();
+        object? result;
+        try
+        {
+            result = InvokeCore(targetMethod, arguments);
+        }
+        catch (OperationCanceledException)
+        {
+            invocation?.Complete("canceled");
+            throw;
+        }
+        catch (TimeoutException)
+        {
+            invocation?.Complete("timeout");
+            throw;
+        }
+        catch
+        {
+            invocation?.Complete("error");
+            throw;
+        }
+
+        if (invocation is null) return result;
+        if (result is Task task)
+        {
+            if (targetMethod.ReturnType.IsGenericType && targetMethod.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+                return MonitorGenericTaskMethod.MakeGenericMethod(targetMethod.ReturnType.GetGenericArguments()[0]).Invoke(null, [result, invocation]);
+            return MonitorTaskAsync(task, invocation);
+        }
+        invocation.Complete("success");
+        return result;
+    }
+
+    private static async Task MonitorTaskAsync(Task task, HumanizationDiagnosticsRecorder.Invocation invocation)
+    {
+        try { await task.ConfigureAwait(false); invocation.Complete("success"); }
+        catch (OperationCanceledException) { invocation.Complete("canceled"); throw; }
+        catch (TimeoutException) { invocation.Complete("timeout"); throw; }
+        catch { invocation.Complete("error"); throw; }
+    }
+
+    private static async Task<TResult> MonitorGenericTaskAsync<TResult>(Task<TResult> task, HumanizationDiagnosticsRecorder.Invocation invocation)
+    {
+        try { var result = await task.ConfigureAwait(false); invocation.Complete("success"); return result; }
+        catch (OperationCanceledException) { invocation.Complete("canceled"); throw; }
+        catch (TimeoutException) { invocation.Complete("timeout"); throw; }
+        catch { invocation.Complete("error"); throw; }
+    }
+
+    private object? InvokeCore(MethodInfo? targetMethod, object?[]? args)
     {
         if (targetMethod is null)
         {

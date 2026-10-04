@@ -21,6 +21,14 @@ public sealed class HumanActions
 
     internal HumanizationCompatibilityMode CompatibilityMode => _options.CompatibilityMode;
 
+    internal (string Mode, string Reason) DescribeMouseMove(IPage page)
+    {
+        if (_options.MouseAlgorithm != MouseTrajectoryAlgorithm.Cursory) return ("humanized", "humanization.preparation-or-paced-action");
+        if (!_mouseStates.TryGetValue(page, out var state) || !state.HasKnownPosition) return ("native-anchor", "humanization.pointer-unknown");
+        if (state.HasButtonDown) return ("native-anchor", "humanization.active-drag");
+        return ("humanized", "humanization.cursory-move");
+    }
+
     public HumanActions(HumanInteractionOptions? options = null)
     {
         _options = options ?? new HumanInteractionOptions();
@@ -94,13 +102,18 @@ public sealed class HumanActions
             }
 
             var path = _cursory.Create(state.X!.Value, state.Y!.Value, targetX, targetY, _options);
+            HumanizationDiagnosticsRecorder.ReportPlannedMovement(path.Count, path[^1].OffsetMilliseconds);
+            var dispatched = 0;
             await _movementScheduler.ExecuteAsync(
                 () => page.IsClosed,
                 (x, y) => page.Mouse.MoveAsync((float)x, (float)y),
                 path,
                 TimeSpan.FromMilliseconds(_options.CursoryMovementDeadlineMilliseconds),
                 point => state.ConfirmPosition(point.X, point.Y),
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken,
+                (sent, skipped) => { dispatched = sent; HumanizationDiagnosticsRecorder.ReportMovementProgress(sent, skipped); }).ConfigureAwait(false);
+            HumanizationDiagnosticsRecorder.ReportFinalEndpointReached(dispatched > 0 && path.Count > 0 &&
+                state.X == path[^1].X && state.Y == path[^1].Y);
             return;
         }
 

@@ -14,6 +14,11 @@ public enum MouseTrajectoryAlgorithm
 
 public sealed record HumanInteractionOptions
 {
+    /// <summary>Enables bounded, privacy-safe wrapper diagnostics. Disabled by default.</summary>
+    public bool EnableDiagnostics { get; init; }
+
+    /// <summary>Maximum completed invocation records retained per humanizer (1–10000).</summary>
+    public int DiagnosticsCapacity { get; init; } = 256;
     /// <summary>Selects the mouse trajectory generator. Cursory is an experimental opt-in.</summary>
     public MouseTrajectoryAlgorithm MouseAlgorithm { get; init; } = MouseTrajectoryAlgorithm.Bezier;
 
@@ -68,6 +73,11 @@ public sealed record HumanInteractionOptions
 
     internal void Validate()
     {
+        if (DiagnosticsCapacity is < 1 or > 10_000)
+        {
+            throw new ArgumentOutOfRangeException(nameof(DiagnosticsCapacity));
+        }
+
         if (!Enum.IsDefined(MouseAlgorithm))
         {
             throw new ArgumentOutOfRangeException(nameof(MouseAlgorithm));

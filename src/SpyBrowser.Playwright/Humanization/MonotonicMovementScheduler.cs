@@ -37,7 +37,8 @@ internal sealed class MonotonicMovementScheduler
         IReadOnlyList<TimedMousePoint> points,
         TimeSpan deadline,
         Action<TimedMousePoint> onConfirmed,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Action<int, int>? onProgress = null)
     {
         ArgumentNullException.ThrowIfNull(pageIsClosed);
         ArgumentNullException.ThrowIfNull(send);
@@ -49,6 +50,8 @@ internal sealed class MonotonicMovementScheduler
         var started = _clock.GetTimestamp();
         var end = started + ToTicks(deadline);
         var index = 0;
+        var sentCount = 0;
+        var coalescedCount = 0;
         while (index < points.Count)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -77,6 +80,9 @@ internal sealed class MonotonicMovementScheduler
             var point = points[sendIndex];
             await send(point.X, point.Y).ConfigureAwait(false);
             onConfirmed(point);
+            sentCount++;
+            coalescedCount += sendIndex - index;
+            onProgress?.Invoke(sentCount, coalescedCount);
             index = sendIndex + 1;
         }
     }

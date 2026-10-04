@@ -12,6 +12,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
     private readonly IPlaywright _playwright;
     private readonly IdentityLease? _identityLease;
     private readonly bool _closeBrowser;
+    private readonly PlaywrightHumanizer? _humanizer;
     private int _disposed;
 
     internal SpyBrowserContextHandle(
@@ -27,6 +28,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
     {
         _playwright = playwright;
         _identityLease = identityLease;
+        _humanizer = humanizer;
         _closeBrowser = closeBrowser;
         RawContext = rawContext;
         RawBrowser = rawBrowser;
@@ -50,6 +52,9 @@ public class SpyBrowserContextHandle : IAsyncDisposable
     public BrowserSurfaceDiagnostics? Diagnostics { get; }
 
     public ConsistencyReport Consistency { get; }
+
+    /// <summary>Returns bounded interaction diagnostics when humanization diagnostics were enabled; otherwise null.</summary>
+    public HumanizationDiagnosticsSnapshot? GetHumanizationDiagnosticsSnapshot() => _humanizer?.GetDiagnosticsSnapshot();
 
     public IReadOnlyList<IPage> Pages => ProbePageRegistry.For(RawContext).Filter(Context.Pages);
 
