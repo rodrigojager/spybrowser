@@ -260,12 +260,12 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
     Console.WriteLine(interruptedDuringSdkWrite
         ? $"PASS: OS-terminated SDK SaveAsync during actual temporary-file write; {crashTemps.Length} orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed)."
         : "PENDING: bounded SDK SaveAsync worker did not expose an active temp-file write before termination.");
+    var permissionDenied = false;
+    var deniedRoot = Path.Combine(profileRoot, "denied-snapshot-permissions");
     if (OperatingSystem.IsLinux())
     {
-        var deniedRoot = Path.Combine(profileRoot, "denied-snapshot-permissions");
         Directory.CreateDirectory(deniedRoot);
         File.SetUnixFileMode(deniedRoot, UnixFileMode.UserRead | UnixFileMode.UserExecute);
-        var permissionDenied = false;
         try
         {
             var deniedStore = constructor.Invoke(new object[] { Path.Combine(deniedRoot, "snapshots"), 2 });
@@ -278,9 +278,73 @@ async Task VerifySnapshotApiAsync(Type storeType, Type recordType, string profil
             File.SetUnixFileMode(deniedRoot, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
             if (Directory.Exists(deniedRoot)) Directory.Delete(deniedRoot, recursive: true);
         }
-        Console.WriteLine(permissionDenied ? "PASS: real Linux chmod permission denial preserved the snapshot baseline." : "PENDING: process privileges bypassed real Linux chmod denial; no fake-file-block substitute used.");
+        Console.WriteLine(permissionDenied ? "PASS: real Linux chmod permission denial rejected SDK SaveAsync." : "PENDING: process privileges bypassed real Linux chmod denial; no fake-file-block substitute used.");
     }
-    else Console.WriteLine("PENDING: permission-denial verification requires real Linux chmod semantics.");
+    else if (OperatingSystem.IsWindows())
+    {
+        Directory.CreateDirectory(deniedRoot);
+        string? userSid = null;
+        var aclRestored = false;
+        try
+        {
+            var whoami = new System.Diagnostics.ProcessStartInfo("whoami.exe")
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                ArgumentList = { "/user", "/fo", "csv", "/nh" }
+            };
+            using (var identityProcess = System.Diagnostics.Process.Start(whoami) ?? throw new InvalidOperationException("Could not query the current Windows user SID."))
+            {
+                var identityOutput = await identityProcess.StandardOutput.ReadToEndAsync();
+                var identityError = await identityProcess.StandardError.ReadToEndAsync();
+                await identityProcess.WaitForExitAsync();
+                if (identityProcess.ExitCode != 0) throw new IOException($"whoami could not resolve the current SID: {identityError}");
+                var columns = identityOutput.Trim().TrimStart('"').TrimEnd('"').Split("\",\"", StringSplitOptions.None);
+                userSid = columns.LastOrDefault(value => value.StartsWith("S-1-", StringComparison.Ordinal));
+                if (userSid is null) throw new InvalidDataException($"Could not parse current user SID from whoami output: {identityOutput}");
+            }
+            RunAcl("/deny", $"*{userSid}:(OI)(CI)(W)");
+            try
+            {
+                var deniedStore = constructor.Invoke(new object[] { Path.Combine(deniedRoot, "snapshots"), 2 });
+                await (Task<string>)save.Invoke(deniedStore, new object?[] { current, null, CancellationToken.None })!;
+            }
+            catch (UnauthorizedAccessException) { permissionDenied = true; }
+            catch (IOException) { permissionDenied = true; }
+        }
+        finally
+        {
+            if (userSid is not null)
+            {
+                RunAcl("/remove:d", $"*{userSid}");
+                aclRestored = true;
+            }
+            if (aclRestored && Directory.Exists(deniedRoot)) Directory.Delete(deniedRoot, recursive: true);
+        }
+        if (File.Exists(baselinePath) && Hash(baselinePath) != protectedBaselineHash)
+            throw new IOException("Real Windows ACL permission-denial check changed the protected snapshot baseline.");
+        Console.WriteLine(permissionDenied ? "PASS: real Windows NTFS ACL denial rejected SDK SaveAsync; ACL restored before cleanup and baseline preserved." : "PENDING: Windows ACL did not deny SDK SaveAsync.");
+    }
+    else Console.WriteLine("PENDING: permission-denial verification requires real Linux chmod or Windows NTFS ACL semantics.");
+
+    void RunAcl(string operation, string rule)
+    {
+        var start = new System.Diagnostics.ProcessStartInfo("icacls.exe")
+        {
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            ArgumentList = { deniedRoot, operation, rule }
+        };
+        using var process = System.Diagnostics.Process.Start(start) ?? throw new InvalidOperationException("Could not start icacls.exe for the real Windows ACL fixture.");
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+        process.WaitForExit();
+        var stdout = stdoutTask.GetAwaiter().GetResult();
+        var stderr = stderrTask.GetAwaiter().GetResult();
+        if (process.ExitCode != 0) throw new IOException($"icacls {operation} failed ({process.ExitCode}): {stdout} {stderr}");
+    }
     var storageStateHashBeforeDiscard = Hash(statePath);
     var filesBeforeDiscard = Directory.GetFiles(snapshotDir);
     foreach (var file in filesBeforeDiscard) File.Delete(file);

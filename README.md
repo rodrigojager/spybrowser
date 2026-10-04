@@ -188,7 +188,8 @@ on Windows and Linux against both that baseline and the latest stable
 The default is to prefer coherent native values. The optional experimental
 WebGL mask changes reported strings only; it cannot change rendered pixels,
 timing, WebGPU, TLS, or native-function introspection. It is therefore disabled
-unless explicitly configured.
+unless explicitly configured. Snapshot comparisons retain normalized renderer
+categories, not raw GPU adapter, renderer, or device strings.
 
 Xvfb provides a display, not a GPU. Hardware rendering in Linux/container
 deployments needs a real render device (commonly `/dev/dri`) or NVIDIA GPU
@@ -219,6 +220,12 @@ See [architecture](docs/architecture.md),
 
 SpyBrowser code is MIT licensed. Chrome/Edge and Playwright retain their own
 licenses and are not relicensed by SpyBrowser; see `THIRD_PARTY_NOTICES.md`.
+Redistribution rights for the bundled Cursory trajectory dataset and its
+upstream-derived materials are **unverified**; repository and package metadata
+are not legal clearance. Until an independent rights review explicitly clears
+distribution, do not publish or push SpyBrowser packages containing that data,
+and do not treat a successful build or installed-package test as permission to
+redistribute it. The external-distribution gate must fail closed.
 
 Use SpyBrowser only for systems and data you are authorized to automate. Site
 terms, rate limits, access controls, and applicable laws still apply.

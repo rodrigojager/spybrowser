@@ -26,7 +26,7 @@ def sha(path: Path) -> str:
 
 
 def run(command, *, cwd, env, log):
-    result = subprocess.run(command, cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    result = subprocess.run(command, cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=240)
     log.append({"command": [str(x) for x in command], "cwd": str(cwd), "exitCode": result.returncode, "output": result.stdout})
     if result.returncode:
         raise RuntimeError(f"Command failed ({result.returncode}): {' '.join(map(str, command))}\n{result.stdout}")
@@ -203,6 +203,22 @@ def main():
         state_path = profile / "storage-state.json"
         execution_error = None
         try:
+            # Install and run the actual CLI tool package from the candidate feed alone; no source/project reference or network feed.
+            cli_tool_dir = temp / "cli-tools"
+            cli_env = env.copy(); cli_env["NUGET_PACKAGES"] = str(temp / "cli-nuget-cache")
+            if os.name != "nt" and shutil.which("dotnet", path=cli_env.get("PATH")):
+                cli_env["DOTNET_ROOT"] = str(Path(shutil.which("dotnet", path=cli_env.get("PATH"))).resolve().parent)
+            try:
+                run(["dotnet", "tool", "install", "SpyBrowser.Cli", "--tool-path", str(cli_tool_dir),
+                     "--version", args.candidate_version, "--add-source", str(feed), "--ignore-failed-sources"],
+                    cwd=consumer, env=cli_env, log=logs)
+                cli_command = cli_tool_dir / ("spybrowser.exe" if os.name == "nt" else "spybrowser")
+                cli_output = run([str(cli_command), "version"], cwd=consumer, env=cli_env, log=logs)
+                if args.candidate_version not in cli_output:
+                    raise RuntimeError(f"Installed CLI did not report candidate version {args.candidate_version}: {cli_output}")
+                statuses.append({"check": "installed-cli-package-offline-version", "status": "PASS"})
+            except Exception as exc:
+                statuses.append({"check": "installed-cli-package-offline-version", "status": "FAIL", "reason": str(exc)})
             # Restore/build each version from packages only, using a fresh consumer cache and out-of-tree working directory.
             last_candidate_output = ""
             for version, name in [(args.candidate_version, "candidate-cursory"),
@@ -217,10 +233,10 @@ def main():
                 else:
                     statuses.append({"check": "snapshot-os-crash-during-sdk-write-baseline-preserved", "status": "PENDING",
                                      "reason": "The bounded child process did not expose an active SDK temporary-file write; no fake writer evidence was accepted."})
-                if "PASS: real Linux chmod" in last_candidate_output:
+                if "PASS: real Linux chmod" in last_candidate_output or "PASS: real Windows NTFS ACL denial" in last_candidate_output:
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PASS"})
                 else:
-                    statuses.append({"check": "snapshot-real-permission-denial", "status": "PENDING", "reason": "The host cannot establish real Linux chmod denial or is not Linux; no fake file blocker was used."})
+                    statuses.append({"check": "snapshot-real-permission-denial", "status": "PENDING", "reason": "The host could not establish an enforced Linux chmod or Windows NTFS ACL denial; no fake file blocker was used."})
                 if "PASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information" in last_candidate_output:
                     statuses.append({"check": "snapshot-gpu-context-information", "status": "PASS"})
                 else:

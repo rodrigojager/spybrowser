@@ -1,0 +1,627 @@
+{
+  "schemaVersion": 1,
+  "candidateVersion": "0.1.0-review.1e9c3e9",
+  "sourceCommit": "1e9c3e9f0e2ec8c24960fee47b355b2a05d6fd56",
+  "declaredFinalCommit": null,
+  "isFinal": false,
+  "candidateProvenanceStatus": "preliminary-not-release-evidence",
+  "feedManifest": "D:\\Temp\\spybrowser-feed-review-1e9c3e9\\feed-manifest.json",
+  "feedManifestSha256": "696b445857a0585d96d41aeaa6b54ed2d8de4f7a4da620b9acfc51394b71cd1a",
+  "previousVersion": "0.1.0-review.7ae11b5",
+  "baselineCommit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+  "playwrightVersion": "1.61.0",
+  "candidateFeed": "D:\\Temp\\spybrowser-feed-review-1e9c3e9",
+  "previousFeed": "D:\\Temp\\spybrowser-feed-review-7ae11b5",
+  "dependencyFeeds": [
+    "C:\\Users\\Rodrigo\\.nuget\\packages"
+  ],
+  "consumerWorkingDirectory": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+  "profileDirectory": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile",
+  "manifestSha256": "7a6886503c8d48d39fbf38cb9a7d350afc336e1e765a10777f760ad1215580e2",
+  "storageStateSha256": "59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008",
+  "packages": [
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-1e9c3e9",
+      "file": "SpyBrowser.Cli.0.1.0-review.1e9c3e9.nupkg",
+      "sha256": "6c13fcdd91f3c034e9878ea6683dba414e7f04e63c3bb6366b588dcaf5c057a8",
+      "nuspec": [
+        "SpyBrowser.Cli.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Cli.nuspec": {
+          "version": "0.1.0-review.1e9c3e9",
+          "license": "MIT",
+          "dependencyIds": []
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Cli.nuspec": "046d4bfb5cf3a3c47effb83bffae551f067b4e4f240005456a3cf93a0759b568"
+      },
+      "runtimeAssemblies": {},
+      "licenseAndSourceEntries": {
+        "tools/net8.0/any/.playwright/node/LICENSE": "4573185d56580da2b890ba34a85a409257640f1c5632eade4300137266194d18",
+        "tools/net8.0/any/.playwright/package/LICENSE": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb",
+        "tools/net8.0/any/.playwright/package/NOTICE": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d",
+        "tools/net8.0/any/.playwright/package/ThirdPartyNotices.txt": "a549d329bad8806fe279f0ecae0fc0270dec7e7c2dc8ec10f90e394f7c32b144",
+        "tools/net8.0/any/.playwright/package/lib/serverRegistry.js.LICENSE": "5cf540fe55a2ba9bcf0eb76e739b454faa8581e2f1a0f777602ef0855534302e",
+        "tools/net8.0/any/.playwright/package/lib/utilsBundle.js.LICENSE": "e3f91eea8ba98019d8e65ec61756af34a67e170070005a09d1fc6f49a64b544b",
+        "THIRD_PARTY_NOTICES.md": "0ce849ad6c68dd6966d5fb33e3d6ce6b414bc1a0f0cd2570097d21196f20c3e3"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Cli.0.1.0-review.1e9c3e9.snupkg",
+        "sha256": "9ef55c6eaf01660b214e26413cfc866162e188cf502f1fda79f399765de12ee0"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-1e9c3e9",
+      "file": "SpyBrowser.Core.0.1.0-review.1e9c3e9.nupkg",
+      "sha256": "82bbf32cc5d42b32c6e968ac27f1c8c9e7d38e2a46d11af00bdbc32aff20d253",
+      "nuspec": [
+        "SpyBrowser.Core.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Core.nuspec": {
+          "version": "0.1.0-review.1e9c3e9",
+          "license": "MIT",
+          "dependencyIds": []
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Core.nuspec": "39b68f0dd6b6b28494efc6ef4ebd6f8328be87e89171d90b6edda948c817c731"
+      },
+      "runtimeAssemblies": {
+        "lib/net8.0/SpyBrowser.Core.dll": "7a9c1caa1388a147c1f97aea5726cb3dcddfb400eec83794d8604b006e590a1c"
+      },
+      "licenseAndSourceEntries": {
+        "THIRD_PARTY_NOTICES.md": "0ce849ad6c68dd6966d5fb33e3d6ce6b414bc1a0f0cd2570097d21196f20c3e3"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Core.0.1.0-review.1e9c3e9.snupkg",
+        "sha256": "ff5e6aad6f200124592aef5859c50350d567dcf600c216944a13a568c7346cff"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-1e9c3e9",
+      "file": "SpyBrowser.Cursory.0.1.0-review.1e9c3e9.nupkg",
+      "sha256": "401b21b2b2eb9566aeabbefaae1d49debb54d62a4fcc67fa1547f79069d33e9f",
+      "nuspec": [
+        "SpyBrowser.Cursory.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Cursory.nuspec": {
+          "version": "0.1.0-review.1e9c3e9",
+          "license": "LGPL-3.0-or-later",
+          "dependencyIds": []
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Cursory.nuspec": "853a4be614196098da5cdb011fd26efe27230ff4b69bcd8500b5a45a1e2b51d7"
+      },
+      "runtimeAssemblies": {
+        "lib/net8.0/SpyBrowser.Cursory.dll": "a311ecc591311b100f34641bb95b8f3159b3dc2dfacf518b93e10905d434ad58"
+      },
+      "licenseAndSourceEntries": {
+        "LICENSE/LICENSE": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+        "LICENSE/COPYING": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "LICENSE/COPYING.LESSER": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+        "LICENSE/third-party/APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "LICENSE/third-party/NUMPY-BSD-3-CLAUSE.txt": "1be1df33863f97a7bc1c4d67980bd6c69c9a6fef0a5ee76e6ad6cb91e56e8491",
+        "LICENSE/third-party/PCG-MIT.txt": "290a0ab1748090ac60ee5451da0e2cbf4bfacf532af568c77a3de8d4e6a48440",
+        "LICENSE/third-party/PSF-2.txt": "8a54c8287138ffef35ecec20e2d3db8d3f2ffe86da69d8f7a2199e07b252cbec",
+        "NOTICE": "a7ee41d12705686d5a4cab89b092b97e600515a3d64552c7fb5eb551f48739f1",
+        "source/SpyBrowser.Cursory/CursoryTrajectoryGenerator.cs": "845d00bf1b4703733a12ba06dd9a2be095e3067290d89d659599fff05a96e0d5",
+        "source/SpyBrowser.Cursory/Trajectory.cs": "303e2cee10b366b9842de4324ad88f6498f60734f5bed4952834ab8094647615",
+        "source/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj": "4a618462c228a823beaa8b1f3e51d9798d2de9391cad3c743214b979381c1760",
+        "source/SpyBrowser.Cursory/Internal/Dataset.cs": "6cbbd52d0ac20866d627f7dd71f239f11239fd168ffa09769cab34e70e411b5e",
+        "source/SpyBrowser.Cursory/Internal/NumericCompat.cs": "e4c9ee4a87923f6d1aa291c9f2a6c9b63883da87cc13879de0d1aeb481e37d82",
+        "source/SpyBrowser.Cursory/Internal/Pcg64.cs": "bd3d588972fcebf05ae4fde5fdc1e95c9766acca16347dcf0e2b3cec2d32eb72",
+        "source/SpyBrowser.Cursory/Internal/RandomSampler.cs": "95fbd0917d2aa1db1cfa9808117d3b2fbecb49d9bbdb64dc07395babde595560",
+        "source/SpyBrowser.Cursory/Internal/TrajectorySelection.cs": "71d2ae17619d9572a82779b821594ff5fd1b3b046fd73d436f5d0d20e4d68cbc",
+        "source/SpyBrowser.Cursory/Internal/TrajectoryTiming.cs": "628db5ddd7424f1e95b34886303d0577ddf856b2b22dceb644aefae9fe08b185",
+        "source/SpyBrowser.Cursory/Internal/TrajectoryTransforms.cs": "812fe77dcee9ceefafb3a7c4abd55424f945d0795a1c35dc08e602cf8a9c2883",
+        "source/SpyBrowser.Cursory/Internal/ZigguratTables.cs": "370abb5779abeaec22204f10bc02d6a0368672c43baf56c33b1f2af4b506b8cd",
+        "source/SpyBrowser.Cursory/Properties/AssemblyInfo.cs": "82b3d55322676034050f0d17a940fc84b584e89a533e30b330c7788b46b4bab7",
+        "source/SpyBrowser.Cursory/Data/trajectories.json.gz": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+        "source/SpyBrowser.Cursory/Data/upstream-manifest.json": "63cd0dd823b8c37cc81d14c8cce4e799be5ad27226200c3132295818e0a88c1d",
+        "source/BUILD-AND-MODIFY.md": "380624f8e76c02b07a9de746867a55519bcbf1024ed2b4f224e99b9f0f0b0782"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Cursory.0.1.0-review.1e9c3e9.snupkg",
+        "sha256": "dd877f2ff877619364fab7ac6d793eef24a3d47263f4c94ea18d2e34779a0e78"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-1e9c3e9",
+      "file": "SpyBrowser.Playwright.0.1.0-review.1e9c3e9.nupkg",
+      "sha256": "1539098b50c2df9be944d6d98f2dadd6c3a2f212539467568d81dae3dd7175fc",
+      "nuspec": [
+        "SpyBrowser.Playwright.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Playwright.nuspec": {
+          "version": "0.1.0-review.1e9c3e9",
+          "license": "MIT",
+          "dependencyIds": [
+            "SpyBrowser.Core",
+            "SpyBrowser.Cursory",
+            "Microsoft.Playwright"
+          ]
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Playwright.nuspec": "203631e84fe17d64f8b91a7fe4b73a30152cbc3c19b5e34b1eb8aefba983397a"
+      },
+      "runtimeAssemblies": {
+        "lib/net8.0/SpyBrowser.Playwright.dll": "85b2581bf5ba6ea9ee4a6ecbb92ad4a4e2524647fab3ea6b2b4ef24a85751368"
+      },
+      "licenseAndSourceEntries": {
+        "THIRD_PARTY_NOTICES.md": "0ce849ad6c68dd6966d5fb33e3d6ce6b414bc1a0f0cd2570097d21196f20c3e3"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Playwright.0.1.0-review.1e9c3e9.snupkg",
+        "sha256": "51f61cbe1db018be0ec8ab1c2449acac910fd34368043ebb08d7e807d264b040"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-7ae11b5",
+      "file": "SpyBrowser.Cli.0.1.0-review.7ae11b5.nupkg",
+      "sha256": "c1187e84327f24f1a1072c8adec6838bd00064063c4c2545453a219ac83c2d22",
+      "nuspec": [
+        "SpyBrowser.Cli.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Cli.nuspec": {
+          "version": "0.1.0-review.7ae11b5",
+          "license": "MIT",
+          "dependencyIds": []
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Cli.nuspec": "79111081b5cecd7dd3549469a4cf74bfd23a812effb44f2c29a7dc21ae51cb24"
+      },
+      "runtimeAssemblies": {},
+      "licenseAndSourceEntries": {
+        "tools/net8.0/any/.playwright/node/LICENSE": "4573185d56580da2b890ba34a85a409257640f1c5632eade4300137266194d18",
+        "tools/net8.0/any/.playwright/package/LICENSE": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb",
+        "tools/net8.0/any/.playwright/package/NOTICE": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d",
+        "tools/net8.0/any/.playwright/package/ThirdPartyNotices.txt": "a549d329bad8806fe279f0ecae0fc0270dec7e7c2dc8ec10f90e394f7c32b144",
+        "tools/net8.0/any/.playwright/package/lib/serverRegistry.js.LICENSE": "5cf540fe55a2ba9bcf0eb76e739b454faa8581e2f1a0f777602ef0855534302e",
+        "tools/net8.0/any/.playwright/package/lib/utilsBundle.js.LICENSE": "e3f91eea8ba98019d8e65ec61756af34a67e170070005a09d1fc6f49a64b544b",
+        "THIRD_PARTY_NOTICES.md": "0ce849ad6c68dd6966d5fb33e3d6ce6b414bc1a0f0cd2570097d21196f20c3e3"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Cli.0.1.0-review.7ae11b5.snupkg",
+        "sha256": "9a6811b84c091af48e3e58c7f8011be2c7b2a7a5e2aa5868bc65e2d305152244"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-7ae11b5",
+      "file": "SpyBrowser.Core.0.1.0-review.7ae11b5.nupkg",
+      "sha256": "a3b13cb07b00d5e532b231d49941602b9d180aa05ad35fb8dfb6431546a1242c",
+      "nuspec": [
+        "SpyBrowser.Core.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Core.nuspec": {
+          "version": "0.1.0-review.7ae11b5",
+          "license": "MIT",
+          "dependencyIds": []
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Core.nuspec": "a223d4f13ce97b940bf08879cb8aa97229c0121f0b72004000b972b0d5823a6c"
+      },
+      "runtimeAssemblies": {
+        "lib/net8.0/SpyBrowser.Core.dll": "9371d683a8af189623b3810e91d70fecf84b07a6846167724c653bdab08c90d4"
+      },
+      "licenseAndSourceEntries": {
+        "THIRD_PARTY_NOTICES.md": "0ce849ad6c68dd6966d5fb33e3d6ce6b414bc1a0f0cd2570097d21196f20c3e3"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Core.0.1.0-review.7ae11b5.snupkg",
+        "sha256": "59327f9bcbb5b15c2f9739705b00b579a26c7a03ca00da14972356c0125237c2"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-7ae11b5",
+      "file": "SpyBrowser.Cursory.0.1.0-review.7ae11b5.nupkg",
+      "sha256": "d5a6e8ccddac11767d289c14667dcdd6de133ee6870737bfba7357065e833dfc",
+      "nuspec": [
+        "SpyBrowser.Cursory.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Cursory.nuspec": {
+          "version": "0.1.0-review.7ae11b5",
+          "license": "LGPL-3.0-or-later",
+          "dependencyIds": []
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Cursory.nuspec": "e035df55dcd923b21fc49851e89900a954e980231720fc176937d0c219708bc9"
+      },
+      "runtimeAssemblies": {
+        "lib/net8.0/SpyBrowser.Cursory.dll": "1967a2ca2588f459dde0a6404f8b5704382d041147bfc7a5b8741da49d84ff91"
+      },
+      "licenseAndSourceEntries": {
+        "LICENSE/LICENSE": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+        "LICENSE/COPYING": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "LICENSE/COPYING.LESSER": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+        "LICENSE/third-party/APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "LICENSE/third-party/NUMPY-BSD-3-CLAUSE.txt": "1be1df33863f97a7bc1c4d67980bd6c69c9a6fef0a5ee76e6ad6cb91e56e8491",
+        "LICENSE/third-party/PCG-MIT.txt": "290a0ab1748090ac60ee5451da0e2cbf4bfacf532af568c77a3de8d4e6a48440",
+        "LICENSE/third-party/PSF-2.txt": "8a54c8287138ffef35ecec20e2d3db8d3f2ffe86da69d8f7a2199e07b252cbec",
+        "NOTICE": "a7ee41d12705686d5a4cab89b092b97e600515a3d64552c7fb5eb551f48739f1",
+        "source/SpyBrowser.Cursory/CursoryTrajectoryGenerator.cs": "845d00bf1b4703733a12ba06dd9a2be095e3067290d89d659599fff05a96e0d5",
+        "source/SpyBrowser.Cursory/Trajectory.cs": "303e2cee10b366b9842de4324ad88f6498f60734f5bed4952834ab8094647615",
+        "source/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj": "4a618462c228a823beaa8b1f3e51d9798d2de9391cad3c743214b979381c1760",
+        "source/SpyBrowser.Cursory/Internal/Dataset.cs": "6cbbd52d0ac20866d627f7dd71f239f11239fd168ffa09769cab34e70e411b5e",
+        "source/SpyBrowser.Cursory/Internal/NumericCompat.cs": "e4c9ee4a87923f6d1aa291c9f2a6c9b63883da87cc13879de0d1aeb481e37d82",
+        "source/SpyBrowser.Cursory/Internal/Pcg64.cs": "bd3d588972fcebf05ae4fde5fdc1e95c9766acca16347dcf0e2b3cec2d32eb72",
+        "source/SpyBrowser.Cursory/Internal/RandomSampler.cs": "95fbd0917d2aa1db1cfa9808117d3b2fbecb49d9bbdb64dc07395babde595560",
+        "source/SpyBrowser.Cursory/Internal/TrajectorySelection.cs": "71d2ae17619d9572a82779b821594ff5fd1b3b046fd73d436f5d0d20e4d68cbc",
+        "source/SpyBrowser.Cursory/Internal/TrajectoryTiming.cs": "628db5ddd7424f1e95b34886303d0577ddf856b2b22dceb644aefae9fe08b185",
+        "source/SpyBrowser.Cursory/Internal/TrajectoryTransforms.cs": "812fe77dcee9ceefafb3a7c4abd55424f945d0795a1c35dc08e602cf8a9c2883",
+        "source/SpyBrowser.Cursory/Internal/ZigguratTables.cs": "370abb5779abeaec22204f10bc02d6a0368672c43baf56c33b1f2af4b506b8cd",
+        "source/SpyBrowser.Cursory/Properties/AssemblyInfo.cs": "82b3d55322676034050f0d17a940fc84b584e89a533e30b330c7788b46b4bab7",
+        "source/SpyBrowser.Cursory/Data/trajectories.json.gz": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+        "source/SpyBrowser.Cursory/Data/upstream-manifest.json": "63cd0dd823b8c37cc81d14c8cce4e799be5ad27226200c3132295818e0a88c1d",
+        "source/BUILD-AND-MODIFY.md": "380624f8e76c02b07a9de746867a55519bcbf1024ed2b4f224e99b9f0f0b0782"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Cursory.0.1.0-review.7ae11b5.snupkg",
+        "sha256": "3b0605363d52d06d85812c5fd1611f2b79e390b61e5cfda7712cd44ac6d8af55"
+      }
+    },
+    {
+      "feed": "D:\\Temp\\spybrowser-feed-review-7ae11b5",
+      "file": "SpyBrowser.Playwright.0.1.0-review.7ae11b5.nupkg",
+      "sha256": "bfd1b25be03726734d122dea866845749e519091a6f8962ba826f0f873de53a1",
+      "nuspec": [
+        "SpyBrowser.Playwright.nuspec"
+      ],
+      "nuspecMetadata": {
+        "SpyBrowser.Playwright.nuspec": {
+          "version": "0.1.0-review.7ae11b5",
+          "license": "MIT",
+          "dependencyIds": [
+            "SpyBrowser.Core",
+            "SpyBrowser.Cursory",
+            "Microsoft.Playwright"
+          ]
+        }
+      },
+      "nuspecSha256": {
+        "SpyBrowser.Playwright.nuspec": "71461785bfe299762d4ad557fc0040ce9cdc5c189c6639a37a82d2ca6893daa2"
+      },
+      "runtimeAssemblies": {
+        "lib/net8.0/SpyBrowser.Playwright.dll": "a78b0763d712dc8a0c0514eb9b7575789fc7e5357367802dc4c55ec776d5ffd8"
+      },
+      "licenseAndSourceEntries": {
+        "THIRD_PARTY_NOTICES.md": "0ce849ad6c68dd6966d5fb33e3d6ce6b414bc1a0f0cd2570097d21196f20c3e3"
+      },
+      "symbols": {
+        "file": "SpyBrowser.Playwright.0.1.0-review.7ae11b5.snupkg",
+        "sha256": "97013a8afd688757f0a22f5378f8062d4ffaa7a23b35d8ed4f1f48746b04b289"
+      }
+    }
+  ],
+  "evidenceInputs": [],
+  "statuses": [
+    {
+      "check": "previous-package-provenance",
+      "status": "PENDING",
+      "reason": "Caller-supplied previous feed; baseline e217 provenance must be independently verified."
+    },
+    {
+      "check": "installed-cli-package-offline-version",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate-cursory",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate-bezier",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate-off",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-os-crash-during-sdk-write-baseline-preserved",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-real-permission-denial",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-gpu-context-information",
+      "status": "PASS"
+    },
+    {
+      "check": "previous-bezier-rollback",
+      "status": "PASS"
+    },
+    {
+      "check": "previous-package-ignores-newer-snapshot",
+      "status": "FAIL",
+      "reason": "Older package did not confirm the required ignore/reject contract with a preserved newer-schema fixture."
+    },
+    {
+      "check": "previous-humanize-off",
+      "status": "PASS"
+    },
+    {
+      "check": "browser-executable-and-official-driver",
+      "status": "PASS",
+      "reason": "The installed-package launch completed through standard Microsoft.Playwright discovery."
+    },
+    {
+      "check": "external-dataset-distribution-license",
+      "status": "BLOCKED",
+      "reason": "Dataset license/redistribution clearance is not accepted; no external distribution is authorized."
+    }
+  ],
+  "technicalAllPassed": false,
+  "technicalFailures": [
+    {
+      "check": "previous-package-ignores-newer-snapshot",
+      "status": "FAIL",
+      "reason": "Older package did not confirm the required ignore/reject contract with a preserved newer-schema fixture."
+    }
+  ],
+  "technicalPending": [
+    {
+      "check": "previous-package-provenance",
+      "status": "PENDING",
+      "reason": "Caller-supplied previous feed; baseline e217 provenance must be independently verified."
+    }
+  ],
+  "externalPublicationAllowed": false,
+  "allPassed": false,
+  "commands": [
+    {
+      "command": [
+        "dotnet",
+        "tool",
+        "install",
+        "SpyBrowser.Cli",
+        "--tool-path",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\cli-tools",
+        "--version",
+        "0.1.0-review.1e9c3e9",
+        "--add-source",
+        "D:\\Temp\\spybrowser-feed-review-1e9c3e9",
+        "--ignore-failed-sources"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "Voc\u00c3\u00aa pode invocar a ferramenta usando o comando a seguir: spybrowser\nA ferramenta 'spybrowser.cli' (vers\u00c3\u00a3o '0.1.0-review.1e9c3e9') foi instalada com \u00c3\u00aaxito.\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\cli-tools\\spybrowser.exe",
+        "version"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "{\n  \"spyBrowser\": \"0.1.0-review.1e9c3e9\",\n  \"playwright\": \"1.61.0.0\",\n  \"operatingSystem\": \"Microsoft Windows 10.0.19045\",\n  \"architecture\": \"X64\"\n}\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "restore",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "--configfile",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\NuGet.Config",
+        "-p:SpyBrowserVersion=0.1.0-review.1e9c3e9",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  Determining projects to restore...\n  C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj restaurado (em 6,48 seg).\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:SpyBrowserVersion=0.1.0-review.1e9c3e9",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  DistributionChecks -> C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll\n\nCompila\u00c3\u00a7\u00c3\u00a3o com \u00c3\u00aaxito.\n    0 Aviso(s)\n    0 Erro(s)\n\nTempo Decorrido 00:00:01.04\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll",
+        "--phase",
+        "candidate-cursory",
+        "--profile-root",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm",
+      "exitCode": 0,
+      "output": "PASS: installed package phase=candidate-cursory; humanize=True; algorithm=Cursory; clicks=1\nProfile=C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile\\identity-store\\identities\\distribution-verification\\profile; manifestSha256=7a6886503c8d48d39fbf38cb9a7d350afc336e1e765a10777f760ad1215580e2; storageStateSha256=59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008\nPlaywright=1.61.0.0; driver=official Microsoft.Playwright package driver\nPASS: context disposed and identity manifest unchanged.\nPASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information\nPASS: concurrent SDK snapshot saves used two consumer processes; baseline retained.\nSDK interruption worker completed 0 successful SDK saves before termination. \nPASS: OS-terminated SDK SaveAsync during actual temporary-file write; 1 orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed).\nPASS: real Windows NTFS ACL denial rejected SDK SaveAsync; ACL restored before cleanup and baseline preserved.\nPASS: installed snapshot round-trip, explicit baseline comparison, two-process concurrency, unknown-schema rejection, cancellation cleanup and isolated discard.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "restore",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "--configfile",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\NuGet.Config",
+        "-p:SpyBrowserVersion=0.1.0-review.1e9c3e9",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  Determining projects to restore...\n  Todos os projetos est\u00c3\u00a3o atualizados para restaura\u00c3\u00a7\u00c3\u00a3o.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:SpyBrowserVersion=0.1.0-review.1e9c3e9",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  DistributionChecks -> C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll\n\nCompila\u00c3\u00a7\u00c3\u00a3o com \u00c3\u00aaxito.\n    0 Aviso(s)\n    0 Erro(s)\n\nTempo Decorrido 00:00:00.68\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll",
+        "--phase",
+        "candidate-bezier",
+        "--profile-root",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm",
+      "exitCode": 0,
+      "output": "PASS: installed package phase=candidate-bezier; humanize=True; algorithm=Bezier; clicks=1\nProfile=C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile\\identity-store\\identities\\distribution-verification\\profile; manifestSha256=7a6886503c8d48d39fbf38cb9a7d350afc336e1e765a10777f760ad1215580e2; storageStateSha256=59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008\nPlaywright=1.61.0.0; driver=official Microsoft.Playwright package driver\nPASS: context disposed and identity manifest unchanged.\nPASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information\nPASS: concurrent SDK snapshot saves used two consumer processes; baseline retained.\nSDK interruption worker completed 0 successful SDK saves before termination. \nPASS: OS-terminated SDK SaveAsync during actual temporary-file write; 1 orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed).\nPASS: real Windows NTFS ACL denial rejected SDK SaveAsync; ACL restored before cleanup and baseline preserved.\nPASS: installed snapshot round-trip, explicit baseline comparison, two-process concurrency, unknown-schema rejection, cancellation cleanup and isolated discard.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "restore",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "--configfile",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\NuGet.Config",
+        "-p:SpyBrowserVersion=0.1.0-review.1e9c3e9",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  Determining projects to restore...\n  Todos os projetos est\u00c3\u00a3o atualizados para restaura\u00c3\u00a7\u00c3\u00a3o.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:SpyBrowserVersion=0.1.0-review.1e9c3e9",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  DistributionChecks -> C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll\n\nCompila\u00c3\u00a7\u00c3\u00a3o com \u00c3\u00aaxito.\n    0 Aviso(s)\n    0 Erro(s)\n\nTempo Decorrido 00:00:00.91\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll",
+        "--phase",
+        "candidate-off",
+        "--profile-root",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm",
+      "exitCode": 0,
+      "output": "PASS: installed package phase=candidate-off; humanize=False; algorithm=Bezier; clicks=1\nProfile=C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile\\identity-store\\identities\\distribution-verification\\profile; manifestSha256=7a6886503c8d48d39fbf38cb9a7d350afc336e1e765a10777f760ad1215580e2; storageStateSha256=59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008\nPlaywright=1.61.0.0; driver=official Microsoft.Playwright package driver\nPASS: context disposed and identity manifest unchanged.\nPASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information\nPASS: concurrent SDK snapshot saves used two consumer processes; baseline retained.\nSDK interruption worker completed 0 successful SDK saves before termination. \nPASS: OS-terminated SDK SaveAsync during actual temporary-file write; 1 orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed).\nPASS: real Windows NTFS ACL denial rejected SDK SaveAsync; ACL restored before cleanup and baseline preserved.\nPASS: installed snapshot round-trip, explicit baseline comparison, two-process concurrency, unknown-schema rejection, cancellation cleanup and isolated discard.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "restore",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "--configfile",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\NuGet.Config",
+        "-p:SpyBrowserVersion=0.1.0-review.7ae11b5",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  Determining projects to restore...\n  C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj restaurado (em 605 ms).\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:SpyBrowserVersion=0.1.0-review.7ae11b5",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  DistributionChecks -> C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll\n\nCompila\u00c3\u00a7\u00c3\u00a3o com \u00c3\u00aaxito.\n    0 Aviso(s)\n    0 Erro(s)\n\nTempo Decorrido 00:00:02.15\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll",
+        "--phase",
+        "previous-bezier",
+        "--profile-root",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm",
+      "exitCode": 0,
+      "output": "PASS: installed package phase=previous-bezier; humanize=True; algorithm=Bezier; clicks=1\nProfile=C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile\\identity-store\\identities\\distribution-verification\\profile; manifestSha256=7a6886503c8d48d39fbf38cb9a7d350afc336e1e765a10777f760ad1215580e2; storageStateSha256=59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008\nPlaywright=1.61.0.0; driver=official Microsoft.Playwright package driver\nPASS: context disposed and identity manifest unchanged.\nPASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information\nPASS: concurrent SDK snapshot saves used two consumer processes; baseline retained.\nSDK interruption worker completed 0 successful SDK saves before termination. \nPASS: OS-terminated SDK SaveAsync during actual temporary-file write; 1 orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed).\nPASS: real Windows NTFS ACL denial rejected SDK SaveAsync; ACL restored before cleanup and baseline preserved.\nPASS: installed snapshot round-trip, explicit baseline comparison, two-process concurrency, unknown-schema rejection, cancellation cleanup and isolated discard.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "restore",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "--configfile",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\NuGet.Config",
+        "-p:SpyBrowserVersion=0.1.0-review.7ae11b5",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  Determining projects to restore...\n  Todos os projetos est\u00c3\u00a3o atualizados para restaura\u00c3\u00a7\u00c3\u00a3o.\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\DistributionChecks.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:SpyBrowserVersion=0.1.0-review.7ae11b5",
+        "-p:MicrosoftPlaywrightVersion=1.61.0"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer",
+      "exitCode": 0,
+      "output": "  DistributionChecks -> C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll\n\nCompila\u00c3\u00a7\u00c3\u00a3o com \u00c3\u00aaxito.\n    0 Aviso(s)\n    0 Erro(s)\n\nTempo Decorrido 00:00:00.80\n"
+    },
+    {
+      "command": [
+        "dotnet",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\consumer\\bin\\Release\\net8.0\\DistributionChecks.dll",
+        "--phase",
+        "previous-off",
+        "--profile-root",
+        "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile"
+      ],
+      "cwd": "C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm",
+      "exitCode": 0,
+      "output": "PASS: installed package phase=previous-off; humanize=False; algorithm=Bezier; clicks=1\nProfile=C:\\Users\\Rodrigo\\AppData\\Local\\Temp\\spybrowser-distribution-check-e4yuu7dm\\shared-profile\\identity-store\\identities\\distribution-verification\\profile; manifestSha256=7a6886503c8d48d39fbf38cb9a7d350afc336e1e765a10777f760ad1215580e2; storageStateSha256=59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008\nPlaywright=1.61.0.0; driver=official Microsoft.Playwright package driver\nPASS: context disposed and identity manifest unchanged.\nPASS: snapshot-gpu-context-information field=webgl1.renderer-category severity=Information\nPASS: concurrent SDK snapshot saves used two consumer processes; baseline retained.\nSDK interruption worker completed 0 successful SDK saves before termination. \nPASS: OS-terminated SDK SaveAsync during actual temporary-file write; 1 orphan temp file(s) remain because process death cannot run finally (startup cleanup/recovery is not claimed).\nPASS: real Windows NTFS ACL denial rejected SDK SaveAsync; ACL restored before cleanup and baseline preserved.\nPASS: installed snapshot round-trip, explicit baseline comparison, two-process concurrency, unknown-schema rejection, cancellation cleanup and isolated discard.\n"
+    }
+  ]
+}
