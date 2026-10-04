@@ -62,6 +62,9 @@ internal sealed class HumanizationScope
     private static readonly MethodInfo WrapTaskMethod = typeof(HumanizationScope)
         .GetMethod(nameof(WrapTaskAsync), BindingFlags.Instance | BindingFlags.NonPublic)!;
 
+    private static readonly MethodInfo WrapGatedInputMethod = typeof(HumanizationScope)
+        .GetMethod(nameof(WrapGatedInputAsync), BindingFlags.Instance | BindingFlags.NonPublic)!;
+
     private readonly HumanInteractionOptions _options;
     private readonly ConditionalWeakTable<object, object> _proxies = new();
     private readonly ConditionalWeakTable<IPage, HumanActions> _actions = new();
@@ -80,7 +83,7 @@ internal sealed class HumanizationScope
         else if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
         {
             var option = arguments.ElementAtOrDefault(0);
-            var button = option?.GetType().GetProperty("Button")?.GetValue(option) as string ?? "left";
+            var button = option?.GetType().GetProperty("Button")?.GetValue(option)?.ToString() ?? "left";
             actions.ObserveRawMouseButton(page, button, method == nameof(IMouse.DownAsync));
         }
     }
@@ -167,6 +170,22 @@ internal sealed class HumanizationScope
                      method.Name.Contains("InsertText", StringComparison.Ordinal);
         var budget = typing ? _options.TypingDeadlineMilliseconds : _options.ActionDeadlineMilliseconds;
         await PageInputState.For(page).RunAsync(invoke, budget).ConfigureAwait(false);
+    }
+
+    internal object WrapGatedInput(Task gate, Func<Task?> operation, Type returnType, IPage pageHint)
+    {
+        if (!returnType.IsGenericType || returnType.GetGenericTypeDefinition() != typeof(Task<>)) return gate;
+        return WrapGatedInputMethod.MakeGenericMethod(returnType.GetGenericArguments()[0])
+            .Invoke(this, [gate, operation, pageHint])!;
+    }
+
+    private async Task<TResult> WrapGatedInputAsync<TResult>(Task gate, Func<Task?> operation, IPage pageHint)
+    {
+        await gate.ConfigureAwait(false);
+        // The operation has completed under the input lease. Await its typed result without
+        // invoking it again or using a blocking Result getter, then apply normal return wrapping.
+        var result = await ((Task<TResult>)operation()!).ConfigureAwait(false);
+        return (TResult)WrapValue(result, typeof(TResult), pageHint)!;
     }
 
     public void TrackDefaultTimeout(IPage page, int milliseconds) =>
@@ -500,20 +519,35 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
 
         if (page is not null && IsInputMethod(targetMethod.Name) && typeof(Task).IsAssignableFrom(targetMethod.ReturnType))
         {
-            return _scope.RunInputAsync(page, targetMethod, async () =>
+            Task? pending = null;
+            var gate = _scope.RunInputAsync(page, targetMethod, async () =>
             {
                 if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var action))
                 {
-                    await ((Task)action!).ConfigureAwait(false);
+                    pending = (Task)action!;
+                    await pending.ConfigureAwait(false);
                     return;
                 }
 
-                try { await ((Task)targetMethod.Invoke(_target, arguments)!).ConfigureAwait(false); }
+                try
+                {
+                    pending = (Task)targetMethod.Invoke(_target, arguments)!;
+                    if (_target is IMouse && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
+                    {
+                        // Confirm native pointer/button state before releasing the per-page lease.
+                        await _scope.ObserveRawMouseCallAsync(page, targetMethod.Name, arguments, pending).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await pending.ConfigureAwait(false);
+                    }
+                }
                 catch (TargetInvocationException exception) when (exception.InnerException is not null)
                 {
                     ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
                 }
             });
+            return _scope.WrapGatedInput(gate, () => pending, targetMethod.ReturnType, page);
         }
 
         if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var humanizedResult)) return humanizedResult;

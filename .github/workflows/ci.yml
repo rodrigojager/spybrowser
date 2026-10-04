@@ -69,7 +69,7 @@ jobs:
       - name: Build, test and package
         shell: pwsh
         run: |
-          dotnet test SpyBrowser.sln -c Release --no-build --logger "trx;LogFileName=tests.trx" --results-directory artifacts/test-results -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION"
+          dotnet test SpyBrowser.sln -c Release --no-build --logger "trx" --results-directory artifacts/test-results -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           foreach ($project in @('Core','Playwright','Cursory','Compatibility.CloakBrowser','Cli')) {
             dotnet pack "src/SpyBrowser.$project/SpyBrowser.$project.csproj" -c Release --no-build -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" -o artifacts/packages
@@ -125,8 +125,8 @@ jobs:
       - name: Run real-browser integration tests
         shell: pwsh
         run: |
-          if ($IsLinux) { xvfb-run -a dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests" --logger "trx;LogFileName=browser.trx" --results-directory artifacts/test-results }
-          else { dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests" --logger "trx;LogFileName=browser.trx" --results-directory artifacts/test-results }
+          if ($IsLinux) { xvfb-run -a dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests|FullyQualifiedName~NativeCursoryMovementTests" --logger "trx" --results-directory artifacts/test-results }
+          else { dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests|FullyQualifiedName~NativeCursoryMovementTests" --logger "trx" --results-directory artifacts/test-results }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v7
         if: always()

@@ -1,0 +1,2 @@
+# Reference fixtures are hashed byte-for-byte across Windows and Linux.
+tests/**/Fixtures/*.json text eol=lf

@@ -26,7 +26,9 @@ public sealed class NativeCursoryMovementTests
             MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
             MouseMinimumDurationMilliseconds = 100,
             MouseMaximumDurationMilliseconds = 1_500,
-            CursoryMovementDeadlineMilliseconds = 2_000
+            // Geometry is the contract here, not a shared-runner latency threshold.
+            // Strict budget expiry is covered deterministically by fake-clock scheduler tests.
+            CursoryMovementDeadlineMilliseconds = 10_000
         });
         var page = humanizer.Wrap(rawPage);
 
@@ -97,7 +99,11 @@ public sealed class NativeCursoryMovementTests
             var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
             try
             {
-                var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+                var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+                {
+                    Headless = BrowserTestSettings.Headless,
+                    Channel = BrowserTestSettings.Channel
+                });
                 return new OwnedBrowserRuntime(playwright, browser);
             }
             catch
