@@ -107,7 +107,19 @@ public static class GpuProbe
     {
         ArgumentNullException.ThrowIfNull(page);
         cancellationToken.ThrowIfCancellationRequested();
-        return await page.EvaluateAsync<BrowserSurfaceDiagnostics>(ProbeScript).ConfigureAwait(false);
+        var evaluation = page.EvaluateAsync<BrowserSurfaceDiagnostics>(ProbeScript);
+        try
+        {
+            return await evaluation.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!evaluation.IsCompleted)
+        {
+            // Playwright does not expose cancellation for an in-flight protocol command.
+            // Observe its eventual result/fault; callers must not issue further commands
+            // on this page once their cancellation has been signaled.
+            _ = ObserveEvaluationAsync(evaluation);
+            throw;
+        }
     }
 
     /// <summary>Runs the probe in a fresh, private context page and always closes that page.</summary>
@@ -133,7 +145,24 @@ public static class GpuProbe
         finally
         {
             if (page is not null)
-                await ProbePageRegistry.For(context).CloseProbePageAsync(page).ConfigureAwait(false);
+            {
+                try
+                {
+                    await ProbePageRegistry.For(context).CloseProbePageAsync(page).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Never surface implementation details from the protocol/browser in
+                    // diagnostics: close failures have one stable, secret-free outcome.
+                    throw new InvalidOperationException("GPU probe page cleanup failed.");
+                }
+            }
         }
+    }
+
+    private static async Task ObserveEvaluationAsync(Task<BrowserSurfaceDiagnostics> evaluation)
+    {
+        try { await evaluation.ConfigureAwait(false); }
+        catch { /* The canceled operation has no caller left to observe its protocol fault. */ }
     }
 }
