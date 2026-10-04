@@ -16,6 +16,11 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
       - uses: actions/checkout@v7
+      # All SDK packages depend on the embedded dataset. A tag is not publication approval.
+      - name: Require publication approval and independently verified dataset rights
+        env:
+          SPYBROWSER_EXTERNAL_PUBLICATION_APPROVED: ${{ vars.SPYBROWSER_EXTERNAL_PUBLICATION_APPROVED }}
+        run: python3 tools/verification/check_distribution_gate.py
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
@@ -23,6 +28,7 @@ jobs:
       - run: dotnet build SpyBrowser.sln -c Release --no-restore
       - run: dotnet test SpyBrowser.sln -c Release --no-build
       - run: dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages
+      - run: dotnet pack src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj -c Release --no-build -o artifacts/packages
       - run: dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages
       - run: dotnet pack src/SpyBrowser.Compatibility.CloakBrowser/SpyBrowser.Compatibility.CloakBrowser.csproj -c Release --no-build -o artifacts/packages
       - run: dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o artifacts/packages
