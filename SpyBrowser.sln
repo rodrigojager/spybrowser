@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -11,6 +11,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpyBrowser.Compatibility.CloakBrowser", "src\SpyBrowser.Compatibility.CloakBrowser\SpyBrowser.Compatibility.CloakBrowser.csproj", "{2E4298F5-5E38-4FEF-A96F-4D5A60BFF8AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpyBrowser.Tests", "tests\SpyBrowser.Tests\SpyBrowser.Tests.csproj", "{C16F56D8-D0C2-4AF0-A31D-719A50CEBE02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2948CD80-12C7-473C-A56D-66EC8C42ACC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpyBrowser.Cursory", "src\SpyBrowser.Cursory\SpyBrowser.Cursory.csproj", "{BD40EB00-DF56-4461-85E2-F5BC06D8DF66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{33BBF592-DBD9-4C28-9179-E28642708AA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpyBrowser.Cursory.Tests", "tests\SpyBrowser.Cursory.Tests\SpyBrowser.Cursory.Tests.csproj", "{A489A557-1276-444A-BEB4-E16588BFEBD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,5 +46,17 @@ Global
 		{C16F56D8-D0C2-4AF0-A31D-719A50CEBE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C16F56D8-D0C2-4AF0-A31D-719A50CEBE02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C16F56D8-D0C2-4AF0-A31D-719A50CEBE02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD40EB00-DF56-4461-85E2-F5BC06D8DF66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD40EB00-DF56-4461-85E2-F5BC06D8DF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD40EB00-DF56-4461-85E2-F5BC06D8DF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD40EB00-DF56-4461-85E2-F5BC06D8DF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A489A557-1276-444A-BEB4-E16588BFEBD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A489A557-1276-444A-BEB4-E16588BFEBD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A489A557-1276-444A-BEB4-E16588BFEBD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A489A557-1276-444A-BEB4-E16588BFEBD0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BD40EB00-DF56-4461-85E2-F5BC06D8DF66} = {2948CD80-12C7-473C-A56D-66EC8C42ACC1}
+		{A489A557-1276-444A-BEB4-E16588BFEBD0} = {33BBF592-DBD9-4C28-9179-E28642708AA9}
 	EndGlobalSection
 EndGlobal

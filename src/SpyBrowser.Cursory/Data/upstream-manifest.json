@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "dataset": {
+    "sourceRepository": "https://github.com/JWriter20/cursory-js",
+    "commit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
+    "path": "src/trajectories.json.gz",
+    "sha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+    "gzipBytes": 637556,
+    "recordings": 2356,
+    "points": 112984,
+    "pythonComparison": "Cursory Python commit 5caa9d3477a1ff7b2d413978ea168a93fdc01dfc contains 2357 records; cursory-js removes recording id 2281. Fixtures must use the 2356-record JavaScript dataset."
+  },
+  "code": {
+    "algorithm": "https://github.com/JWriter20/cursory-js",
+    "commit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
+    "version": "2.0.1",
+    "license": "LGPL-3.0-or-later"
+  },
+  "numericDependencies": [
+    { "component": "NumPy PCG64 and SeedSequence/distributions", "version": "2.3.5", "license": "BSD-3-Clause" },
+    { "component": "PCG reference implementation", "copyright": "Melissa O'Neill (2014); Robert Kern (2015)", "license": "MIT" }
+  ],
+  "redistributionReview": "The algorithm/code licenses and upstream notices are recorded. The historical provenance and independent redistribution terms for the recorded trajectory dataset have not been conclusively established; external redistribution is blocked pending legal/provenance review."
+}

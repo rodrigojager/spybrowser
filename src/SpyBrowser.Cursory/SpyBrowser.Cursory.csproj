@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>SpyBrowser.Cursory</AssemblyName>
+    <RootNamespace>SpyBrowser.Cursory</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>SpyBrowser.Cursory</PackageId>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Authors>Vinyzu; Jake Writer; SpyBrowser contributors</Authors>
+    <Copyright>Upstream Cursory and cursory-js contributors; see NOTICE</Copyright>
+    <Description>Experimental native .NET 8 port of the Cursory recorded mouse-trajectory generator. Not integrated with SpyBrowser automation.</Description>
+    <PackageTags>cursory;trajectory;experimental</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data/trajectories.json.gz" LogicalName="SpyBrowser.Cursory.trajectories.json.gz" />
+    <None Include="LICENSE" Pack="true" PackagePath="LICENSE/" />
+    <None Include="COPYING.LESSER" Pack="true" PackagePath="LICENSE/" />
+    <None Include="NOTICE" Pack="true" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="CursoryTrajectoryGenerator.cs;Trajectory.cs;Internal/**/*.cs;Properties/**/*.cs" Pack="true" PackagePath="src/" />
+    <None Include="Data/upstream-manifest.json" Pack="true" PackagePath="provenance/upstream-manifest.json" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,27 @@
+SpyBrowser.Cursory — third-party notices
+
+This package is an experimental native C# port of cursory-js, itself a TypeScript
+port of Cursory (https://github.com/Vinyzu/cursory). The upstream cursory-js
+commit used as source is 16fff97fab05bb6b0c6753b2dc136a7692634cec; its notice
+credits the original Cursory © Vinyzu and cursory-js © Jake Writer under
+LGPL-3.0-or-later (the original work is also stated to be dual licensed under
+GPL-3.0-or-later). This package's derivative algorithm code is intended under
+LGPL-3.0-or-later. Full license texts and corresponding source must accompany
+redistribution; see LICENSE and COPYING in the repository.
+
+Dataset: src/Data/trajectories.json.gz is byte-for-byte from the cursory-js
+commit above (SHA-256 and count in Data/upstream-manifest.json). The cursory-js
+NOTICE attributes upstream recordings to Margit Antal, Norbert Fejer and
+Krisztian Buza (SapiMouse; https://ieeexplore.ieee.org/document/9465583) and
+MIMIC-LOGICS (Mouse-Synthesizer; https://github.com/MIMIC-LOGICS/Mouse-Synthesizer),
+and asserts redistribution under the original project's license. Independent
+source dataset terms/chain of rights have not been verified in this task. This
+assertion is preserved as upstream provenance, not adopted as independent legal
+clearance. Do not externally distribute the package/data until this is reviewed.
+
+NumPy-derived numeric implementation: PCG64, SeedSequence, ziggurat constants,
+and distribution methods are derived from NumPy 2.3.5, BSD-3-Clause. PCG64
+credits Melissa O'Neill (2014) and Robert Kern (2015), MIT. CPython math.hypot
+compatibility behavior is associated with Python Software Foundation License
+Version 2. The implementation subset and notices are recorded in the manifest.
+The LGPL-3.0-or-later package license does not remove these separate notices.
