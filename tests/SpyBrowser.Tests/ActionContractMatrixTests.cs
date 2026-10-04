@@ -289,21 +289,58 @@ public sealed class ActionContractMatrixTests
             TypingDeadlineMilliseconds = 180
         });
         var wrapped = humanizer.Wrap(page);
+        var field = wrapped.Locator("#field");
+        await field.FocusAsync();
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        var failure = await Record.ExceptionAsync(() => wrapped.Locator("#field").PressSequentiallyAsync(new string('x', 100)));
+        var failure = await Record.ExceptionAsync(() => field.PressSequentiallyAsync(new string('x', 100)));
         stopwatch.Stop();
         Assert.NotNull(failure);
         var prefixLength = await page.Locator("#field").InputValueAsync();
         Assert.InRange(prefixLength.Length, 2, 12);
         Assert.InRange(stopwatch.ElapsedMilliseconds, 100, 1_500);
 
-        await page.EvaluateAsync("field.value='';window.count=0");
-        var operation = wrapped.Locator("#field").PressSequentiallyAsync(new string('z', 500));
-        await page.WaitForFunctionAsync("window.count >= 2", null, new PageWaitForFunctionOptions { Timeout = 2_000 });
+        await page.EvaluateAsync("(()=>{field.value='';window.count=0;window.firstTypingInput=new Promise(resolve=>field.addEventListener('input',resolve,{once:true}));return true})()");
+        await field.FocusAsync();
+        var operation = field.PressSequentiallyAsync(new string('z', 500));
+        await page.EvaluateAsync("window.firstTypingInput");
         await page.CloseAsync();
         var closeError = await Record.ExceptionAsync(async () => await operation);
         Assert.NotNull(closeError);
         Assert.False(operation.IsCompletedSuccessfully);
+    }
+
+    [BrowserFact]
+    public async Task Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel()
+    {
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var context = await browser.NewContextAsync();
+        var page = await context.NewPageAsync();
+        await page.SetContentAsync("<input id='field'><script>window.trace=[];field.addEventListener('input',e=>trace.push(e.data))</script>");
+        var options = new HumanInteractionOptions { CompatibilityMode = Compatible, KeyMinimumDelayMilliseconds = 35, KeyMaximumDelayMilliseconds = 35 };
+        var humanizer = new PlaywrightHumanizer(options);
+        var wrapped = humanizer.Wrap(page);
+        await wrapped.Locator("#field").FocusAsync();
+        var actions = new HumanActions(options);
+        var direct = actions.TypeFocusedAsync(page, "direct");
+        var forwarded = wrapped.Keyboard.TypeAsync("wrapped");
+        await Task.WhenAll(direct, forwarded);
+        var trace = await page.EvaluateAsync<string[]>("window.trace");
+        var sent = string.Concat(trace);
+        Assert.True(sent is "directwrapped" or "wrappeddirect", $"Direct and wrapped helpers interleaved: {sent}");
+
+        var otherPage = await context.NewPageAsync();
+        await otherPage.SetContentAsync("<input id='field'><script>window.firstAt=0;window.firstInput=new Promise(resolve=>field.addEventListener('input',()=>{if(!firstAt)firstAt=performance.now();resolve()}, {once:true}))</script>");
+        await page.EvaluateAsync("(()=>{field.value='';window.firstAt=0;window.firstInput=new Promise(resolve=>field.addEventListener('input',()=>{if(!firstAt)firstAt=performance.now();resolve()}, {once:true}));return true})()");
+        await page.Locator("#field").FocusAsync();
+        await otherPage.Locator("#field").FocusAsync();
+        var slower = new HumanInteractionOptions { KeyMinimumDelayMilliseconds = 250, KeyMaximumDelayMilliseconds = 250, TypingDeadlineMilliseconds = 8_000 };
+        var firstPageInput = new HumanActions(slower).TypeFocusedAsync(page, "abcdefgh");
+        var otherPageInput = new HumanActions(slower).TypeFocusedAsync(otherPage, "abcdefgh");
+        await Task.WhenAll(page.EvaluateAsync("window.firstInput"), otherPage.EvaluateAsync("window.firstInput"));
+        var firstTimes = await Task.WhenAll(page.EvaluateAsync<double>("window.firstAt"), otherPage.EvaluateAsync<double>("window.firstAt"));
+        Assert.InRange(Math.Abs(firstTimes[0] - firstTimes[1]), 0, 1_500);
+        await Task.WhenAll(firstPageInput, otherPageInput);
     }
 
     [BrowserFact]
