@@ -123,7 +123,9 @@ public sealed class WrapperContractMatrixTests
 
         var rawWeakRefs = await CreateAndCloseDisposableContextAsync(handle.RawBrowser, site.Url + "frames");
         var weakRefs = await CreateAndCloseDisposableContextAsync(handle.Browser, site.Url + "frames");
-        ForceBoundedCollection();
+        // Collect on a fresh worker stack: completed Playwright CloseAsync state machines can
+        // otherwise conservatively keep their closed context alive on the test continuation stack.
+        await Task.Run(ForceBoundedCollection).ConfigureAwait(false);
         Assert.False(rawWeakRefs.Context.IsAlive, "Closed raw context control remained rooted after all local strong references left scope.");
         Assert.False(rawWeakRefs.Page.IsAlive, "Closed raw page control remained rooted after all local strong references left scope.");
         Assert.False(weakRefs.Context.IsAlive, "Closed wrapped context remained rooted after all local strong references left scope.");
@@ -292,6 +294,7 @@ public sealed class WrapperContractMatrixTests
         return (contextReference, pageReference);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private static void ForceBoundedCollection()
     {
         for (var attempt = 0; attempt < 8; attempt++)
