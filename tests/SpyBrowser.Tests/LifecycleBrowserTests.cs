@@ -5,10 +5,11 @@ namespace SpyBrowser.Tests;
 
 public sealed class LifecycleBrowserTests
 {
-    [Fact]
+    [BrowserFact]
     public async Task Concurrent_raw_and_decorated_clicks_are_serialized_without_duplicates()
     {
-        await using var browser = await LaunchChromiumAsync();
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
         await page.SetContentAsync("<button id='a' style='position:fixed;left:0;top:0;width:100px;height:100px'>a</button><button id='b'>b</button><script>window.log=[];for(const id of ['a','b'])document.getElementById(id).onclick=()=>log.push(id)</script>");
         var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions { CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible }).Wrap(page);
@@ -17,10 +18,11 @@ public sealed class LifecycleBrowserTests
         Assert.Equal(2, await page.EvaluateAsync<int>("log.length"));
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Independent_pages_can_accept_input_in_parallel()
     {
-        await using var browser = await LaunchChromiumAsync();
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var first = await browser.NewPageAsync();
         var second = await browser.NewPageAsync();
         await Task.WhenAll(first.SetContentAsync("<button id='b'>1</button>"), second.SetContentAsync("<button id='b'>2</button>"));
@@ -32,28 +34,35 @@ public sealed class LifecycleBrowserTests
         Assert.False(second.IsClosed);
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task()
     {
-        await using var browser = await LaunchChromiumAsync();
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
         await page.SetContentAsync("<input id='value'>");
         var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions
         {
             CompatibilityMode = HumanizationCompatibilityMode.Legacy,
             TypingDeadlineMilliseconds = 100,
-            KeyMinimumDelayMilliseconds = 250,
-            KeyMaximumDelayMilliseconds = 250,
-            ThinkingPauseProbability = 0
+            KeyMinimumDelayMilliseconds = 0,
+            KeyMaximumDelayMilliseconds = 0,
+            ThinkingPauseProbability = 1,
+            ThinkingPauseMinimumMilliseconds = 5_000,
+            ThinkingPauseMaximumMilliseconds = 5_000
         }).Wrap(page);
-        await Assert.ThrowsAnyAsync<Exception>(() => wrapped.Locator("#value").FillAsync("deadline"));
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        await Assert.ThrowsAnyAsync<Exception>(() => wrapped.Keyboard.TypeAsync("x"));
+        stopwatch.Stop();
+        Assert.True(stopwatch.Elapsed < TimeSpan.FromMilliseconds(500), $"Cancellation took {stopwatch.Elapsed}.");
         Assert.True(page.IsClosed);
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Closing_page_during_humanized_typing_stops_the_inflight_input()
     {
-        await using var browser = await LaunchChromiumAsync();
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
         await page.SetContentAsync("<input id='value'>");
         var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions
@@ -70,10 +79,33 @@ public sealed class LifecycleBrowserTests
         Assert.True(page.IsClosed);
     }
 
-    private static async Task<IBrowser> LaunchChromiumAsync()
+    [BrowserFact]
+    public async Task Explicit_and_context_default_timeouts_are_propagated_with_explicit_precedence()
     {
-        var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-        try { return await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true }); }
-        catch { playwright.Dispose(); throw; }
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var context = await browser.NewContextAsync();
+        var existing = await context.NewPageAsync();
+        var wrappedContext = new PlaywrightHumanizer(new HumanInteractionOptions
+        {
+            CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible
+        }).Wrap(context);
+        await existing.SetContentAsync("<button id='b'>existing</button>");
+        wrappedContext.SetDefaultTimeout(1);
+        var created = await wrappedContext.NewPageAsync();
+        await created.SetContentAsync("<button id='b'>created</button>", new PageSetContentOptions { Timeout = 5_000 });
+        var wrappedExisting = new PlaywrightHumanizer(new HumanInteractionOptions
+        {
+            CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible
+        }).Wrap(existing);
+        await wrappedExisting.Locator("#b").ClickAsync(new LocatorClickOptions { Timeout = 5_000 });
+        await created.Locator("#b").ClickAsync(new LocatorClickOptions { Timeout = 5_000 });
+        Assert.False(existing.IsClosed);
+        Assert.False(created.IsClosed);
+
+        wrappedExisting.SetDefaultTimeout(0);
+        await wrappedExisting.Locator("#b").ClickAsync(new LocatorClickOptions { Timeout = 0 });
+        Assert.False(existing.IsClosed);
     }
+
 }

@@ -26,13 +26,18 @@ internal sealed class PageInputState
 
     public void SetDefaultTimeout(int milliseconds) => Volatile.Write(ref _defaultTimeout, Math.Max(0, milliseconds));
 
-    public async Task RunAsync(Func<CancellationToken, Task> operation, int configuredBudgetMilliseconds, CancellationToken cancellationToken = default)
+    public async Task RunAsync(
+        Func<CancellationToken, Task> operation,
+        int configuredBudgetMilliseconds,
+        CancellationToken cancellationToken = default,
+        int? explicitTimeoutMilliseconds = null)
     {
         ArgumentNullException.ThrowIfNull(operation);
         var observedDefault = Volatile.Read(ref _defaultTimeout);
-        var budget = observedDefault == 0 || observedDefault == Timeout.Infinite
-            ? configuredBudgetMilliseconds
-            : Math.Min(configuredBudgetMilliseconds, observedDefault);
+        // Playwright's explicit operation timeout overrides page/context defaults. A zero timeout
+        // means unlimited to Playwright; retain the SDK's configured safety budget in that case.
+        var selectedTimeout = explicitTimeoutMilliseconds ?? observedDefault;
+        var budget = selectedTimeout > 0 ? selectedTimeout : configuredBudgetMilliseconds;
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetimeToken, cancellationToken);
         if (budget > 0) deadline.CancelAfter(budget);
         await _gate.WaitAsync(deadline.Token).ConfigureAwait(false);
@@ -44,21 +49,16 @@ internal sealed class PageInputState
             operationTask = operation(deadline.Token);
             await operationTask.WaitAsync(deadline.Token).ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (deadline.IsCancellationRequested)
+        catch (OperationCanceledException)
         {
-            try
-            {
-                await _page.CloseAsync(new PageCloseOptions { RunBeforeUnload = false })
-                    .WaitAsync(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-            }
-            catch { /* Preserve the initiating cancellation/timeout. */ }
+            // Stop admitting work before close is attempted: CloseAsync may itself fail or stall.
+            CancelLifetime();
+            var closeTask = ClosePageAsync();
+            await ObserveBoundedAsync(closeTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
+
             if (operationTask is not null)
             {
-                try
-                {
-                    await operationTask.WaitAsync(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-                }
-                catch (TimeoutException)
+                if (!await ObserveBoundedAsync(operationTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false))
                 {
                     gateTransferred = true;
                     _ = operationTask.ContinueWith(
@@ -71,13 +71,47 @@ internal sealed class PageInputState
                         TaskContinuationOptions.ExecuteSynchronously,
                         TaskScheduler.Default);
                 }
-                catch { /* The underlying operation is observed; preserve cancellation. */ }
             }
             throw;
         }
         finally
         {
             if (!gateTransferred) _gate.Release();
+        }
+    }
+
+    private async Task ClosePageAsync()
+    {
+        try
+        {
+            if (!_page.IsClosed)
+            {
+                await _page.CloseAsync(new PageCloseOptions { RunBeforeUnload = false }).ConfigureAwait(false);
+            }
+        }
+        catch { /* The original timeout/cancellation is the primary failure. */ }
+    }
+
+    private static async Task<bool> ObserveBoundedAsync(Task task, TimeSpan timeout)
+    {
+        try
+        {
+            await task.WaitAsync(timeout).ConfigureAwait(false);
+            return true;
+        }
+        catch (TimeoutException)
+        {
+            _ = task.ContinueWith(
+                completed => _ = completed.Exception,
+                CancellationToken.None,
+                TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.Default);
+            return false;
+        }
+        catch
+        {
+            // Awaiting observes faults and cancellations. Cleanup must not replace the initiating error.
+            return true;
         }
     }
 
@@ -89,7 +123,12 @@ internal sealed class PageInputState
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
         _page.Close -= OnPageClose;
         _page.Context.Close -= OnContextClose;
-        _lifetime.Cancel();
-        _lifetime.Dispose();
+        CancelLifetime();
+    }
+
+    private void CancelLifetime()
+    {
+        try { _lifetime.Cancel(); }
+        catch (ObjectDisposedException) { }
     }
 }

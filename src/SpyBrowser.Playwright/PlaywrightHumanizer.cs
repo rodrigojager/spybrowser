@@ -68,6 +68,7 @@ internal sealed class HumanizationScope
     private readonly HumanInteractionOptions _options;
     private readonly ConditionalWeakTable<object, object> _proxies = new();
     private readonly ConditionalWeakTable<IPage, HumanActions> _actions = new();
+    private readonly ConditionalWeakTable<IBrowserContext, ContextTimeoutState> _contextTimeouts = new();
 
     internal void InvalidateMousePosition(IPage page) =>
         _actions.GetValue(page, _ => new HumanActions(_options)).InvalidateMousePosition(page);
@@ -147,8 +148,8 @@ internal sealed class HumanizationScope
         return value switch
         {
             IBrowser browser => GetOrCreate(browser, pageHint),
-            IBrowserContext context => GetOrCreate(context, pageHint),
-            IPage page => GetOrCreate(page, page),
+            IBrowserContext context => WrapContext(context, pageHint),
+            IPage page => WrapPage(page),
             IFrame frame => GetOrCreate(frame, frame.Page),
             ILocator locator => GetOrCreate(locator, locator.Page),
             IFrameLocator frameLocator => GetOrCreate(frameLocator, pageHint),
@@ -163,13 +164,12 @@ internal sealed class HumanizationScope
         ? null
         : WrapValue(value, value.GetType(), ResolvePage(value, null));
 
-    public async Task RunInputAsync(IPage page, MethodInfo method, Func<CancellationToken, Task> invoke)
+    internal int GetInputBudget(MethodInfo method)
     {
         var typing = method.Name.Contains("Fill", StringComparison.Ordinal) ||
                      method.Name.Contains("Type", StringComparison.Ordinal) ||
                      method.Name.Contains("InsertText", StringComparison.Ordinal);
-        var budget = typing ? _options.TypingDeadlineMilliseconds : _options.ActionDeadlineMilliseconds;
-        await PageInputState.For(page).RunAsync(invoke, budget).ConfigureAwait(false);
+        return typing ? _options.TypingDeadlineMilliseconds : _options.ActionDeadlineMilliseconds;
     }
 
     internal object WrapGatedInput(Task gate, Func<Task?> operation, Type returnType, IPage pageHint)
@@ -190,6 +190,32 @@ internal sealed class HumanizationScope
 
     public void TrackDefaultTimeout(IPage page, int milliseconds) =>
         PageInputState.For(page).SetDefaultTimeout(milliseconds);
+
+    public void TrackContextDefaultTimeout(IBrowserContext context, int milliseconds)
+    {
+        var state = _contextTimeouts.GetValue(context, static _ => new ContextTimeoutState());
+        Volatile.Write(ref state.Milliseconds, Math.Max(0, milliseconds));
+        foreach (var page in context.Pages) PageInputState.For(page).SetDefaultTimeout(milliseconds);
+    }
+
+    private object WrapContext(IBrowserContext context, IPage? pageHint)
+    {
+        if (_contextTimeouts.TryGetValue(context, out var state))
+            foreach (var page in context.Pages) PageInputState.For(page).SetDefaultTimeout(Volatile.Read(ref state.Milliseconds));
+        return GetOrCreate(context, pageHint);
+    }
+
+    private object WrapPage(IPage page)
+    {
+        if (_contextTimeouts.TryGetValue(page.Context, out var state))
+            PageInputState.For(page).SetDefaultTimeout(Volatile.Read(ref state.Milliseconds));
+        return GetOrCreate(page, page);
+    }
+
+    private sealed class ContextTimeoutState
+    {
+        public int Milliseconds = Timeout.Infinite;
+    }
 
     public bool TryHumanize(
         object target,
@@ -269,17 +295,17 @@ internal sealed class HumanizationScope
         var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
         if (method.Name == nameof(ILocator.ClickAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click") : actions.ClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click", cancellationToken) : actions.ClickAsync(locator, cancellationToken);
             return true;
         }
         if (method.Name == nameof(ILocator.DblClickAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick") : actions.DoubleClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken) : actions.DoubleClickAsync(locator, cancellationToken);
             return true;
         }
         if (method.Name == nameof(ILocator.HoverAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover") : actions.HoverAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover", cancellationToken) : actions.HoverAsync(locator, cancellationToken);
             return true;
         }
         if (!compatible && method.Name == nameof(ILocator.FillAsync) &&
@@ -297,7 +323,7 @@ internal sealed class HumanizationScope
         if (!compatible && method.Name == nameof(ILocator.PressAsync) &&
             arguments.ElementAtOrDefault(0) is string key && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.PressAsync(locator, key);
+            result = actions.PressAsync(locator, key, cancellationToken);
             return true;
         }
         if (!compatible && method.Name == nameof(ILocator.ClearAsync) && HasOnlyDefaultOptions(arguments, 0))
@@ -327,19 +353,19 @@ internal sealed class HumanizationScope
         var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
         if (method.Name is nameof(IPage.ClickAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click") : actions.ClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click", cancellationToken) : actions.ClickAsync(locator, cancellationToken);
             return true;
         }
 
         if (method.Name is nameof(IPage.DblClickAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick") : actions.DoubleClickAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken) : actions.DoubleClickAsync(locator, cancellationToken);
             return true;
         }
 
         if (method.Name is nameof(IPage.HoverAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover") : actions.HoverAsync(locator);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover", cancellationToken) : actions.HoverAsync(locator, cancellationToken);
             return true;
         }
 
@@ -363,7 +389,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string key &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.PressAsync(locator, key);
+            result = actions.PressAsync(locator, key, cancellationToken);
             return true;
         }
 
@@ -384,7 +410,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is float y &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.MoveAsync(page, x, y);
+            result = actions.MoveAsync(page, x, y, cancellationToken);
             return true;
         }
 
@@ -394,7 +420,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is float clickY &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.ClickAsync(page, clickX, clickY, method.Name == nameof(IMouse.DblClickAsync));
+            result = actions.ClickAsync(page, clickX, clickY, method.Name == nameof(IMouse.DblClickAsync), cancellationToken);
             return true;
         }
 
@@ -403,7 +429,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is float deltaX &&
             arguments.ElementAtOrDefault(1) is float deltaY)
         {
-            result = actions.ScrollAsync(page, deltaX, deltaY);
+            result = actions.ScrollAsync(page, deltaX, deltaY, cancellationToken);
             return true;
         }
 
@@ -424,7 +450,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is string text &&
             HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.TypeFocusedAsync(page, text);
+            result = actions.TypeFocusedAsync(page, text, cancellationToken);
             return true;
         }
 
@@ -432,7 +458,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is string key &&
             HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.PressFocusedAsync(page, key);
+            result = actions.PressFocusedAsync(page, key, cancellationToken);
             return true;
         }
 
@@ -521,11 +547,15 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         {
             _scope.TrackDefaultTimeout(page, Math.Max(0, (int)timeout));
         }
+        if (_target is IBrowserContext context && targetMethod.Name == "SetDefaultTimeout" && arguments.ElementAtOrDefault(0) is float contextTimeout)
+        {
+            _scope.TrackContextDefaultTimeout(context, Math.Max(0, (int)contextTimeout));
+        }
 
         if (page is not null && IsInputMethod(targetMethod.Name) && typeof(Task).IsAssignableFrom(targetMethod.ReturnType))
         {
             Task? pending = null;
-            var gate = _scope.RunInputAsync(page, targetMethod, async cancellationToken =>
+            var gate = PageInputState.For(page).RunAsync(async cancellationToken =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var action, cancellationToken))
@@ -552,7 +582,7 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
                 {
                     ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
                 }
-            });
+            }, _scope.GetInputBudget(targetMethod), explicitTimeoutMilliseconds: GetExplicitTimeoutMilliseconds(arguments));
             return _scope.WrapGatedInput(gate, () => pending, targetMethod.ReturnType, page);
         }
 
@@ -573,6 +603,20 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
             ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
             throw;
         }
+    }
+
+    private static int? GetExplicitTimeoutMilliseconds(object?[] arguments)
+    {
+        for (var index = arguments.Length - 1; index >= 0; index--)
+        {
+            var options = arguments[index];
+            if (options is null || options is string) continue;
+            var property = options.GetType().GetProperty("Timeout");
+            if (property?.GetValue(options) is not { } value) continue;
+            try { return Math.Max(0, (int)Math.Ceiling(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture))); }
+            catch (Exception) { return null; }
+        }
+        return null;
     }
 
     private static bool IsInputMethod(string name) => name is

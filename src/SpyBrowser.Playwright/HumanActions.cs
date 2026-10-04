@@ -169,11 +169,11 @@ public sealed class HumanActions
             if (replaceExisting)
             {
                 await locator.FillAsync(text, new LocatorFillOptions { Timeout = deadline.RemainingMilliseconds })
-                    .WaitAsync(deadline.Token).ConfigureAwait(false);
+                    .ConfigureAwait(false);
             }
             else
             {
-                await locator.PressSequentiallyAsync(text, typeOptions).WaitAsync(deadline.Token).ConfigureAwait(false);
+                await locator.PressSequentiallyAsync(text, typeOptions).ConfigureAwait(false);
             }
             return;
         }
@@ -252,7 +252,7 @@ public sealed class HumanActions
                 await DelayAsync(_options.ThinkingPauseMinimumMilliseconds, _options.ThinkingPauseMaximumMilliseconds, deadline.Token).ConfigureAwait(false);
             }
 
-            await page.Keyboard.TypeAsync(rune.ToString()).WaitAsync(deadline.Token).ConfigureAwait(false);
+            await page.Keyboard.TypeAsync(rune.ToString()).ConfigureAwait(false);
             if (index + 1 < runes.Length)
             {
                 await DelayAsync(_options.KeyMinimumDelayMilliseconds, _options.KeyMaximumDelayMilliseconds, deadline.Token).ConfigureAwait(false);
@@ -269,7 +269,7 @@ public sealed class HumanActions
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
         await page.Keyboard.PressAsync(key, new KeyboardPressOptions { Delay = Math.Min(75, deadline.RemainingMilliseconds) })
-            .WaitAsync(deadline.Token).ConfigureAwait(false);
+            .ConfigureAwait(false);
     }
 
     internal async Task CompatibleLocatorActionAsync(ILocator locator, string action, CancellationToken cancellationToken = default)
@@ -285,21 +285,21 @@ public sealed class HumanActions
         // the remaining part of the same monotonic budget.
         if (action == "click")
         {
-            await locator.ClickAsync(new LocatorClickOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
+            await locator.ClickAsync(new LocatorClickOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
         }
         else if (action == "dblclick")
         {
-            await locator.DblClickAsync(new LocatorDblClickOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
+            await locator.DblClickAsync(new LocatorDblClickOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
         }
         else
         {
-            await locator.HoverAsync(new LocatorHoverOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
+            await locator.HoverAsync(new LocatorHoverOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
         }
 
         try
         {
-            await locator.ScrollIntoViewIfNeededAsync(new LocatorScrollIntoViewIfNeededOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
-            var box = await locator.BoundingBoxAsync().WaitAsync(deadline.Token).ConfigureAwait(false);
+            await locator.ScrollIntoViewIfNeededAsync(new LocatorScrollIntoViewIfNeededOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
+            var box = await locator.BoundingBoxAsync().ConfigureAwait(false);
             if (box is not null && box.Width > 0 && box.Height > 0)
             {
                 await MoveAsync(page, box.X + box.Width / 2d, box.Y + box.Height / 2d, deadline.Token).ConfigureAwait(false);
@@ -314,9 +314,9 @@ public sealed class HumanActions
         // Exactly one native semantic action owns click/dblclick effects; never retry after it starts.
         switch (action)
         {
-            case "click": await locator.ClickAsync(new LocatorClickOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false); break;
-            case "dblclick": await locator.DblClickAsync(new LocatorDblClickOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false); break;
-            case "hover": await locator.HoverAsync(new LocatorHoverOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false); break;
+            case "click": await locator.ClickAsync(new LocatorClickOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
+            case "dblclick": await locator.DblClickAsync(new LocatorDblClickOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
+            case "hover": await locator.HoverAsync(new LocatorHoverOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
         }
     }
 
@@ -324,7 +324,7 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(text);
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
-        await locator.FocusAsync(new LocatorFocusOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
+        await locator.FocusAsync(new LocatorFocusOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
         var runes = text.EnumerateRunes().ToArray();
         for (var index = 0; index < runes.Length; index++)
         {
@@ -335,7 +335,7 @@ public sealed class HumanActions
             }
 
             await locator.Page.Keyboard.TypeAsync(runes[index].ToString(), new KeyboardTypeOptions { Delay = 0 })
-                .WaitAsync(deadline.Token).ConfigureAwait(false);
+                .ConfigureAwait(false);
             if (index + 1 < runes.Length)
             {
                 await DelayAsync(_options.KeyMinimumDelayMilliseconds, _options.KeyMaximumDelayMilliseconds, deadline.Token).ConfigureAwait(false);

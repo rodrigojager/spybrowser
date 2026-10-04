@@ -27,7 +27,8 @@ public sealed class ActionsCompatibilityTests
     [BrowserFact]
     public async Task Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type()
     {
-        await using var browser = await LaunchChromiumAsync();
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
         await page.SetContentAsync("""
             <input id="value"><button id="target">go</button>
@@ -77,34 +78,25 @@ public sealed class ActionsCompatibilityTests
         Assert.Equal("2", await page.Locator("#target").GetAttributeAsync("data-detail"));
     }
 
-    [Fact]
-    public async Task Public_compatible_humanactions_delegate_clicks_to_native_locator_actions()
+    [BrowserFact]
+    public async Task Public_compatible_humanactions_delegate_clicks_and_fill_to_native_locator_actions()
     {
-        await using var browser = await LaunchChromiumAsync();
+        using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
-        await page.SetContentAsync("<button id='b'>go</button><script>window.clicks=[];b.onclick=e=>clicks.push(e.detail);b.ondblclick=()=>window.doubles=(window.doubles||0)+1;</script>");
+        await page.SetContentAsync("<input id='value'><button id='b'>go</button><script>window.clicks=[];b.onclick=e=>clicks.push(e.detail);b.ondblclick=()=>window.doubles=(window.doubles||0)+1;window.keys=0;value.onkeydown=()=>keys++;</script>");
         var actions = new HumanActions(new HumanInteractionOptions
         {
             CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible,
             MouseMinimumDurationMilliseconds = 0,
             MouseMaximumDurationMilliseconds = 0
         });
+        var value = page.Locator("#value");
+        await actions.TypeAsync(value, "native-value");
+        Assert.Equal("native-value", await value.InputValueAsync());
+        Assert.Equal(0, await page.EvaluateAsync<int>("keys"));
         await actions.DoubleClickAsync(page.Locator("#b"));
         Assert.Equal(new[] { 1, 2 }, await page.EvaluateAsync<int[]>("clicks"));
         Assert.Equal(1, await page.EvaluateAsync<int>("doubles"));
-    }
-
-    private static async Task<IBrowser> LaunchChromiumAsync()
-    {
-        var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-        try
-        {
-            return await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
-        }
-        catch
-        {
-            playwright.Dispose();
-            throw;
-        }
     }
 }
