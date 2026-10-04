@@ -1,8 +1,9 @@
 # Cursory package build, demo, and corresponding source
 
 `SpyBrowser.Cursory` is a standalone .NET 8 preview, licensed separately as
-LGPL-3.0-or-later. Its DLL is not merged into SpyBrowser's MIT assemblies and
-is not integrated with browser automation. Package metadata intentionally sets
+LGPL-3.0-or-later. Its DLL is not merged into SpyBrowser's MIT assemblies. The pure library is
+independent of browser automation; `SpyBrowser.Playwright` consumes it through
+an explicit, opt-in trajectory adapter. Package metadata intentionally sets
 its own authors, copyright, license and acceptance flag rather than inheriting
 the repository-wide MIT author/copyright values.
 

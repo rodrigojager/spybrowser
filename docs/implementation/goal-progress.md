@@ -2,7 +2,17 @@
 
 Objetivo ativo: implementar integralmente o plano e os 24 tickets aprovados, sem reduzir o escopo a uma demonstração ou port aproximado.
 
-## Revisão integrada atual — `3f864d4` (runtime `06aedb1`)
+## Retomada atual — `c28093f` (aceite ainda aberto)
+
+- Estado inspecionado diretamente: HEAD `c28093f`; o patch parcial não commitado de Unicode/deadline em `HumanActions.cs` foi preservado em `.scratch/resume-human-actions-partial-preserved.patch` e removido da integração: ele falhava build com CS1061, chamando `GetRemainingBudgetMilliseconds` ainda ausente. A mudança completa continua na frente isolada, sem descartar sua evidência. Os 24 tickets existem em `.scratch/spybrowser-cursory-nativo/issues/`; os 260 critérios continuam exigindo aceite individual.
+- A matriz registrada em `browser-matrix-current.md` contém execuções Windows/Linux e versões 1.61/1.63, mas é evidência histórica de source anterior, não feed final do HEAD atual. Relatórios independentes posteriores registram novos testes e pendências; seus mapeamentos também precisam ser conferidos contra os critérios originais.
+- Três executores retomados em paralelo, configuração global verificada `gpt-6-luna/high`: `39f4cdb8-8ef7-4528-a976-76a4233aff19` (correções/testes 07/09/10 em worktree isolado), `96d748cf-1ff5-423a-bea7-fa4d99d97ea6` (auditoria read-only dos critérios) e `9bd29588-b7a1-4303-a903-dd7146a2c2c5` (auditoria read-only distribuição/consumidor).
+- Verificação parental atual restaurada: 2/2 testes reais de wrappers/GC e Has/HasNot passaram, zero skips, TRX `artifacts/goal/resume-wrapper-doc-proof/wrapper-doc-proof.trx`. Documentação de wrappers foi alinhada à implementação e à análise de heap; a falha inicial de compilação permanece em `resume-wrapper-doc-proof.log`.
+- Comando parental de wrappers: `SPYBROWSER_RUN_BROWSER_TESTS=1 dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release --filter 'FullyQualifiedName~WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract|FullyQualifiedName~Wrapped_known_playwright_locator_argument_inside_options_is_unwrapped' --results-directory artifacts/goal/resume-wrapper-doc-proof --logger 'trx;LogFileName=wrapper-doc-proof.trx'`. Esta execução só prova esses dois contratos, não a matriz integral.
+- Baseline e217 fornecida foi verificada novamente com `verify_previous_feed`: hashes dos pacotes, nuspec e archive exato passaram; artifact `artifacts/goal/resume-baseline-provenance.json`. Executor adicional `4634f58a-efb1-43fe-b747-29850212f933` refaz instalação preliminar com rollback correto; ainda não representa o feed final.
+- Publicação externa continua proibida enquanto os direitos do dataset não forem verificados. Não se presume que esse gate impeça toda implementação/verificação local; as pendências técnicas continuam sendo trabalhadas.
+
+## Revisão integrada anterior — `3f864d4` (runtime `06aedb1`)
 
 - Integrados `bc963f4` (GC com evidência de heap), `dc28870` (SaveAsync instalado real), `eb8d2f7` (comparação histórica NuGet-only), `7ae11b5` (consistência efetiva) e `06aedb1` (cancelamento/timeout nativo). A tolerância DPR continua 0,01; diferenças reais não foram ocultadas como zoom não observado. Categorias GPU usam gerações allowlisted, não modelos/hash de hardware.
 - Windows requerido 1.61: antes da correção lifecycle, escopo sem matriz de ações passou **15 Cursory + 113 Playwright**, sem skips. Depois da integração lifecycle, execução completa passou **139/141**, com duas falhas preservadas: início de digitação sob carga e NullReferenceException nativa na corrida NewContext/Close. Logs/TRX em `artifacts/goal/{ee46710-required-results,lifecycle-merge-required-results}/`. Não é uma matriz final verde.
