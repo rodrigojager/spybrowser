@@ -47,6 +47,41 @@ public sealed class ProbeIsolationBrowserTests
         }
     }
 
+    [Fact]
+    public async Task Headed_probe_does_not_change_the_existing_pages_focus_or_active_element()
+    {
+        if (!string.Equals(Environment.GetEnvironmentVariable("SPYBROWSER_RUN_HEADED_PROBE_TESTS"), "1", StringComparison.Ordinal))
+            return;
+
+        using var temporary = new TemporaryDirectory();
+        var identity = BrowserIdentity.Create("headed-probe-focus");
+        var options = new SpyBrowserLaunchOptions
+        {
+            IdentityId = identity.Id,
+            IdentityOverride = identity,
+            IdentitiesRoot = temporary.Path,
+            Headless = false,
+            Humanize = true,
+            RunGpuProbe = false,
+            GpuPolicyOverride = GpuPolicy.AllowSoftware,
+            FailOnConsistencyErrors = false
+        };
+
+        await using var handle = await SpyBrowserLauncher.LaunchContextAsync(options);
+        var page = await handle.NewPageAsync();
+        await page.GotoAsync("data:text/html,<input id=focus value=preserve>");
+        await page.Locator("#focus").FocusAsync();
+        await page.BringToFrontAsync();
+        var focusBefore = await page.EvaluateAsync<bool>("() => document.hasFocus()");
+        var activeBefore = await page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
+
+        await handle.RunGpuProbeAsync(TimeSpan.FromSeconds(15));
+
+        Assert.True(focusBefore, "The headed baseline must have an actually focused browser page.");
+        Assert.True(await page.EvaluateAsync<bool>("() => document.hasFocus()"));
+        Assert.Equal(activeBefore, await page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''"));
+    }
+
     private static async Task VerifyProbeIsolationAsync(SpyBrowserContextHandle handle)
     {
         var first = await handle.NewPageAsync();
@@ -113,6 +148,50 @@ public sealed class ProbeIsolationBrowserTests
         finally
         {
             release.TrySetResult();
+            registry.ProbePageFactory = null;
+        }
+
+        var failedEvents = new List<IPage>();
+        handle.Context.Page += (_, page) => failedEvents.Add(page);
+        registry.ProbePageFactory = () => Task.FromException<IPage>(new InvalidOperationException("injected creation failure"));
+        try
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(() => GpuProbe.RunAsync(handle.RawContext, TimeSpan.FromSeconds(5)));
+            var afterFailure = await handle.NewPageAsync();
+            Assert.Contains(afterFailure, failedEvents);
+            Assert.Contains(afterFailure, handle.Pages);
+        }
+        finally
+        {
+            registry.ProbePageFactory = null;
+        }
+
+        var cancellationStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var allowCancelledCreation = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var cancelledPage = new TaskCompletionSource<IPage>(TaskCreationOptions.RunContinuationsAsynchronously);
+        registry.ProbePageFactory = async () =>
+        {
+            cancellationStarted.TrySetResult();
+            await allowCancelledCreation.Task;
+            var page = await handle.RawContext.NewPageAsync();
+            cancelledPage.TrySetResult(page);
+            return page;
+        };
+        try
+        {
+            using var cancellation = new CancellationTokenSource();
+            var cancelledProbe = GpuProbe.RunAsync(handle.RawContext, TimeSpan.FromSeconds(15), cancellation.Token);
+            await cancellationStarted.Task;
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => cancelledProbe);
+            allowCancelledCreation.SetResult();
+            var lateCancelledPage = await cancelledPage.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            for (var attempt = 0; !lateCancelledPage.IsClosed && attempt < 50; attempt++) await Task.Delay(20);
+            Assert.True(lateCancelledPage.IsClosed);
+        }
+        finally
+        {
+            allowCancelledCreation.TrySetResult();
             registry.ProbePageFactory = null;
         }
 

@@ -25,4 +25,16 @@ API consumers can use `DiagnosticSnapshotStore.SaveAsync`, `ReadAsync`, and `Com
 
 ## Validation boundaries
 
-The diagnostics/snapshot modules and CLI groundwork are independently testable. End-to-end launch/probe integration still depends on ticket 16's isolated probes; final snapshot acceptance depends on ticket 15's safe humanization diagnostics plus tickets 17/18. Those dependencies are not represented as complete by the groundwork here. A real browser test requires a locally installed Playwright browser; no remote endpoint is used by this feature.
+## Probe isolation and validation
+
+`SpyBrowserContextHandle.Pages`, humanized `Context.Pages`, and humanized `Context.Page`/`Page.Popup` events omit the internally owned diagnostic page. The wrapper's `RawContext` is an intentional Playwright escape hatch: callers enumerating `RawContext.Pages` or subscribing directly to raw events bypass that public-work-page filter and may observe the probe. The isolated probe page is created and closed by the diagnostic operation; caller-owned pages are not navigated or closed. Probe pages use a weak identity marker rather than permanent per-page event subscriptions.
+
+A GPU probe is opt-in at launch (`RunGpuProbe`, whose launch default is enabled) and can also be requested explicitly through the handle/API or CLI. The RpaBlockly integration explicitly disables launch probes. `--snapshot-dir` opts into persistence only; it does not cause a launch probe by itself. Probe failures and timeouts are operational errors, distinct from consistency findings; unavailable WebGL/WebGPU data is reported as unavailable and does not by itself establish a fingerprint contradiction. `WebGpu.Error` gives the browser's local reason when exposed (for example, secure-context or policy restrictions); no remote fixture or service is contacted.
+
+The probe creates a fresh page in the configured context, never borrows/navigates an existing page, and uses a bounded timeout with `finally` cleanup. Page events that arrive during ambiguous native creation are deferred by identity until the new page resolves, then user popup/page events are published while the probe page is filtered. Headed Chromium behavior is deliberately not inferred from headless tests: page focus is sampled on an actually focused work page, and no blanket `BringToFront` is issued on borrowed pages. Confirm local headed behavior with this opt-in test (run from the source worktree with its pinned .NET SDK and installed Playwright Chromium):
+
+```text
+SPYBROWSER_RUN_BROWSER_TESTS=1 SPYBROWSER_RUN_HEADED_PROBE_TESTS=1 dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj --filter FullyQualifiedName~Headed_probe_does_not_change_the_existing_pages_focus_or_active_element
+```
+
+This check asserts `document.hasFocus()` and the active element before/after a real headed probe. On the local Windows Chrome run for this change, the command above completed **1 passed, 0 failed** (2 seconds); this is a local headed result, not a headless/Xvfb equivalence claim. The browser-enabled isolation test also exercises persistent-context, context, and browser-only modes, concurrent popup publication, creation failure, cancellation/deadline during pending creation, and closure of late-created pages. Tests gated by these environment variables must only be reported as executed when run with the corresponding locally installed Playwright browser.
