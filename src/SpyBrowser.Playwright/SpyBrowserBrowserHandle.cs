@@ -9,8 +9,6 @@ namespace SpyBrowser.Playwright;
 public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
 {
     private readonly IPlaywright _playwright;
-    private readonly Func<BrowserNewContextOptions?, Task<IBrowserContext>> _contextFactory;
-    private readonly Func<BrowserNewPageOptions?, Task<IPage>> _pageFactory;
     private int _disposed;
 
     internal SpyBrowserBrowserHandle(
@@ -24,8 +22,6 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
         _playwright = playwright;
         RawBrowser = rawBrowser;
         Identity = identity;
-        _contextFactory = contextFactory;
-        _pageFactory = pageFactory;
         var configured = ConfiguredBrowserProxy.Create(rawBrowser, contextFactory, pageFactory, humanizer);
         Browser = configured;
     }
@@ -35,15 +31,20 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
     /// <summary>The owned official Playwright instance.</summary>
     public IPlaywright PlaywrightInstance => _playwright;
 
+    /// <summary>
+    /// Configured browser adapter. Context events report contexts created by its configured
+    /// factories only; contexts created through <see cref="RawBrowser"/> bypass configuration
+    /// and are intentionally not announced retroactively.
+    /// </summary>
     public IBrowser Browser { get; }
 
     public IBrowser RawBrowser { get; }
 
     public Task<IBrowserContext> NewContextAsync(BrowserNewContextOptions? options = null) =>
-        _contextFactory(options);
+        Browser.NewContextAsync(options);
 
     public Task<IPage> NewPageAsync(BrowserNewPageOptions? options = null) =>
-        _pageFactory(options);
+        Browser.NewPageAsync(options);
 
     public async ValueTask DisposeAsync()
     {
@@ -54,6 +55,7 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
 
         try
         {
+            ConfiguredBrowserProxy.Detach(Browser);
             await RawBrowser.CloseAsync().ConfigureAwait(false);
         }
         finally
