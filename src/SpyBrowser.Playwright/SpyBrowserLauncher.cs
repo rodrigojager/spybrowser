@@ -380,22 +380,10 @@ public static class SpyBrowserLauncher
     {
         await ConfigureContextRuntimeAsync(context, state, options).ConfigureAwait(false);
         BrowserSurfaceDiagnostics? diagnostics = null;
-        var shouldProbe = options.RunGpuProbe ||
-            state.GpuPolicy is GpuPolicy.RequireHardware or GpuPolicy.ExperimentalMask;
-        if (shouldProbe)
+        if (options.RunGpuProbe)
         {
-            // Never navigate or reuse an application/restored tab for diagnostics.
-            var probePage = await context.NewPageAsync().ConfigureAwait(false);
-            try
-            {
-                probePage.SetDefaultTimeout(10_000);
-                diagnostics = await GpuProbe.RunAsync(probePage, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                try { await probePage.CloseAsync().ConfigureAwait(false); }
-                catch { /* Keep probe/cancellation failures primary; context teardown owns final cleanup. */ }
-            }
+            diagnostics = await GpuProbe.RunAsync(context, TimeSpan.FromSeconds(10), cancellationToken)
+                .ConfigureAwait(false);
         }
 
         var consistency = diagnostics is null

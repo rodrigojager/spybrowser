@@ -51,9 +51,15 @@ public class SpyBrowserContextHandle : IAsyncDisposable
 
     public ConsistencyReport Consistency { get; }
 
-    public IReadOnlyList<IPage> Pages => Context.Pages;
+    public IReadOnlyList<IPage> Pages => ProbePageRegistry.For(RawContext).Filter(Context.Pages);
 
     public Task<IPage> NewPageAsync() => Context.NewPageAsync();
+
+    /// <summary>Runs an isolated diagnostic probe without navigating or replacing a user page.</summary>
+    public Task<BrowserSurfaceDiagnostics> RunGpuProbeAsync(
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default) =>
+        GpuProbe.RunAsync(RawContext, timeout ?? TimeSpan.FromSeconds(10), cancellationToken);
 
     public virtual async ValueTask DisposeAsync()
     {

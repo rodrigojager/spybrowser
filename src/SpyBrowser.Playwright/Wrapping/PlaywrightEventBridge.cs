@@ -29,6 +29,9 @@ internal static class PlaywrightEventBridge
 
     private static void Forward(Delegate handler, HumanizationScope? scope, Action? afterInvoke, object?[] args)
     {
+        if (args.OfType<Microsoft.Playwright.IPage>().Any(page =>
+                ProbePageRegistry.For(page.Context).IsProbe(page) ||
+                ProbePageRegistry.For(page.Context).IsCreatingProbe)) return;
         if (scope is not null)
             for (var i = 0; i < args.Length; i++) args[i] = scope.WrapEventValue(args[i]);
         try

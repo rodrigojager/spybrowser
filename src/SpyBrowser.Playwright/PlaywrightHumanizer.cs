@@ -96,7 +96,8 @@ internal sealed class HumanizationScope
 
         if (value is IReadOnlyList<IPage> pages)
         {
-            return pages.Select(page => (IPage)WrapValue(page, typeof(IPage), page)!).ToArray();
+            return pages.Where(page => !ProbePageRegistry.For(page.Context).IsProbe(page))
+                .Select(page => (IPage)WrapValue(page, typeof(IPage), page)!).ToArray();
         }
 
         if (value is IReadOnlyList<ILocator> locators)
@@ -450,6 +451,13 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
             {
                 arguments[index] = wrapped.Original;
             }
+        }
+
+        if (_target is IBrowserContext browserContext && targetMethod.Name == nameof(IBrowserContext.NewPageAsync))
+        {
+            var creation = ProbePageRegistry.For(browserContext).CreateUserPageAsync(() =>
+                (Task<IPage>)targetMethod.Invoke(_target, arguments)!);
+            return _scope.WrapValue(creation, targetMethod.ReturnType, _pageHint);
         }
 
         var page = _target switch

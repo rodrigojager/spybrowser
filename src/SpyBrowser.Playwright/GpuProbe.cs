@@ -107,4 +107,31 @@ public static class GpuProbe
         cancellationToken.ThrowIfCancellationRequested();
         return await page.EvaluateAsync<BrowserSurfaceDiagnostics>(ProbeScript).ConfigureAwait(false);
     }
+
+    /// <summary>Runs the probe in a fresh, private context page and always closes that page.</summary>
+    public static async Task<BrowserSurfaceDiagnostics> RunAsync(
+        IBrowserContext context,
+        TimeSpan timeout,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        deadline.CancelAfter(timeout);
+        IPage? page = null;
+        try
+        {
+            page = await ProbePageRegistry.For(context).CreateProbePageAsync(deadline.Token).ConfigureAwait(false);
+            return await RunAsync(page, deadline.Token).WaitAsync(deadline.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException($"GPU probe exceeded its {timeout} timeout.");
+        }
+        finally
+        {
+            if (page is not null)
+                await ProbePageRegistry.For(context).CloseProbePageAsync(page).ConfigureAwait(false);
+        }
+    }
 }
