@@ -1,0 +1,2076 @@
+{
+  "schemaVersion": 1,
+  "tickets": [
+    {
+      "id": 1,
+      "title": "Tornar o movimento substituível sem mudar o comportamento atual",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/01-movimento-substituivel.md",
+      "blockedBy": [],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Uma automação local percorre movimento, hover e clique antes/depois da extração, sem mudança intencional de comportamento.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "A geração Bézier passa pelo contrato interno de trajetória; o despacho continua usando o Playwright original, sem recursão pelo wrapper.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Tempos e posições podem ser inspecionados em testes sem navegador; a execução real permanece coberta por teste de browser.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Assinaturas públicas, opções atuais, seleção padrão e comportamento de `Humanize=false` permanecem compatíveis.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "O contrato interno representa posições e tempos sem depender de tipos do futuro pacote Cursory, evitando dependência cíclica.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "O teste não exige coordenadas aleatórias idênticas entre execuções; usa controle determinístico de teste ou invariantes documentados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Recursos e estado mutável não passam a ser compartilhados globalmente entre páginas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Nenhum framework público de plugins, container DI ou reorganização ampla de arquivos é introduzido.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "A documentação técnica explica o ponto de substituição, o ownership do estado e como executar a regressão local.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Testes de navegador realmente executados são distinguíveis dos não executados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Gerar trajetórias gravadas em uma biblioteca .NET autocontida",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/02-gerador-gravacoes-nativo.md",
+      "blockedBy": [],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "O pacote `SpyBrowser.Cursory` é .NET 8, independente de Playwright, com DLL separada e dependências de execução limitadas à BCL.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Um consumidor de demonstração executa a geração a partir do pacote local; não precisa de Node/Python, serviço, download no primeiro uso ou browser.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Dataset, origem, commits, SHA-256, contagem de gravações e licenças constam de manifesto verificável.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "A diferença entre as 2.357 gravações da referência Python e as 2.356 do port escolhido é registrada; fixtures usam exatamente o dataset escolhido.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "A seleção reproduzível utiliza o subconjunto necessário do RNG de referência, com vetores; não substitui esse RNG por System.Random fingindo paridade.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "A trajetória gerada tem origem/destino corretos, valores finitos e tempos coerentes; entrada inválida falha antes de retornar dados parciais.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "O dataset gzip é carregado uma vez, validado com limites de tamanho e mantido imutável; chamadas concorrentes não o modificam.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "O pacote não herda indevidamente MIT, autoria ou copyright globais para o código derivado; inclui avisos LGPL e demais atribuições pertinentes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Proveniência dos dados, fontes correspondentes e condições de redistribuição foram verificadas; pendências bloqueiam distribuição externa e aparecem no checklist.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Há teste de conteúdo do pacote, integridade do recurso e consumo em ambiente sem dependências externas de geração.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "A API experimental e a demonstração deixam explícitos os limites desta prévia e não ativam um algoritmo Cursory incompleto no SpyBrowser.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Completar o algoritmo Cursory com paridade upstream",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/03-cursory-paridade-completa.md",
+      "blockedBy": [
+        2
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Geração completa cobre ranking de candidatos, escolha ponderada, directness, morph, knots, jitter, amostragem temporal e endpoints finais.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "PCG64, SeedSequence e as distribuições efetivamente usadas reproduzem os vetores de referência; wraparound e rejeições têm testes específicos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Fixtures finais e intermediárias identificam commits, dataset e ferramentas de geração; fixtures incompatíveis com o dataset não são reutilizadas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "RNG inteiro/bitstream é comparado exatamente; coordenadas usam tolerância justificada, inicialmente 1e-9 pixel em fixtures comuns; tolerâncias não são afrouxadas sem análise.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Empates de ordenação têm regra determinística documentada; diferenças legítimas de CPU/upstream são isoladas em casos próprios.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Arredondamento, soma, tempos duplicados e peculiaridades de coordenadas inteiras do upstream são preservados ou explicitamente versionados como divergência.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Testes cobrem distância zero, subpixel, todos os quadrantes, parâmetros inválidos, seeds-limite e milhares de casos determinísticos de invariantes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Chamadas concorrentes não compartilham RNG mutável nem alteram o dataset; memória não cresce com uma cópia completa por geração.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Testes cotidianos executam apenas .NET; regenerar referências pode usar ferramentas de desenvolvimento pinadas, nunca dependências de runtime.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Um relatório diferencial localiza divergências por estágio e registra resultados Windows/Linux.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Há procedimento reproduzível de atualização upstream e benchmark inicial de carga fria, geração aquecida e alocações, sem otimização prematura.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 12,
+          "requirement": "O pacote experimental consumido externamente à solution executa o algoritmo completo e mantém as licenças/fontes correspondentes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Executar Cursory por Mouse.MoveAsync com ativação explícita",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/04-cursory-mouse-move.md",
+      "blockedBy": [
+        1,
+        3
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "A seleção é aditiva e opt-in; a configuração anterior continua usando seu comportamento documentado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "`Mouse.MoveAsync` sem options usa Cursory quando selecionado e alcança o destino numa página local de teste.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Options presentes continuam podendo delegar integralmente ao Playwright original; nenhum valor explícito é descartado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "A integração usa o port puro por um adaptador interno, sem cópia de algoritmo ou dependência inversa de Cursory para Playwright.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "O executor usa ordem serial, relógio monotônico e limites explícitos; nenhuma chamada é disparada em paralelo para pontos do mesmo movimento.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Um teste confirma o endpoint e a sequência observável no browser; outro confirma que não há um processo adicional de geração.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "`Humanize=false` não carrega o dataset nem modifica a execução raw. O driver normal do Playwright é reconhecido, não confundido com sidecar Cursory.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Falha de configuração/dataset aparece claramente antes da ação; fallback de algoritmo só ocorre conforme opção explícita, nunca após execução parcial.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Cancelar um método próprio ou fechar a página interrompe novos envios e observa falhas pendentes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Selecionar Bézier novamente funciona sem mudar o código das ações e sem migração de perfil.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "A documentação distingue modo experimental, parâmetros do port e limites operacionais de execução.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Manter o movimento correto sob atraso, escala e estado desconhecido",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/05-movimento-sob-atraso-e-escala.md",
+      "blockedBy": [
+        4
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "O scheduler usa instantes absolutos e coalesce intermediários vencidos, em vez de somar latência a cada pausa ou recuperar atraso com rajadas ilimitadas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "O destino final é preservado salvo cancelamento, deadline ou erro real; não há alteração silenciosa do destino solicitado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Redimensionar duração considera amostragem e frequência sem selecionar involuntariamente outra gravação; os limites não modificam o núcleo do port.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Testes com tempo/controlador fake exercitam atrasos, pausas repetidas, fim do orçamento e fechamento durante espera.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Testes reais cobrem movimento curto/subpixel, bordas e DPR 1, 1.25, 1.5 e 2; não há arredondamento universal indevido para inteiro CSS.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "A posição por página só é atualizada após envio confirmado; estado desconhecido usa estratégia segura documentada.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Existe mecanismo simples de invalidar estado ao misturar acesso raw e humanizado, com demonstração de uso.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Botão já pressionado pelo chamador é detectado quando observável; preparação inadequada é evitada sem liberar esse botão.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Dataset é compartilhado de forma imutável, enquanto estado de cursor/RNG é isolado; não há cópia de dados por página.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Benchmark registra carga fria, geração aquecida, alocações e ritmo recebido pelo DOM; máquina, versões e limitações são registradas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Não se utiliza busy wait, prioridade global de processo nem modificação de timers do sistema.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Preencher e limpar campos no modo compatível",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/06-fill-clear-compativeis.md",
+      "blockedBy": [],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "A opção de modo é aditiva, com significado e limites documentados; nesta entrega a correção garantida cobre Fill/Clear, sem prometer comandos ainda não corrigidos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Fill/Clear delegam à implementação nativa no modo compatível e preservam parâmetros, resultado e exceções.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Testes locais com inputs comuns, senha, number/date, textarea, contenteditable e campo controlado por JS comparam o resultado com Playwright raw.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Campos ocultos/desabilitados e múltiplos matches mantêm acionabilidade, strictness e erros pertinentes do Playwright.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Não são injetados Ctrl+A/Backspace ou eventos de teclado adicionais para simular Fill/Clear.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "`Timeout=0`, options vazias e options explícitas continuam válidos no caminho nativo; objetos recebidos não são modificados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "As interfaces `IPage`, `IFrame` e `ILocator` contratadas encaminham a operação de forma consistente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "A documentação distingue preencher de digitar e explica o modo legado disponível para comparação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Há teste de cancelamento por fechamento do contexto enquanto Fill aguarda um campo indisponível.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "O consumidor não precisa mudar seus blocos para instalar esta evolução.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Inserir texto e executar atalhos sem alterar seus eventos",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/07-insert-text-e-atalhos.md",
+      "blockedBy": [
+        6
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "InsertText chama a operação nativa, sem converter a string em digitação por tecla.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Press mantém a interpretação nativa de chords/modificadores; não passa a string de um atalho como se fosse uma tecla simples em Down/Up.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Um formulário local registra eventos e conteúdo, comprovando diferenças esperadas entre InsertText, Press e Type.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Casos incluem seleção total, navegação por teclado, Enter, Shift e combinações suportadas na matriz do produto.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Opções explícitas e Delay são preservados; a chamada com options pode continuar raw e o objeto options não é mutado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Mapeamentos nos locators/pages/frames e teclado são consistentes com as interfaces atualmente suportadas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Exceções originais são propagadas sem embalagem reflexiva extra e com stack útil.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Após sucesso ou falha não permanecem teclas pressionadas pelo SDK; a implementação não interfere em modificadores de que não é dona.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Testes não digitam segredos reais nem produzem logs com o conteúdo do usuário.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Documentação do modo compatível registra o contrato implementado e mantém a saída raw acessível.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Clicar, dar clique duplo e passar o mouse com ação final nativa",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/08-clique-hover-nativos.md",
+      "blockedBy": [
+        1,
+        6
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Preparação e ação final usam objetos raw internamente, evitando recursão/dobro de humanização.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Clique final usa o locator ou operação nativa correspondente; uma bounding box antiga não é usada para substituir cegamente a ação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "DblClick produz os eventos nativos esperados, inclusive dblclick/detail, sem assumir que dois ciclos simples são equivalentes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "O destino preparatório é coerente com o ponto da ação final; não há salto extra deliberado de alvo aleatório para centro.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Testes locais cobrem alvo estável, alvo movido/removido, overlay, input, hover e links com navegação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Um contador demonstra que sucesso, falha e fallback nunca repetem clique/duplo clique depois de efeitos parciais.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Opções como Force, Trial, Position, Modifiers e Button seguem pelo caminho original quando não suportadas; Trial não provoca preparação adicional do SDK.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Deadline total considera readiness, preparação e ação; timeout esgotado não é convertido em Timeout=0, que significa ilimitado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Se a preparação não for segura, a operação nativa permanece utilizável, com fallback anterior a efeitos irreversíveis.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "O modo compatível documenta movimentos adicionais e a preservação da semântica da ação, sem prometer identidade de todos os eventos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Digitar com ritmo variável sem corromper conteúdo",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/09-digitacao-unicode.md",
+      "blockedBy": [
+        7
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "O comportamento é ligado aos comandos de digitação do modo compatível; Fill e InsertText mantêm as semânticas nativas dos tickets anteriores.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "O texto final e sua ordem são preservados, sem erros deliberados de digitação, truncamento ou correções artificiais.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Testes incluem acentos, emojis, surrogate pairs, marcas combinantes e scripts não latinos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Limites reais de grafemas/IME são documentados; casos não comprovados usam fallback antes de inserir conteúdo, não alegações de suporte universal.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Delay explícito e outras options continuam podendo delegar integralmente à chamada original.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Existe orçamento total de tempo; texto longo não é acelerado fora da política nem truncado para aparentar sucesso.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Fechar a página/contexto durante digitação impede novos caracteres e observa a tarefa real.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Exceções e falhas de foco/elemento são propagadas sem repetir texto já inserido.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Testes de eventos e conteúdo diferenciam digitação humana, Fill e InsertText.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Não são registrados valores digitados nos diagnósticos ou mensagens de erro adicionados pelo SDK.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Interromper e serializar entradas sem deixar ações órfãs",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/10-lifecycle-entrada.md",
+      "blockedBy": [
+        5,
+        8,
+        9
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Um gate por página ordena operações de entrada decoradas, incluindo entrada encaminhada raw através do wrapper, sem lock global de navegador.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Duas páginas executam em paralelo sem compartilhar cursor, RNG, teclas ou fila; teste demonstra o isolamento.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Fila, readiness, movimento e ação consomem o mesmo orçamento, respeitando defaults observados e sua atualização pelo wrapper.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Fechamento e navegação não dependem do gate de entrada e não causam deadlock; callbacks não rodam sob locks internos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Page/context/browser lifetime interrompe pausas e futuros envios; todos os faults das tarefas iniciadas são observados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "WaitAsync cancelado não é tratado como prova de cancelamento subjacente; testes verificam ausência de eventos posteriores e cleanup real.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Métodos próprios honram CancellationToken; o limite das interfaces Playwright sem token permanece documentado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Down/Up de um drag em múltiplas chamadas não mantêm um lock indefinido nem têm seus botões liberados pelo SDK indevidamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Cleanup libera somente teclas/botões de que o SDK é dono, preserva a causa original e não repete ações.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Testes abrangem fechamento durante fila, espera, movimento, clique e digitação, além de timeout imediatamente antes da ação final.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Descarte é idempotente; teste de longa repetição não retém páginas/contextos nem acumula tarefas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 12,
+          "requirement": "Um fluxo integrado Cursory + click + typing termina corretamente no navegador local, sem alterar comandos do consumidor.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Criar contextos configurados por qualquer entrada pública",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/11-fabricas-configuradas.md",
+      "blockedBy": [],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "NewContext/NewPage pelo handle e pelo browser público passam pela mesma fábrica configurada, que chama o browser raw sem recursão.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Locale, fuso, viewport, escala, user agent e timeouts são aplicados de acordo com precedência documentada de defaults, opções e callbacks.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Objetos options fornecidos pelo consumidor não são modificados inadvertidamente nem perdem campos não relacionados à identidade.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "`Humanize=false` mantém contexts/pages raw, conforme o contrato esperado pelo RpaBlockly; configuração de identidade não depende da humanização.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "RawBrowser permanece um bypass intencional e claramente documentado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Testes locais comparam propriedades observadas pelos dois caminhos de criação, com e sem override explícito.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Contexts descartáveis não adquirem lease de perfil persistente nem bloqueiam jobs que usam a mesma identidade em memória.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Erro durante criação/configuração fecha os recursos já criados sem mascarar a exceção original.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "API pública existente e propriedade de recursos/descarte permanecem compatíveis.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "A implementação aproveita o mecanismo atual com extensão pequena, sem reescrever manualmente toda a API de páginas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Manter humanização em frames e coleções de locators",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/12-frames-e-locators.md",
+      "blockedBy": [],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "IFrameLocator e locators derivados mantêm o page hint e a scope de humanização corretos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Main frame, parent/child frames e listas de frames retornam referências consistentes para o mesmo objeto raw.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Coleções de locators, incluindo AllAsync, mantêm a decoração nos elementos retornados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Referências de volta como locator.Page e page.Context respeitam a cache existente e não criam uma nova camada de wrapper a cada acesso.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Wrap(Wrap(x)) não duplica humanização e Unwrap(Wrap(x)) devolve o objeto original.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Testes em frames aninhados e cross-origin local executam uma ação e comprovam que ela passa pela política esperada.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Argumentos Playwright conhecidos são desembrulhados ao retornar ao driver quando necessário; payloads arbitrários do usuário não sofrem recursão/modificação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Resultados de Evaluate/DTOs e objetos não contratados continuam intactos; não se tenta embrulhar todo retorno genericamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "`Humanize=false` e os escape hatches continuam operando sem decoração indevida.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Descarte de frames/pages não cria retenção indefinida na cache; uso de referências fracas e ownership estão documentados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Handles não recebem promessa de humanização de métodos não implementados; a documentação distingue propagação de suporte a ações.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Expor contextos consistentes em eventos e listagens",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/13-eventos-contextos.md",
+      "blockedBy": [
+        11
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "O objeto recebido no evento de contexto é ReferenceEquals ao retornado por NewContextAsync e ao item da coleção correspondente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Contexto criado por NewPageAsync segue o mesmo contrato de registro, preparação e publicação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Cada contexto é anunciado uma vez; corrida entre criação e fechamento não publica um contexto já encerrado indevidamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "A coleção deixa de conter o contexto após fechamento e não expõe uma lista mutável interna.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Assinatura, remoção e inscrições duplicadas preservam semântica de eventos .NET; sender e argumentos são adaptados somente conforme contrato explícito.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Nenhum callback do usuário é executado segurando lock de registro.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "O bridge não bloqueia callback síncrono com Result/Wait para aguardar preparação assíncrona.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Contextos externos/raw que não passaram pela fábrica têm política documentada; não recebem promessa de defaults aplicados retroativamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Erros de handlers mantêm o contrato compatível com a implementação subjacente, sem serem engolidos arbitrariamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Descarte remove bridges e referências de longa vida; testes de repetição e fechamento cobrem vazamentos e deadlocks.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "O adaptador existente do RpaBlockly continua utilizável, sem eventos duplicados decorrentes da nova implementação do SDK.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Automatizar popups e novas páginas sem perder o wrapper",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/14-popups-humanizados.md",
+      "blockedBy": [
+        13
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Context.Page e Page.Popup entregam objetos decorados quando habilitado e raw quando desabilitado, conforme contrato público.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "WaitForPopup e RunAndWaitForPopup retornam a mesma instância pública correspondente aos eventos e a context.Pages.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Uma aplicação local abre popup e executa uma ação nele pelos comandos Playwright normais, comprovando a propagação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Múltiplos popups concorrentes e fechamento imediato não confundem identidade, page hints ou lifetime.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Handler adicionado/removido, inscrição duplicada e descarte seguem a semântica de eventos definida no ticket anterior.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Não há callbacks sob locks nem espera síncrona por trabalho assíncrono no bridge.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Coleções removem páginas fechadas e não mantêm wrappers de páginas mortas indefinidamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Eventos sem payload Playwright relevante e callbacks arbitrários não são reescritos genericamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Exceções e timeout das APIs de espera mantêm o contrato do Playwright.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Os testes cobrem Unwrap e ativação/desativação de humanização, sem presumir que todos os métodos de um objeto são humanizados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Explicar a humanização e seus fallbacks sem expor dados",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/15-diagnosticos-humanizacao.md",
+      "blockedBy": [
+        4,
+        7,
+        8,
+        9
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Uma única superfície leve de observação é escolhida e documentada, sem dependência obrigatória de um backend de telemetria.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Um fluxo local demonstra registros de ação humanizada, comando nativo por semântica, options não suportadas, cancelamento e erro.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Eventos incluem método, modo, algoritmo, resultado e motivos estáveis; medidas de duração/pontos são incluídas onde disponíveis.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Versões de SpyBrowser, Playwright, navegador, algoritmo e dataset são obtidas e associáveis ao relatório.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Não são registrados texto digitado, senha, cookies, tokens, storage state, URLs completas ou seletores potencialmente pessoais por padrão.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Testes com valores-sentinela comprovam ausência de informações proibidas, inclusive em caminhos de erro.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Coordenadas/seed detalhadas são opt-in explícito se oferecidas; não existe coleta de novas gravações de mouse do usuário por padrão.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Um observer com falha não derruba nem repete a automação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Sem observer, o hot path não aloca evento por ponto nem carrega dados adicionais desnecessários.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Fallback raw por options permanece comportamento aceito; o relatório não o apresenta como erro a corrigir obrigatoriamente no consumidor.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Fill nativo por política não é anunciado como digitação humanizada e métricas não viram um stealth score.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Executar probes sem interferir nas páginas do usuário",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/16-probes-isolados.md",
+      "blockedBy": [
+        13,
+        14
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "O probe usa página temporária dedicada e não reutiliza/navega a primeira página disponível do usuário.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "A página interna não aparece nos eventos/listagens públicas de trabalho segundo uma política explícita, preservando o acesso raw intencional.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Preparação, registro, filtragem e fechamento da página interna são testados contra corridas com novas páginas do usuário.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "O resultado pode ser solicitado nos modos persistent, context e browser-only previstos, sem precisar alterar o fluxo de automação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Há timeout próprio e cleanup em finally; falha de GPU, JS, criação ou fechamento não vaza página/contexto.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "O probe considera a configuração efetiva do contexto após defaults, overrides e callbacks.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Não é ligado automaticamente onde o consumidor optou por RunGpuProbe=false; não roda por clique.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Testes locais verificam URL, estado e referências de abas de usuário antes/depois do diagnóstico.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "APIs indisponíveis pela origem/contexto do probe são reportadas como indisponíveis, não como prova de fingerprint incoerente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Caso uma origem segura ou headers sejam necessários, utiliza fixture local controlada, sem consultas públicas automáticas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "A superfície de diagnóstico distingue resultado incompleto, timeout e findings reais, com mensagens acionáveis.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Detectar incoerências de fuso, idioma e geometria",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/17-coerencia-regional-geometria.md",
+      "blockedBy": [
+        16
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Fuso configurado e observado são comparados com normalização documentada; UTC/Etc/UTC e conversões Windows/IANA têm testes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Comparação não considera fusos equivalentes apenas porque têm o mesmo offset num instante; regras/aliases são tratados conservadoramente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Locale principal e navigator.languages usam normalização BCP-47, preservando diferenças de preferência legítimas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Viewport, screen e escala são comparados em unidades consistentes, com casos de DPR/zoom e NoViewport documentados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "O esperado deriva das opções efetivas do contexto, não somente do manifesto base que callbacks podem ter alterado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Findings possuem códigos/severidade e aparecem tanto no resultado de API quanto na apresentação CLI pertinente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Ausência de dado gera resultado indeterminado/aviso adequado; não vira contradição automaticamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "FailOnConsistencyErrors continua funcionando para erros inequívocos; warnings não bloqueiam lançamentos arbitrariamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Fixtures locais demonstram ao menos um caso coerente, um alias legítimo e um conflito por categoria.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Não há GeoIP automático nem inferência obrigatória de idioma/fuso pelo proxy.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Um cenário equivalente ao timezone local usado pelo RpaBlockly passa sem exigir habilitar probes por padrão no consumidor.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Diagnosticar conflitos de browser e renderização",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/18-coerencia-browser-gpu.md",
+      "blockedBy": [
+        16
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Família/versão real do navegador e versão Playwright aparecem no diagnóstico com origem explícita.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Conflitos claros entre família de browser, UA e plataforma são identificados sem exigir igualdade literal de strings.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Client Hints ausentes ou reduzidos por privacidade são diferenciados de valores comprovadamente contraditórios.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Políticas GPU existentes continuam detectando software/hardware conforme sua capacidade real, com testes para renderer indisponível.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Dados de WebGL/WebGPU passam por comparação conservadora; ausência de WebGPU não prova inconsistência.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Overrides experimentais exibem aviso sobre strings, pixels, timing e contextos não abrangidos, sem promessa de invisibilidade.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "O hash gráfico existente não é descrito como certificação de equivalência de GPU.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "API/CLI apresentam findings com severidade/códigos e testes locais de caso coerente, conflito e informação indisponível.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Atualização legítima de Chrome, GPU ou driver não bloqueia operação automaticamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Nenhum dado é enviado a terceiros para avaliação e nenhum argumento/script stealth novo é adicionado para esconder findings.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Defaults e callbacks efetivos são considerados para evitar acusar como erro um override intencional documentado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Comparar sessões por snapshots locais opcionais",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/19-snapshots-opcionais.md",
+      "blockedBy": [
+        15,
+        17,
+        18
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "A capacidade é opt-in e produz snapshot JSON com schema próprio, independente do manifesto de identidade e dos dados de perfil.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Inclui versões, algoritmo/dataset, características normalizadas e findings, sem conteúdo de páginas, cookies ou textos digitados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "API/CLI permitem salvar, escolher baseline e comparar, com demonstração completa em duas execuções locais.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "A baseline aceita não é substituída automaticamente pelo snapshot mais recente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Escrita é atômica; permissões e retenção têm comportamento documentado e testes nas plataformas suportadas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Sessões concorrentes com mesmo IdentityId em modo descartável não disputam um único arquivo global nem sobrescrevem resultados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Schema desconhecido/corrompido gera erro útil e não altera o perfil ou a baseline existente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Comparação apresenta mudanças de campos e severidade contextual, não apenas um hash ou stealth score.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Atualizações legítimas do browser/GPU/driver são informativas salvo contradição real demonstrada por regras existentes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Desativar snapshots elimina persistência adicional; excluir snapshots não afeta login/perfil/identidade.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Testes incluem falta de permissão, interrupção de escrita, concorrência e ausência de valores secretos-sentinela.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Validar uma atualização do pacote com o consumidor RpaBlockly",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/20-consumidor-rpablockly.md",
+      "blockedBy": [
+        10,
+        12,
+        14,
+        15,
+        17
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Commit do consumidor e versões de SDK/Playwright/pacotes são fixados e registrados; checkout de integração fica isolado do trabalho normal do usuário.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Um feed NuGet local fornece o candidato; o teste não exige publicar pacote externo.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Um consumer check .NET 9 verifica o contrato público mínimo e um subconjunto local do RpaBlockly real exercita os fluxos relevantes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Humanize on/off, fuso local inclusive UTC, viewport, Chromium selecionado e identidade em memória continuam corretos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Evento de contexto, referência retornada e Browser.Contexts coincidem; fechar contexto remove-o da coleção.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "StorageStatePath, download local, screenshot, navegação e fluxo com frame/popup preservam comportamento.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Cancelamento de Fill fecha o contexto e interrompe a tarefa real; cancelamento do launch limpa um browser que concluiu abertura tardiamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Dois jobs com identidade em memória não bloqueiam por lease de perfil nem compartilham estado de entrada.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Options explícitas podem continuar raw: humanizar o fill atual do RpaBlockly não é critério de aceite.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Mantém-se o adaptador atual do consumidor e os outros providers; não se adiciona a fachada que conflita com CloakBrowser.dll.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Checks executados, skips e dependências externas não exercitadas são relatados honestamente, sem marcar o suite inteiro como validado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 12,
+          "requirement": "Nenhum bloco, DSL ou componente de CAPTCHA é alterado para fazer os testes passarem.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Demonstrar o ganho e o custo do novo movimento",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/21-relatorio-qualidade-movimento.md",
+      "blockedBy": [
+        10,
+        15
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Mesmas tarefas locais, distâncias, contexto e configuração de browser são usadas para comparar os dois algoritmos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Relatório registra duração planejada/observada, comprimento/deslocamento, intervalos, velocidade/aceleração com método e unidades, pausas e conclusão das tarefas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Custo de carga fria, geração aquecida, alocações e memória por processo/página é separado do custo de despacho Playwright.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Condições do ambiente, hardware, OS, browser, Playwright, algoritmo e dataset são registradas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Casos incluem movimentos curtos/longos, alvo estável, transporte lento e múltiplas páginas independentes.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Seeds controladas permitem repetir a geração; timestamps reais usam tolerâncias e não são prometidos como reprodutíveis bit a bit.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "O orçamento inicial de geração é avaliado em máquina de referência; runner compartilhado não produz falha flaky por um limiar rígido sem contexto.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Relatório diferencia regressão de correção funcional, custo adicional e diferença esperada de ritmo.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Não se usa percentual de CAPTCHA, indetectabilidade ou stealth score como conclusão sem experimento específico autorizado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Não são coletados movimentos reais de pessoas sem consentimento; amostras humanas adicionais não são requisito para concluir o ticket.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "O procedimento tem um comando/fluxo documentado e resultado legível sem necessidade de serviço externo.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "title": "Homologar upgrades do Playwright com evidência real de execução",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/22-ci-upgrades-playwright.md",
+      "blockedBy": [
+        10,
+        12,
+        14
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "A lane obrigatória usa a versão-base 1.61.0 e instala explicitamente Chromium/dependências nas plataformas suportadas.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "A lane de versão estável mais recente resolve a versão uma vez por workflow, registra o valor e o reutiliza nos jobs relacionados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Matriz cobre build, testes de contratos, navegador local e empacotamento; testes não executados são skipped/job não executado, nunca sucesso por return silencioso.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Headless é exercitado regularmente; headed/Xvfb, Chrome e Edge Windows têm lanes adicionais proporcionais ao custo, com disponibilidade explícita.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Relatórios registram versões reais do browser, SDK e Playwright, evitando atribuir resultados a uma versão não instalada.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Auditoria da superfície identifica métodos/options novos e retornos Playwright ainda sem adaptação; desconhecidos continuam delegados, não parcialmente interceptados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Testes incluem frames, eventos, popups, identidade de referências, semântica de ações e lifecycle já implementados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Nenhum browser test depende de sites externos ou resultados de CAPTCHA.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Falhas intermitentes não são escondidas por retries que transformem regressões persistentes em sucesso; evidências de falha permanecem acessíveis.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Atualizar a versão mínima do pacote é decisão posterior, não consequência automática de uma lane latest verde.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "A documentação permite reproduzir localmente cada lane e entende que Xvfb não fornece GPU hardware.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Instalar a pré-release e comprovar rollback em ambiente limpo",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/23-prerelease-e-rollback.md",
+      "blockedBy": [
+        18,
+        20,
+        21,
+        22
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Pacotes são construídos e instalados via feed local em consumidor limpo, não apenas por project reference dentro da solution.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "O grafo contém a DLL Cursory separada, dados embarcados e nenhuma dependência adicional de servidor/processo de geração.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "O teste reconhece a instalação e o driver normal do Playwright; não exige erroneamente a ausência de todo Node no processo de automação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Conteúdo real de nupkg/nuspec, fontes correspondentes, símbolos, licenças e avisos de código/dados/helpers são verificados.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Checklist LGPL/proveniência está concluído ou aponta bloqueio explícito de distribuição; separação em DLL não é apresentada como parecer jurídico suficiente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Ativar Cursory, selecionar Bézier e Humanize=false funcionam pelos mesmos comandos Playwright, sem fallback silencioso durante uma ação.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Pin da versão anterior é demonstrado sem migração destrutiva de identidade/perfil; recursos continuam descartados corretamente.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Releases documentam semântica do modo compatível, diferenças do legado, matriz homologada, limites do produto e rollback.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Evidências RpaBlockly, browser contracts, paridade e benchmark são associadas ao candidato instalado.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Nenhum default global é promovido silenciosamente; Cursory permanece opt-in até decisão explícita.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 11,
+          "requirement": "Snapshots históricos não são dependência obrigatória desta pré-release; se já incluídos no pacote, só são anunciados como homologados após o ticket 24.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 12,
+          "requirement": "Publicação em NuGet/GitHub externo exige aprovação operacional separada; este ticket não autoriza esse efeito por si só.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "title": "Homologar snapshots na distribuição final",
+      "ticket": ".scratch/spybrowser-cursory-nativo/issues/24-snapshots-distribuicao-final.md",
+      "blockedBy": [
+        19,
+        23
+      ],
+      "criteria": [
+        {
+          "id": 1,
+          "requirement": "Consumidor instalado a partir de pacote executa salvar, selecionar baseline, comparar e descartar snapshots, sem acesso ao workspace de desenvolvimento.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 2,
+          "requirement": "Schema de snapshot é independente do schema de identidade e da versão dos dados do algoritmo.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 3,
+          "requirement": "Rollback do pacote não altera/corrompe perfil ou manifesto de identidade; snapshots de versão mais nova são ignorados ou rejeitados de forma clara conforme contrato.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 4,
+          "requirement": "Desligar persistência de snapshots e excluir arquivos do recurso não remove storage state, cookies, perfis ou identidades.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 5,
+          "requirement": "Falta de permissão, interrupção de escrita e sessões concorrentes são exercitadas no formato distribuído, preservando baseline anterior válida.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 6,
+          "requirement": "Testes confirmam ausência de secrets e isolamento dos dados do recurso, inclusive após erros e rollback.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 7,
+          "requirement": "Mudanças legítimas de versões e GPU aparecem como informação contextual, sem alterar automaticamente a baseline nem bloquear a execução.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 8,
+          "requirement": "Manual operacional cobre ativação, comparação, retenção, exportação quando disponível e descarte seguro.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 9,
+          "requirement": "Release checklist da entrega completa associa snapshots às evidências de compatibilidade, licenciamento e desempenho do núcleo.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        },
+        {
+          "id": 10,
+          "requirement": "Não se publica externamente ou altera defaults globais sem aprovação específica, mesmo com todos os testes concluídos.",
+          "status": "pending",
+          "evidence": [],
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}
