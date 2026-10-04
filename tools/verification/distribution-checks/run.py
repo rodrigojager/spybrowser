@@ -33,6 +33,65 @@ def run(command, *, cwd, env, log):
     return result.stdout
 
 
+def git_archive(repository: Path) -> bytes:
+    result = subprocess.run(["git", "-c", f"safe.directory={repository.as_posix()}", "-C", str(repository), "archive", BASELINE],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode:
+        raise RuntimeError(f"Cannot read baseline {BASELINE}: {result.stderr.decode(errors='replace')}")
+    return result.stdout
+
+
+def verify_previous_feed(feed: Path, manifest_path: Path, repository: Path, version: str) -> dict:
+    """Fail closed unless the supplied packages are byte-proven from the pinned Git baseline."""
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"Cannot read previous-feed provenance manifest {manifest_path}: {exc}") from exc
+    if not isinstance(manifest, dict):
+        raise RuntimeError("Previous-feed manifest must be a JSON object")
+    if manifest.get("sourceCommit") != BASELINE or manifest.get("version") != version:
+        raise RuntimeError("Previous-feed manifest must identify the exact pinned baseline commit and --previous-version")
+    expected_ids = ("SpyBrowser.Core", "SpyBrowser.Playwright")
+    hashes = manifest.get("packageHashes")
+    expected_names = {f"{package_id}.{version}.nupkg" for package_id in expected_ids}
+    if not isinstance(hashes, dict) or set(hashes) != expected_names or any(not isinstance(v, str) or len(v) != 64 for v in hashes.values()):
+        raise RuntimeError("Previous-feed manifest packageHashes must contain exactly the two pinned package filenames and SHA256 hashes")
+    actual_names = {p.name for p in feed.glob("*.nupkg") if not p.name.endswith(".snupkg")}
+    if actual_names != expected_names:
+        raise RuntimeError("Previous feed must contain exactly SpyBrowser.Core and SpyBrowser.Playwright for --previous-version")
+    for filename in sorted(expected_names):
+        package = feed / filename
+        if sha(package) != hashes[filename]:
+            raise RuntimeError(f"Previous-feed package hash mismatch: {filename}")
+        try:
+            with zipfile.ZipFile(package) as archive:
+                nuspecs = [name for name in archive.namelist() if name.endswith(".nuspec")]
+                if len(nuspecs) != 1:
+                    raise RuntimeError(f"Expected one nuspec in {filename}")
+                root = ET.fromstring(archive.read(nuspecs[0]))
+                ns_uri = root.tag.partition("}")[0].lstrip("{")
+                ns = {"n": ns_uri} if ns_uri else {}
+                metadata = root.find("n:metadata", ns) if ns else root.find("metadata")
+                if metadata is None:
+                    raise RuntimeError(f"Missing nuspec metadata in {filename}")
+                repository_node = metadata.find("n:repository", ns) if ns else metadata.find("repository")
+                package_id = metadata.findtext("n:id", default="", namespaces=ns) if ns else metadata.findtext("id", default="")
+                package_version = metadata.findtext("n:version", default="", namespaces=ns) if ns else metadata.findtext("version", default="")
+                expected_id = next(package_id for package_id in expected_ids if filename == f"{package_id}.{version}.nupkg")
+                if package_id != expected_id or package_version != version or repository_node is None or repository_node.attrib.get("commit") != BASELINE:
+                    raise RuntimeError(f"Repository metadata mismatch in {filename}; expected package identity/version and commit {BASELINE}")
+        except (OSError, zipfile.BadZipFile, ET.ParseError) as exc:
+            raise RuntimeError(f"Invalid package metadata in {filename}: {exc}") from exc
+    try:
+        archive = git_archive(repository)
+    except RuntimeError as exc:
+        raise RuntimeError(f"Cannot verify previous feed against repository baseline: {exc}") from exc
+    archive_hash = hashlib.sha256(archive).hexdigest()
+    if manifest.get("sourceArchiveSha256") != archive_hash:
+        raise RuntimeError("Previous-feed sourceArchiveSha256 does not match a fresh git archive of the pinned baseline")
+    return manifest
+
+
 def package_manifest(feeds):
     rows = []
     for feed in feeds:
@@ -72,6 +131,7 @@ def main():
     ap.add_argument("--declared-final-commit", help="Required only for a genuinely final feed; preliminary manifests may declare no final commit")
     ap.add_argument("--feed-manifest", type=Path, required=True, help="Existing provenance manifest for the candidate feed")
     ap.add_argument("--previous-feed", type=Path)
+    ap.add_argument("--previous-feed-manifest", type=Path, help="Provenance manifest for a caller-supplied baseline feed; requires --repository")
     ap.add_argument("--previous-version", default="0.1.0-baseline.e217359")
     ap.add_argument("--dependency-feed", type=Path, action="append", default=[], help="Additional local-only feed for exact pinned transitive packages such as Microsoft.Playwright")
     ap.add_argument("--output", type=Path, required=True)
@@ -113,6 +173,10 @@ def main():
     logs = []
     statuses = []
     previous_feed = args.previous_feed.resolve() if args.previous_feed else None
+    if args.previous_feed_manifest and (previous_feed is None or args.repository is None):
+        ap.error("--previous-feed-manifest requires both --previous-feed and --repository")
+    if args.previous_feed_manifest and not args.previous_feed_manifest.resolve().is_file():
+        ap.error(f"Previous-feed provenance manifest is missing: {args.previous_feed_manifest.resolve()}")
     if args.previous_version == args.candidate_version:
         ap.error("Previous and candidate package versions must be distinct")
     for package_id in ("SpyBrowser.Core", "SpyBrowser.Cursory", "SpyBrowser.Playwright"):
@@ -125,11 +189,12 @@ def main():
                 ap.error("Supply --previous-feed or --repository to build pinned baseline e217 artifact")
             baseline_tree, previous_feed = temp / "baseline-source", temp / "previous-feed"
             baseline_tree.mkdir(); previous_feed.mkdir()
-            archive = subprocess.run(["git", "-c", f"safe.directory={args.repository.resolve().as_posix()}", "-C", str(args.repository.resolve()), "archive", BASELINE], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if archive.returncode:
-                ap.error(f"Cannot read baseline {BASELINE}: {archive.stderr.decode(errors='replace')}")
+            try:
+                archive_bytes = git_archive(args.repository.resolve())
+            except RuntimeError as exc:
+                ap.error(str(exc))
             import tarfile, io
-            with tarfile.open(fileobj=io.BytesIO(archive.stdout), mode="r:") as tar:
+            with tarfile.open(fileobj=io.BytesIO(archive_bytes), mode="r:") as tar:
                 if sys.version_info >= (3, 12):
                     tar.extractall(baseline_tree, filter="data")
                 else:
@@ -159,7 +224,15 @@ def main():
                 print(f"Evidence: {evidence_path}", file=sys.stderr)
                 return 1
         else:
-            statuses.append({"check": "previous-package-provenance", "status": "PENDING", "reason": "Caller-supplied previous feed; baseline e217 provenance must be independently verified."})
+            if args.previous_feed_manifest:
+                try:
+                    baseline_manifest = verify_previous_feed(previous_feed, args.previous_feed_manifest.resolve(), args.repository.resolve(), args.previous_version)
+                except RuntimeError as exc:
+                    ap.error(str(exc))
+                statuses.append({"check": "previous-package-provenance", "status": "PASS", "baseline": BASELINE,
+                                 "version": args.previous_version, "sourceArchiveSha256": baseline_manifest["sourceArchiveSha256"]})
+            else:
+                statuses.append({"check": "previous-package-provenance", "status": "PENDING", "reason": "Caller-supplied previous feed; baseline provenance manifest was not independently verified."})
 
         # The only project source and execution directory are outside the product workspace.
         consumer = temp / "consumer"
