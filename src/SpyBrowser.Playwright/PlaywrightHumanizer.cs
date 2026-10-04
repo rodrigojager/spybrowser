@@ -83,18 +83,57 @@ internal sealed class HumanizationScope
 
     internal async Task ObserveRawMouseCallAsync(IPage page, string method, object?[] arguments, Task operation)
     {
-        await operation.ConfigureAwait(false);
         var actions = _actions.GetValue(page, _ => new HumanActions(_options));
+        var button = GetMouseButton(arguments);
+        try
+        {
+            await operation.ConfigureAwait(false);
+        }
+        catch
+        {
+            // A rejected coordinate call may already have moved the physical pointer. Button
+            // transitions can partially apply too, so retain uncertainty until a successful Up.
+            if (method is nameof(IMouse.MoveAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
+                actions.InvalidateMousePosition(page);
+            if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync)) actions.ObserveRawMouseButtonFailure(page, button);
+            throw;
+        }
+
         if (method == nameof(IMouse.MoveAsync) && arguments.ElementAtOrDefault(0) is float x && arguments.ElementAtOrDefault(1) is float y)
         {
             actions.ObserveRawMouseMove(page, x, y);
         }
+        else if (method is nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
+        {
+            if (arguments.ElementAtOrDefault(0) is float clickX && arguments.ElementAtOrDefault(1) is float clickY)
+                actions.ObserveRawMouseMove(page, clickX, clickY);
+            else
+                actions.InvalidateMousePosition(page);
+        }
         else if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
         {
-            var option = arguments.ElementAtOrDefault(0);
-            var button = option?.GetType().GetProperty("Button")?.GetValue(option)?.ToString() ?? "left";
             actions.ObserveRawMouseButton(page, button, method == nameof(IMouse.DownAsync));
         }
+    }
+
+    private static string GetMouseButton(object?[] arguments) =>
+        arguments.ElementAtOrDefault(0)?.GetType().GetProperty("Button")?.GetValue(arguments[0])?.ToString() ?? "left";
+
+    internal void MarkRawMouseCallStarted(IPage page, string method, object?[] arguments)
+    {
+        var actions = _actions.GetValue(page, _ => new HumanActions(_options));
+        if (method is nameof(IMouse.MoveAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
+            actions.InvalidateMousePosition(page);
+        if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync)) actions.ObserveRawMouseButtonFailure(page, GetMouseButton(arguments));
+    }
+
+    internal void InvalidateRawLocatorPointer(object target, string method, object?[] arguments)
+    {
+        if (target is not (ILocator or IPage or IFrame) || method is not (
+            "ClickAsync" or "DblClickAsync" or "HoverAsync" or "CheckAsync" or "UncheckAsync" or "DragToAsync" or "DragAndDropAsync")) return;
+        if (arguments.Any(argument => argument?.GetType().GetProperty("Trial")?.GetValue(argument) is true)) return;
+        var page = ResolvePage(target, null);
+        if (page is not null) InvalidateMousePosition(page);
     }
 
     public HumanizationScope(HumanInteractionOptions options)
@@ -750,8 +789,11 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
                     {
                         nativeArguments = ApplyRemainingNativeTimeout(targetMethod, arguments, page, cancellationToken);
                     }
+                    _scope.InvalidateRawLocatorPointer(_target, targetMethod.Name, arguments);
+                    if (_target is IMouse && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
+                        _scope.MarkRawMouseCallStarted(page, targetMethod.Name, arguments);
                     pending = (Task)targetMethod.Invoke(_target, nativeArguments)!;
-                    if (_target is IMouse && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
+                    if (_target is IMouse && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
                     {
                         // Confirm native pointer/button state before releasing the per-page lease.
                         await _scope.ObserveRawMouseCallAsync(page, targetMethod.Name, arguments, pending).ConfigureAwait(false);
@@ -774,9 +816,12 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var humanizedResult)) return humanizedResult;
         try
         {
+            _scope.InvalidateRawLocatorPointer(_target, targetMethod.Name, arguments);
+            if (_target is IMouse && _pageHint is not null && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
+                _scope.MarkRawMouseCallStarted(_pageHint, targetMethod.Name, arguments);
             var result = targetMethod.Invoke(_target, arguments);
             if (_target is IMouse && _pageHint is not null && result is Task operation &&
-                targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
+                targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
             {
                 return _scope.ObserveRawMouseCallAsync(_pageHint, targetMethod.Name, arguments, operation);
             }

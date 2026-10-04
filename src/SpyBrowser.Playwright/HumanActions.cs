@@ -364,11 +364,12 @@ public sealed class HumanActions
             await locator.HoverAsync(new LocatorHoverOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
         }
 
+        var state = _mouseStates.GetValue(page, _ => new PageMouseState());
         try
         {
             await locator.ScrollIntoViewIfNeededAsync(new LocatorScrollIntoViewIfNeededOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
             var box = await locator.BoundingBoxAsync().ConfigureAwait(false);
-            if (box is not null && box.Width > 0 && box.Height > 0)
+            if (!state.HasButtonDown && box is not null && box.Width > 0 && box.Height > 0)
             {
                 await MoveCoreAsync(page, box.X + box.Width / 2d, box.Y + box.Height / 2d, deadline.Token).ConfigureAwait(false);
             }
@@ -379,7 +380,9 @@ public sealed class HumanActions
         }
 
         deadline.ThrowIfExpired();
-        // Exactly one native semantic action owns click/dblclick effects; never retry after it starts.
+        // An active caller-owned button is a drag: don't reposition or release it. Playwright
+        // still owns the final semantic action; its endpoint cannot be inferred from the box.
+        state.InvalidatePosition();
         switch (action)
         {
             case "click": await locator.ClickAsync(new LocatorClickOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
@@ -523,6 +526,9 @@ public sealed class HumanActions
 
     internal void ObserveRawMouseButton(IPage page, string button, bool down) =>
         _mouseStates.GetValue(page, _ => new PageMouseState()).ObserveButton(button, down);
+
+    internal void ObserveRawMouseButtonFailure(IPage page, string button) =>
+        _mouseStates.GetValue(page, _ => new PageMouseState()).ObserveButtonUncertain(button);
 
     private double NextDouble(double minimum, double maximum) =>
         minimum + _random.NextDouble() * (maximum - minimum);

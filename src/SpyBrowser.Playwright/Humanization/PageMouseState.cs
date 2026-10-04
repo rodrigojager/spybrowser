@@ -4,11 +4,12 @@ namespace SpyBrowser.Playwright.Humanization;
 internal sealed class PageMouseState
 {
     private readonly HashSet<string> _buttonsDown = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _buttonsUncertain = new(StringComparer.OrdinalIgnoreCase);
 
     internal double? X { get; private set; }
     internal double? Y { get; private set; }
     internal bool HasKnownPosition => X.HasValue && Y.HasValue;
-    internal bool HasButtonDown => _buttonsDown.Count != 0;
+    internal bool HasButtonDown => _buttonsDown.Count != 0 || _buttonsUncertain.Count != 0;
 
     internal void ConfirmPosition(double x, double y)
     {
@@ -24,7 +25,21 @@ internal sealed class PageMouseState
 
     internal void ObserveButton(string button, bool isDown)
     {
-        if (isDown) _buttonsDown.Add(button);
-        else _buttonsDown.Remove(button);
+        if (isDown)
+        {
+            _buttonsDown.Add(button);
+            _buttonsUncertain.Remove(button);
+        }
+        else
+        {
+            _buttonsDown.Remove(button);
+            _buttonsUncertain.Remove(button);
+        }
+    }
+
+    internal void ObserveButtonUncertain(string button)
+    {
+        _buttonsDown.Remove(button);
+        _buttonsUncertain.Add(button);
     }
 }
