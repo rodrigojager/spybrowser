@@ -6,6 +6,7 @@ using SpyBrowser.Playwright.Humanization;
 
 namespace SpyBrowser.Tests;
 
+[Collection(TimedInputCollection.Name)]
 public sealed class SharedInputBudgetTests
 {
     [Fact]
@@ -31,6 +32,13 @@ public sealed class SharedInputBudgetTests
             var method = typeof(ILocator).GetMethod(nameof(ILocator.FillAsync), [typeof(string), typeof(LocatorFillOptions)])!;
             var args = HumanizingDispatchProxy<ILocator>.ApplyRemainingNativeTimeout(method, ["x", null], page, token);
             observedTimeout = ((LocatorFillOptions)args[1]!).Timeout!.Value;
+            var supplied = new LocatorFillOptions { Force = true };
+            var adjusted = HumanizingDispatchProxy<ILocator>.ApplyRemainingNativeTimeout(method, ["x", supplied], page, token);
+            Assert.NotSame(supplied, adjusted[1]);
+            Assert.Null(supplied.Timeout);
+            Assert.True(supplied.Force);
+            Assert.True(((LocatorFillOptions)adjusted[1]!).Force);
+            Assert.InRange(((LocatorFillOptions)adjusted[1]!).Timeout!.Value, 1, 99);
             return Task.CompletedTask;
         }, 100, nativeDefaultTimeoutApplies: true);
 
@@ -64,6 +72,45 @@ public sealed class SharedInputBudgetTests
         unblock.SetResult();
         await blocker;
         Assert.False(invoked);
+    }
+
+    [Fact]
+    public async Task Compatible_typing_focus_receives_the_shared_default_budget_not_a_fresh_typing_budget()
+    {
+        var page = FakePage.Create();
+        var locator = DispatchProxy.Create<ILocator, FocusLocatorProxy>();
+        var proxy = (FocusLocatorProxy)(object)locator;
+        proxy.Page = page;
+        var state = PageInputState.For(page);
+        state.SetDefaultTimeout(100);
+        var actions = new HumanActions(new HumanInteractionOptions
+        {
+            CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible,
+            TypingDeadlineMilliseconds = 15_000
+        });
+
+        await state.RunAsync(token => actions.CompatibleTypeAsync(locator, "", token), 15_000);
+
+        Assert.InRange(proxy.FocusTimeout!.Value, 1, 100);
+        Assert.Equal(1, proxy.FocusCalls);
+    }
+
+    public class FocusLocatorProxy : DispatchProxy
+    {
+        internal IPage Page = null!;
+        internal float? FocusTimeout;
+        internal int FocusCalls;
+        protected override object? Invoke(MethodInfo? method, object?[]? args)
+        {
+            if (method?.Name == "get_Page") return Page;
+            if (method?.Name == "FocusAsync")
+            {
+                FocusCalls++;
+                FocusTimeout = ((LocatorFocusOptions)args![0]!).Timeout;
+                return Task.CompletedTask;
+            }
+            throw new NotSupportedException(method?.Name);
+        }
     }
 
     private static class FakePage

@@ -829,7 +829,8 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         if (timeoutProperty?.CanWrite != true || optionsType.IsValueType) return arguments;
         var adjusted = (object?[])arguments.Clone();
         var optionsIndex = parameters.Length - 1;
-        var options = adjusted.ElementAtOrDefault(optionsIndex) ?? Activator.CreateInstance(optionsType);
+        var suppliedOptions = adjusted.ElementAtOrDefault(optionsIndex);
+        var options = suppliedOptions is null ? Activator.CreateInstance(optionsType) : ShallowCloneMethod.Invoke(suppliedOptions, null);
         if (options is null) return arguments;
         timeoutProperty.SetValue(options, (float)remaining.Value);
         adjusted[optionsIndex] = options;

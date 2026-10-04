@@ -412,7 +412,7 @@ public sealed class HumanActions
     internal async Task CompatibleTypeAsync(ILocator locator, string text, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(text);
-        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
+        using var deadline = CreateDeadline(locator.Page, _options.TypingDeadlineMilliseconds, cancellationToken);
         await locator.FocusAsync(new LocatorFocusOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false);
         var runes = text.EnumerateRunes().ToArray();
         for (var index = 0; index < runes.Length; index++)
