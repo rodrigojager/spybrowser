@@ -72,8 +72,15 @@ public sealed class WrapperFactoryTests
             Headless = true, RunGpuProbe = false, Humanize = false,
             GpuPolicyOverride = GpuPolicy.AllowSoftware, FailOnConsistencyErrors = false
         });
-        var page = await handle.Browser.NewPageAsync();
+        IBrowserContext? announced = null;
+        handle.Browser.Context += (_, context) => announced = context;
+        var rawContext = await handle.RawBrowser.NewContextAsync();
+        Assert.Null(announced); // RawBrowser explicitly bypasses configured event publication.
+        await rawContext.CloseAsync();
+        var page = await handle.NewPageAsync();
+        Assert.Same(page.Context, announced);
         Assert.Same(page, PlaywrightHumanizer.Unwrap(page));
+        Assert.Same(page.Context, PlaywrightHumanizer.Unwrap(page.Context));
         Assert.Equal(identity.Locale, await page.EvaluateAsync<string>("navigator.language"));
         await page.Context.CloseAsync();
     }
