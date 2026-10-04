@@ -1,0 +1,8 @@
+{
+  "SchemaVersion": 1,
+  "Name": "loopback-v1-frame",
+  "Actions": [
+    { "Id": "open", "Type": "navigate", "Name": "Open frame fixture", "Value": "__LOOPBACK_ORIGIN__" },
+    { "Id": "read-frame", "Type": "readElement", "Name": "Read frame result", "Selector": "#frame-value", "Property": "text", "FrameSelectors": ["#nested", "#inner"], "Target": "runtime.frameResult" }
+  ]
+}

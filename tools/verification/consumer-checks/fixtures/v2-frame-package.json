@@ -1,0 +1,24 @@
+{
+  "flow": {
+    "schemaVersion": 2,
+    "name": "loopback-v2-frame",
+    "actions": [
+      { "id": "open", "type": "navigate", "name": "Open frame fixture", "value": "__LOOPBACK_ORIGIN__" },
+      { "id": "read-frame", "type": "readElement", "name": "Read frame result", "target": { "locatorId": "frame-result" }, "property": "text", "output": "runtime.frameResult" }
+    ]
+  },
+  "locators": {
+    "locators": [
+      { "id": "frame-result", "displayName": "Frame result", "candidates": [
+        { "id": "primary", "developerRole": "original", "recipe": {
+          "frames": [
+            { "strategy": "css", "selector": "#nested" },
+            { "strategy": "css", "selector": "#inner" }
+          ],
+          "target": { "strategy": "css", "selector": "#frame-value" }
+        } }
+      ] }
+    ]
+  },
+  "policy": {}
+}

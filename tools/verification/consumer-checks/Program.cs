@@ -6,7 +6,9 @@ using Microsoft.Playwright;
 using RpaFlow.Playwright;
 using RpaFlow.Playwright.V2;
 using RpaFlow.Runtime;
+using RpaFlow.Contracts;
 using RpaFlow.Contracts.V2;
+using RpaFlow.Packages;
 using SpyBrowser.Playwright;
 using SpyBrowser.Cursory;
 
@@ -79,16 +81,23 @@ try
         : await wrappedFrameLocator.InnerTextAsync() == "frame-ok",
         "nested frame locator propagates wrapper when on and keeps raw operations working when off");
     Require(await frame.Locator("#frame-value").InnerTextAsync() == "frame-ok", "Nested frame content reachable");
-    var flowData = new FlowDataContext(Request("frame-contract"));
-    var v1Locator = page.FrameLocator("#nested").FrameLocator("#inner").Locator("#frame-value");
-    Require(await v1Locator.InnerTextAsync() == "frame-ok", "V1 FrameSelectors map to official nested IFrameLocator/ILocator");
-    var v2Locator = new LocatorRecipeCompiler().Compile(page, new LocatorRecipe
-    {
-        Frames = [new() { Strategy = LocatorStrategy.Css, Selector = "#nested" }, new() { Strategy = LocatorStrategy.Css, Selector = "#inner" }],
-        Target = new() { Strategy = LocatorStrategy.Css, Selector = "#frame-value" }
-    }, flowData);
-    Require(await v2Locator.InnerTextAsync() == "frame-ok", "V2 recipe compiler keeps official locator in nested frames");
-    checks.Add(Pass("RpaBlockly popup plus local V1/V2 nested-frame locator workflows using official ILocator/IFrameLocator"));
+    checks.Add(Pass("RpaBlockly popup plus nested-frame wrapper propagation and working loopback page"));
+    var v1Json = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "v1-frame-flow.json"));
+    var v1 = JsonSerializer.Deserialize<FlowDefinition>(v1Json) ?? throw new InvalidOperationException("V1 frame fixture could not be parsed");
+    v1.Actions[0].Value = JsonSerializer.SerializeToElement(origin);
+    var v1Result = await new PlaywrightFlowExecutor(v1, options).ExecuteAsync(Request("real-v1-frame"), CancellationToken.None);
+    Require(v1Result.Output["frameResult"]?.GetValue<string>() == "frame-ok" && v1Result.ExecutedActions == 2,
+        "V1 flow parsed/compiled/executed official FrameSelectors and returned frame output");
+    checks.Add(Pass("Pinned RpaBlockly V1 flow: parsed definition, FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator"));
+
+    var v2Json = (await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "v2-frame-package.json"))).Replace("__LOOPBACK_ORIGIN__", origin, StringComparison.Ordinal);
+    var v2Documents = V2JsonSerializer.Deserialize<RpaPackageDocuments>(v2Json, "consumer V2 frame fixture");
+    v2Documents.Flow.Actions[0].Value = JsonSerializer.SerializeToElement(origin);
+    var v2Snapshot = new RpaPackageSnapshot("consumer-frame-v2", new PackageRevision("loopback-v1"), v2Documents, new RpaPackageOrigin("consumer-check", "loopback"));
+    var v2Result = await new PlaywrightV2FlowExecutor(v2Snapshot, options).ExecuteAsync(Request("real-v2-frame"), CancellationToken.None);
+    Require(v2Result.Output["frameResult"]?.GetValue<string>() == "frame-ok" && v2Result.ExecutedActions == 2,
+        "V2 flow/package parsed, compiled and executed frame locator recipe with returned output");
+    checks.Add(Pass("Pinned RpaBlockly V2 package flow: parsed snapshot, V2FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator"));
 
     var downloadTask = page.WaitForDownloadAsync();
     await page.GetByText("Download", new() { Exact = true }).ClickAsync();

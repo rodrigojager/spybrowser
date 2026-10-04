@@ -9,6 +9,21 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 PIN = "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca"
 DEFAULT_CONSUMER = pathlib.Path(r"C:\Users\Rodrigo\AppData\Local\Temp\spybrowser-rpablockly-review")
 PROJECTS = ("SpyBrowser.Core", "SpyBrowser.Cursory", "SpyBrowser.Playwright")
+REQUIRED_CHECKS = {
+    "humanize-on, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
+    "StorageStatePath write on local loopback origin",
+    "Screenshot, navigation and local loopback served page",
+    "RpaBlockly popup plus nested-frame wrapper propagation and working loopback page",
+    "Pinned RpaBlockly V1 flow: parsed definition, FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+    "Pinned RpaBlockly V2 package flow: parsed snapshot, V2FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+    "Loopback download and saved artifact",
+    "Actual RpaRunner local flow restores StorageStatePath cookies",
+    "Actual RpaRunner FillWhenReadyAsync -> FillWithRuntimeAsync cancellation closes context and settles native Fill",
+    "Two concurrent actual RpaRunner jobs retain independent inputs and deterministic Cursory RNG trajectories without profile leases",
+    "Actual RpaBlockly cancellation helper cleans a controlled late BrowserSession (native IsConnected=false)",
+    "Context close removes collection entry",
+    "Humanize off remains raw",
+}
 
 def run(cmd, cwd, *, check=True, env=None):
     print("+", " ".join(map(str, cmd)), flush=True)
@@ -35,9 +50,12 @@ def main():
     out = args.output.resolve(); feed = (args.feed or out / "feed").resolve()
     out.mkdir(parents=True, exist_ok=True); feed.mkdir(parents=True, exist_ok=True)
     source_sha = git(ROOT, "rev-parse", "HEAD") if args.feed is None else "unknown"
+    package_build_commands = []
     if args.feed is None:
         for project in PROJECTS:
-            run(["dotnet", "pack", ROOT / f"src/{project}/{project}.csproj", "-c", "Release", "-p:PackageVersion=" + args.version, "-o", feed], ROOT)
+            pack_command = ["dotnet", "pack", ROOT / f"src/{project}/{project}.csproj", "-c", "Release", "-p:PackageVersion=" + args.version, "-o", feed]
+            package_build_commands.append(list(map(str, pack_command)))
+            run(pack_command, ROOT)
     packages = [package_path(feed, project, args.version) for project in PROJECTS]
     missing = [str(p) for p in packages if not p.is_file()]
     if missing: raise RuntimeError("Candidate feed missing packages: " + ", ".join(missing))
@@ -112,7 +130,8 @@ def main():
     ET.indent(nuget, space="  ")
     ET.ElementTree(nuget).write(isolated / "NuGet.Config", encoding="utf-8", xml_declaration=True)
     tests = isolated / "tests/ConsumerContract"; tests.mkdir(parents=True)
-    (tests / "ConsumerContract.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">\n<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup>\n<ItemGroup><ProjectReference Include="../../src/RpaFlow.Playwright/RpaFlow.Playwright.csproj" /></ItemGroup>\n</Project>\n''', encoding="utf-8")
+    (tests / "ConsumerContract.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">\n<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup>\n<ItemGroup><ProjectReference Include="../../src/RpaFlow.Playwright/RpaFlow.Playwright.csproj" /><Content Include="fixtures/**/*.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>\n</Project>\n''', encoding="utf-8")
+    shutil.copytree(pathlib.Path(__file__).with_name("fixtures"), tests / "fixtures")
     harness = pathlib.Path(__file__).with_name("Program.cs").read_text(encoding="utf-8")
     (tests / "Program.cs").write_text(harness, encoding="utf-8")
     evidence_path = out / "evidence.json"
@@ -122,7 +141,11 @@ def main():
     cache = out / "nuget-packages"
     if cache.exists(): shutil.rmtree(cache)
     cache.mkdir(parents=True)
-    env = os.environ.copy(); env["NUGET_PACKAGES"] = str(cache)
+    env = os.environ.copy()
+    env["NUGET_PACKAGES"] = str(cache)
+    env["DOTNET_CLI_HOME"] = str(out / "dotnet-cli-home")
+    env["DOTNET_MULTILEVEL_LOOKUP"] = "0"
+    pathlib.Path(env["DOTNET_CLI_HOME"]).mkdir(parents=True, exist_ok=True)
     resolved_sdk = subprocess.check_output(["dotnet", "--version"], cwd=isolated, text=True, env=env).strip()
     exit_code = run(cmd, isolated, check=False, env=env)
     harness_path = out / "harness-evidence.json"
@@ -131,25 +154,32 @@ def main():
     except (OSError, json.JSONDecodeError): checks = []
     failed = [c for c in checks if c.get("status") == "failed"]
     passed_checks = [c for c in checks if c.get("status") == "passed"]
-    required_count = 11
-    missing_required = max(0, required_count - len(passed_checks))
-    result = "failed" if exit_code != 0 or failed else ("partial" if missing_required else "passed")
+    passed_names = [c.get("name") for c in passed_checks]
+    missing_required_names = sorted(REQUIRED_CHECKS - set(passed_names))
+    unexpected_passed_names = sorted(set(passed_names) - REQUIRED_CHECKS)
+    required_count = len(REQUIRED_CHECKS)
+    missing_required = len(missing_required_names)
+    result = "failed" if exit_code != 0 or failed or unexpected_passed_names else ("partial" if missing_required else "passed")
     evidence = {
       "schemaVersion": 1, "consumerCommit": PIN, "spyBrowserSourceCommit": source_sha,
       "packageIds": list(PROJECTS), "packageVersion": args.version,
       "packages": [{"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in packages],
       "sdkRequested": "10.0.302 (rollForward latestFeature)", "sdkResolved": resolved_sdk, "consumerTargetFramework": "net9.0",
+      "isolationEnvironment": {"NUGET_PACKAGES": str(cache), "DOTNET_CLI_HOME": env["DOTNET_CLI_HOME"], "DOTNET_MULTILEVEL_LOOKUP": env["DOTNET_MULTILEVEL_LOOKUP"]},
       "playwright": "1.61.0 pinned by RpaBlockly", "browser": os.environ.get("RPABLOCKLY_CHECKS_BROWSER", "Chromium (explicitly requested by harness)"),
-      "executedAtUtc": dt.datetime.now(dt.timezone.utc).isoformat(), "command": list(map(str, cmd)),
+      "executedAtUtc": dt.datetime.now(dt.timezone.utc).isoformat(), "driverCommand": [sys.executable, str(pathlib.Path(__file__).resolve()), *sys.argv[1:]],
+      "packageBuildCommands": package_build_commands, "consumerCommand": list(map(str, cmd)),
       "exitCode": exit_code, "artifactDirectory": str(out), "harnessEvidence": str(harness_path),
       "result": result, "candidateFinalParity": final_parity,
       "expectedFinalSourceCommit": args.expected_source_commit, "declaredFinalCommit": declared_final_commit,
       "packageSourceCommits": package_source_commits, "humanize": args.humanize,
       "mouseAlgorithm": args.mouse_algorithm, "compatibilityMode": args.compatibility_mode,
       "requiredLocalChecksPassed": len(passed_checks), "requiredLocalChecksExpected": required_count,
+      "requiredLocalCheckNames": sorted(REQUIRED_CHECKS), "missingRequiredLocalCheckNames": missing_required_names,
+      "unexpectedPassedLocalCheckNames": unexpected_passed_names,
       "excludedCoverage": [{"name": "Full mixed CAPTCHA/provider/end-to-end suite", "status": "not-run", "reason": "Explicitly excluded; not part of the mandatory local subset."}],
       "sourceIsolationChanges": ["SpyBrowser.Playwright package version", "isolated BrowserLauncher HumanInteraction configuration only", "Directory.Build.props modified to disable external CPM", "Directory.Packages.props added to shadow parent CPM", "NuGet.Config local feed and package source mapping", "test-only ConsumerContract project"],
-      "limitations": ["Existing CAPTCHA/provider/end-to-end suite not run by this local subset.", "Final package parity is false unless expected commit, manifest declaredFinalCommit, source SHA, and all package repository commits match."] + ([f"{missing_required} required local case(s) missing."] if missing_required else [])
+      "limitations": ["Existing CAPTCHA/provider/end-to-end suite not run by this local subset.", "Final package parity is false unless expected commit, manifest declaredFinalCommit, source SHA, and all package repository commits match."] + (["Missing required checks: " + ", ".join(missing_required_names)] if missing_required else []) + (["Unexpected passed check names: " + ", ".join(unexpected_passed_names)] if unexpected_passed_names else [])
     }
     evidence_path.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
     print(f"Evidence: {evidence_path}; aggregate result: {result}")
