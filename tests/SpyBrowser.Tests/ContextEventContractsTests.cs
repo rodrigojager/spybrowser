@@ -63,8 +63,13 @@ public sealed class ContextEventContractsTests
         var identity = BrowserIdentity.Create("context-events-close-race");
         await using var handle = await SpyBrowserLauncher.LaunchBrowserAsync(Options(temp.Path, identity));
         Task? closeTask = null;
+        IBrowserContext? closingContext = null;
         var closedAnnouncements = 0;
-        handle.RawBrowser.Context += (_, rawContext) => closeTask = rawContext.CloseAsync();
+        handle.RawBrowser.Context += (_, rawContext) =>
+        {
+            closingContext = rawContext;
+            closeTask = rawContext.CloseAsync();
+        };
         handle.Browser.Context += (_, context) =>
         {
             var raw = PlaywrightHumanizer.Unwrap(context);
@@ -74,6 +79,17 @@ public sealed class ContextEventContractsTests
 
         try { await handle.NewContextAsync(); }
         catch (PlaywrightException) when (closeTask is not null) { }
+        catch (NullReferenceException error) when (
+            closeTask is not null && closingContext is not null &&
+            !handle.RawBrowser.Contexts.Any(candidate => ReferenceEquals(candidate, closingContext)) &&
+            error.StackTrace?.Contains("Microsoft.Playwright.Core.Browser.NewContextAsync", StringComparison.Ordinal) == true)
+        {
+            // Playwright 1.61 Browser.NewContextAsync dereferences its returned channel
+            // before HAR initialization. Immediate raw closure can remove that channel
+            // first. Preserve the native failure; only this proven closed-context race
+            // is an admissible outcome. Connected/unrelated NREs remain test failures.
+            await closeTask;
+        }
         Assert.NotNull(closeTask);
         await closeTask!;
         Assert.Equal(0, closedAnnouncements);

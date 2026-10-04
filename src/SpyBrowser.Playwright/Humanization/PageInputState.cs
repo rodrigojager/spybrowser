@@ -60,7 +60,10 @@ internal sealed class PageInputState
             // If the operation has actually stopped (or never started), preserve the page and gate.
             var operationStopped = operationTask is null ||
                 await ObserveBoundedAsync(operationTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-            var budgetExpired = deadline.IsCancellationRequested &&
+            // An owned core deadline can win before this linked timer's callback is
+            // scheduled. Preserve legacy closure for that SDK cancellation too;
+            // explicit native timeouts and caller/lifetime cancellation are distinct.
+            var budgetExpired = !nativeOwnsTimeout &&
                 !cancellationToken.IsCancellationRequested && !_lifetimeToken.IsCancellationRequested;
             if (!operationStopped || (closePageOnBudgetCancellation && budgetExpired))
             {

@@ -14,7 +14,9 @@ public sealed class HumanActions
 {
     private readonly HumanInteractionOptions _options;
     private readonly Random _random;
-    private readonly ConditionalWeakTable<IPage, PageMouseState> _mouseStates = new();
+    // All SDK entry points operate on one physical cursor per raw page, even when
+    // callers mix direct helpers and separate humanizer instances.
+    private static readonly ConditionalWeakTable<IPage, PageMouseState> _mouseStates = new();
     private readonly IMouseTrajectoryStrategy _trajectory = new BezierTrajectoryStrategy();
     private readonly CursoryTrajectoryStrategy _cursory = new();
     private readonly MonotonicMovementScheduler _movementScheduler = new();
@@ -39,6 +41,7 @@ public sealed class HumanActions
     public Task ClickAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        locator = PlaywrightHumanizer.Unwrap(locator);
         return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => ClickCoreAsync(locator, token));
     }
 
@@ -56,6 +59,7 @@ public sealed class HumanActions
     public Task DoubleClickAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        locator = PlaywrightHumanizer.Unwrap(locator);
         return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => DoubleClickCoreAsync(locator, token));
     }
 
@@ -75,6 +79,7 @@ public sealed class HumanActions
     public Task HoverAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        locator = PlaywrightHumanizer.Unwrap(locator);
         return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => HoverCoreAsync(locator, token));
     }
 
@@ -95,6 +100,7 @@ public sealed class HumanActions
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
+        page = PlaywrightHumanizer.Unwrap(page);
         return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken, token => MoveCoreAsync(page, targetX, targetY, token));
     }
 
@@ -148,6 +154,7 @@ public sealed class HumanActions
     public Task ClickAsync(IPage page, double targetX, double targetY, bool doubleClick = false, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
+        page = PlaywrightHumanizer.Unwrap(page);
         return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken,
             token => ClickCoreAsync(page, targetX, targetY, doubleClick, token));
     }
@@ -177,6 +184,7 @@ public sealed class HumanActions
     public Task PressAsync(ILocator locator, string key, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        locator = PlaywrightHumanizer.Unwrap(locator);
         return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => PressCoreAsync(locator, key, token));
     }
 
@@ -192,6 +200,7 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(locator);
         ArgumentNullException.ThrowIfNull(text);
+        locator = PlaywrightHumanizer.Unwrap(locator);
         return RunDirectAsync(locator.Page, _options.TypingDeadlineMilliseconds, cancellationToken,
             token => TypeCoreAsync(locator, text, replaceExisting, token));
     }
@@ -249,6 +258,7 @@ public sealed class HumanActions
     public Task ScrollAsync(IPage page, double deltaX, double deltaY, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
+        page = PlaywrightHumanizer.Unwrap(page);
         return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken, token => ScrollCoreAsync(page, deltaX, deltaY, token));
     }
 
@@ -273,6 +283,7 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(text);
+        page = PlaywrightHumanizer.Unwrap(page);
         return RunDirectAsync(page, _options.TypingDeadlineMilliseconds, cancellationToken, token => TypeFocusedCoreAsync(page, text, token));
     }
 
@@ -303,6 +314,7 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        page = PlaywrightHumanizer.Unwrap(page);
         return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken, token => PressFocusedCoreAsync(page, key, token));
     }
 

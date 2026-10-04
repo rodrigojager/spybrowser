@@ -7,7 +7,7 @@ using SpyBrowser.Cursory;
 using SpyBrowser.Playwright;
 
 const string DatasetTypeName = "SpyBrowser.Cursory.Internal.Dataset";
-const long ConstructionAllocationLimit = 3L * 1024 * 1024; // 100 constructions; exceeds the full expanded resource by 48%.
+const long ConstructionAllocationLimit = 1_000_000; // 100 constructions; below half the expanded resource size.
 
 if (args.Length == 1 && args[0] == "--child")
 {

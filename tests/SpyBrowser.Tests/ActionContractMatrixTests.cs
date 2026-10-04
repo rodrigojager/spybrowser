@@ -286,6 +286,9 @@ public sealed class ActionContractMatrixTests
             CompatibilityMode = Compatible,
             KeyMinimumDelayMilliseconds = 35,
             KeyMaximumDelayMilliseconds = 35,
+            // This test measures the fixed cadence deadline, not stochastic thinking
+            // pauses that can legitimately consume the whole budget after one key.
+            ThinkingPauseProbability = 0,
             TypingDeadlineMilliseconds = 180
         });
         var wrapped = humanizer.Wrap(page);
