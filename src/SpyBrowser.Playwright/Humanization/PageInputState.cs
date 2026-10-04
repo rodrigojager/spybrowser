@@ -31,16 +31,18 @@ internal sealed class PageInputState
         int configuredBudgetMilliseconds,
         CancellationToken cancellationToken = default,
         int? explicitTimeoutMilliseconds = null,
+        bool nativeDefaultTimeoutApplies = false,
         bool closePageOnBudgetCancellation = false)
     {
         ArgumentNullException.ThrowIfNull(operation);
         var observedDefault = Volatile.Read(ref _defaultTimeout);
         // Playwright's explicit operation timeout overrides page/context defaults; zero is unlimited.
         var selectedTimeout = explicitTimeoutMilliseconds ?? observedDefault;
-        // Explicit Playwright options belong to the native operation. Duplicating its timeout
-        // here can win the race, turn a native TimeoutException into cancellation, and close
-        // the page. In particular, Timeout=0 is native-unlimited, not SDK-defaulted.
-        var nativeOwnsTimeout = explicitTimeoutMilliseconds.HasValue;
+        // Explicit Playwright options and a tracked Playwright default (including zero) belong
+        // to the native operation. Duplicating either timeout here can win the race, turn a native
+        // TimeoutException into cancellation, and close the page. In particular, Timeout=0 is
+        // native-unlimited, not SDK-defaulted.
+        var nativeOwnsTimeout = explicitTimeoutMilliseconds.HasValue || (nativeDefaultTimeoutApplies && observedDefault >= 0);
         var budget = nativeOwnsTimeout ? Timeout.Infinite :
             selectedTimeout > 0 ? selectedTimeout : configuredBudgetMilliseconds;
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetimeToken, cancellationToken);

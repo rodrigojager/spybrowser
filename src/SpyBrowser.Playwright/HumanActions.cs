@@ -210,6 +210,12 @@ public sealed class HumanActions
     {
         if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
         {
+            if (!replaceExisting && !CanPaceText(text))
+            {
+                await locator.PressSequentiallyAsync(text).ConfigureAwait(false);
+                return;
+            }
+
             using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
             var typeOptions = new LocatorPressSequentiallyOptions { Timeout = deadline.RemainingMilliseconds };
             if (replaceExisting)
@@ -290,6 +296,12 @@ public sealed class HumanActions
 
     internal async Task TypeFocusedCoreAsync(IPage page, string text, CancellationToken cancellationToken)
     {
+        if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible && !CanPaceText(text))
+        {
+            await page.Keyboard.TypeAsync(text).ConfigureAwait(false);
+            return;
+        }
+
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
         var runes = text.EnumerateRunes().ToArray();
         for (var index = 0; index < runes.Length; index++)
@@ -374,6 +386,27 @@ public sealed class HumanActions
             case "dblclick": await locator.DblClickAsync(new LocatorDblClickOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
             case "hover": await locator.HoverAsync(new LocatorHoverOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
         }
+    }
+
+    internal static bool CanPaceText(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        // Rune enumeration substitutes U+FFFD for malformed UTF-16. Reject malformed input
+        // rather than claiming paced/native parity for text that Playwright may reject.
+        for (var offset = 0; offset < text.Length;)
+        {
+            var status = System.Text.Rune.DecodeFromUtf16(text.AsSpan(offset), out _, out var consumed);
+            if (status != System.Buffers.OperationStatus.Done) return false;
+            offset += consumed;
+        }
+
+        var elements = System.Globalization.StringInfo.GetTextElementEnumerator(text);
+        while (elements.MoveNext())
+        {
+            if (elements.GetTextElement().EnumerateRunes().Skip(1).Any()) return false;
+        }
+
+        return true;
     }
 
     internal async Task CompatibleTypeAsync(ILocator locator, string text, CancellationToken cancellationToken = default)

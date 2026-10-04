@@ -238,6 +238,25 @@ internal sealed class HumanizationScope
         ? null
         : WrapValue(value, value.GetType(), ResolvePage(value, null));
 
+    internal bool NativeDefaultTimeoutApplies(object target, MethodInfo method, object?[] arguments)
+    {
+        // Page/context defaults affect locator and selector-owner operations, not raw IMouse
+        // calls. Match the supported routing boundary without creating an operation task.
+        if (target is not (ILocator or IPage or IFrame)) return false;
+        if (method.Name is not ("ClickAsync" or "DblClickAsync" or "HoverAsync" or "FillAsync" or
+            "ClearAsync" or "TypeAsync" or "PressSequentiallyAsync" or "PressAsync")) return false;
+
+        var compatible = _options.CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible;
+        var hasDefaultOptions = arguments.All(argument => argument is null || argument is string);
+        if (!hasDefaultOptions) return true;
+
+        var sdkRouted = method.Name is "ClickAsync" or "DblClickAsync" or "HoverAsync" ||
+            (!compatible && method.Name is "FillAsync" or "ClearAsync" or "PressAsync") ||
+            (method.Name is "TypeAsync" or "PressSequentiallyAsync" &&
+             (!compatible || arguments.ElementAtOrDefault(target is ILocator ? 0 : 1) is string text && HumanActions.CanPaceText(text)));
+        return !sdkRouted;
+    }
+
     internal int GetInputBudget(MethodInfo method)
     {
         var typing = method.Name.Contains("Fill", StringComparison.Ordinal) ||
@@ -391,6 +410,12 @@ internal sealed class HumanizationScope
         if ((method.Name == nameof(ILocator.TypeAsync) || method.Name == nameof(ILocator.PressSequentiallyAsync)) &&
             arguments.ElementAtOrDefault(0) is string text && HasOnlyDefaultOptions(arguments, 1))
         {
+            if (compatible && !HumanActions.CanPaceText(text))
+            {
+                result = null;
+                return false;
+            }
+
             result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeCoreAsync(locator, text, replaceExisting: false, cancellationToken);
             return true;
         }
@@ -455,6 +480,12 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string text &&
             HasOnlyDefaultOptions(arguments, 2))
         {
+            if (compatible && !HumanActions.CanPaceText(text))
+            {
+                result = null;
+                return false;
+            }
+
             result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeCoreAsync(locator, text, replaceExisting: false, cancellationToken);
             return true;
         }
@@ -524,6 +555,12 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is string text &&
             HasOnlyDefaultOptions(arguments, 1))
         {
+            if (actions.CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible && !HumanActions.CanPaceText(text))
+            {
+                result = null;
+                return false;
+            }
+
             result = actions.TypeFocusedCoreAsync(page, text, cancellationToken);
             return true;
         }
@@ -723,6 +760,7 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
                     ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
                 }
             }, _scope.GetInputBudget(targetMethod), explicitTimeoutMilliseconds: GetExplicitTimeoutMilliseconds(arguments),
+                nativeDefaultTimeoutApplies: _scope.NativeDefaultTimeoutApplies(_target, targetMethod, arguments),
                 closePageOnBudgetCancellation: _scope.ClosePageOnInputBudgetCancellation);
             return _scope.WrapGatedInput(gate, () => pending, targetMethod.ReturnType, page);
         }
