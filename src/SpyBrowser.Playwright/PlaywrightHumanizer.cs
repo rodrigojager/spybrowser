@@ -106,6 +106,8 @@ internal sealed class HumanizationScope
 
     internal HumanizationDiagnosticsSnapshot? GetDiagnosticsSnapshot() => _diagnostics?.Snapshot();
     internal HumanizationDiagnosticsRecorder? DiagnosticsForTesting => _diagnostics;
+    internal bool ClosePageOnInputBudgetCancellation =>
+        _options.CompatibilityMode == HumanizationCompatibilityMode.Legacy;
 
     internal HumanizationDiagnosticsRecorder.Invocation? BeginDiagnostic(
         object target, IPage? pageHint, MethodInfo method, object?[] arguments)
@@ -720,7 +722,8 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
                 {
                     ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
                 }
-            }, _scope.GetInputBudget(targetMethod), explicitTimeoutMilliseconds: GetExplicitTimeoutMilliseconds(arguments));
+            }, _scope.GetInputBudget(targetMethod), explicitTimeoutMilliseconds: GetExplicitTimeoutMilliseconds(arguments),
+                closePageOnBudgetCancellation: _scope.ClosePageOnInputBudgetCancellation);
             return _scope.WrapGatedInput(gate, () => pending, targetMethod.ReturnType, page);
         }
 

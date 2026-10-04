@@ -30,16 +30,21 @@ internal sealed class PageInputState
         Func<CancellationToken, Task> operation,
         int configuredBudgetMilliseconds,
         CancellationToken cancellationToken = default,
-        int? explicitTimeoutMilliseconds = null)
+        int? explicitTimeoutMilliseconds = null,
+        bool closePageOnBudgetCancellation = false)
     {
         ArgumentNullException.ThrowIfNull(operation);
         var observedDefault = Volatile.Read(ref _defaultTimeout);
-        // Playwright's explicit operation timeout overrides page/context defaults. A zero timeout
-        // means unlimited to Playwright; retain the SDK's configured safety budget in that case.
+        // Playwright's explicit operation timeout overrides page/context defaults; zero is unlimited.
         var selectedTimeout = explicitTimeoutMilliseconds ?? observedDefault;
-        var budget = selectedTimeout > 0 ? selectedTimeout : configuredBudgetMilliseconds;
+        // Explicit Playwright options belong to the native operation. Duplicating its timeout
+        // here can win the race, turn a native TimeoutException into cancellation, and close
+        // the page. In particular, Timeout=0 is native-unlimited, not SDK-defaulted.
+        var nativeOwnsTimeout = explicitTimeoutMilliseconds.HasValue;
+        var budget = nativeOwnsTimeout ? Timeout.Infinite :
+            selectedTimeout > 0 ? selectedTimeout : configuredBudgetMilliseconds;
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetimeToken, cancellationToken);
-        if (budget > 0) deadline.CancelAfter(budget);
+        if (!nativeOwnsTimeout && budget > 0) deadline.CancelAfter(budget);
         await _gate.WaitAsync(deadline.Token).ConfigureAwait(false);
         Task? operationTask = null;
         var gateTransferred = false;
@@ -51,14 +56,19 @@ internal sealed class PageInputState
         }
         catch (OperationCanceledException)
         {
-            // Stop admitting work before close is attempted: CloseAsync may itself fail or stall.
-            CancelLifetime();
-            var closeTask = ClosePageAsync();
-            await ObserveBoundedAsync(closeTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-
-            if (operationTask is not null)
+            // WaitAsync only cancels our wait, not a Playwright call already sent to its driver.
+            // If the operation has actually stopped (or never started), preserve the page and gate.
+            var operationStopped = operationTask is null ||
+                await ObserveBoundedAsync(operationTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
+            var budgetExpired = deadline.IsCancellationRequested &&
+                !cancellationToken.IsCancellationRequested && !_lifetimeToken.IsCancellationRequested;
+            if (!operationStopped || (closePageOnBudgetCancellation && budgetExpired))
             {
-                if (!await ObserveBoundedAsync(operationTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false))
+                // Stop admitting work before close is attempted: CloseAsync may itself fail or stall.
+                CancelLifetime();
+                var closeTask = ClosePageAsync();
+                await ObserveBoundedAsync(closeTask, TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
+                if (!operationStopped && operationTask is not null)
                 {
                     gateTransferred = true;
                     _ = operationTask.ContinueWith(

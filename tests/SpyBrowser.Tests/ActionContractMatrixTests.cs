@@ -209,10 +209,12 @@ public sealed class ActionContractMatrixTests
     [BrowserFact]
     public async Task Locator_actions_keep_one_effect_through_detach_overlay_and_link_navigation()
     {
+        using var site = new LoopbackSite();
+        await site.StartAsync();
         using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
-        await page.SetContentAsync("<button id='target'>go</button><a id='link' href='data:text/html,navigated'>next</a><div id='overlay' style='display:none;position:fixed;inset:0'></div><script>window.clicks=0;target.onclick=()=>clicks++</script>");
+        await page.SetContentAsync($"<button id='target'>go</button><a id='link' href='{site.Url}navigated'>next</a><div id='overlay' style='display:none;position:fixed;inset:0'></div><script>window.clicks=0;target.onclick=()=>clicks++</script>");
         var wrapped = new PlaywrightHumanizer(new HumanInteractionOptions { CompatibilityMode = Compatible }).Wrap(page);
         await wrapped.Locator("#target").ClickAsync();
         Assert.Equal(1, await page.EvaluateAsync<int>("clicks"));
