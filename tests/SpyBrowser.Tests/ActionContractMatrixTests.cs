@@ -5,6 +5,7 @@ using SpyBrowser.Playwright.Humanization;
 namespace SpyBrowser.Tests;
 
 /// <summary>Loopback-browser comparisons for the PlaywrightCompatible action contract.</summary>
+[Collection(TimedInputCollection.Name)]
 public sealed class ActionContractMatrixTests
 {
     private static HumanizationCompatibilityMode Compatible => HumanizationCompatibilityMode.PlaywrightCompatible;

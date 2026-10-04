@@ -63,13 +63,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $driver = Get-ChildItem tests/SpyBrowser.Tests/bin -Filter playwright.ps1 -Recurse | Select-Object -First 1
           if (-not $driver) { throw 'Playwright install script was not produced by restore.' }
-          if ($IsLinux) { & $driver.FullName install --with-deps chromium }
-          else { & $driver.FullName install chromium }
+          if ($IsLinux) { & $driver.FullName install --with-deps chromium chrome }
+          else { & $driver.FullName install chromium chrome }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build, test and package
         shell: pwsh
         run: |
-          dotnet test SpyBrowser.sln -c Release --no-build --logger "trx" --results-directory artifacts/test-results -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION"
+          # Keep generator stress and hard real-time input fixtures in separate project phases.
+          dotnet test SpyBrowser.sln -c Release --no-build -m:1 --logger "trx" --results-directory artifacts/test-results -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           foreach ($project in @('Core','Playwright','Cursory','Compatibility.CloakBrowser','Cli')) {
             dotnet pack "src/SpyBrowser.$project/SpyBrowser.$project.csproj" -c Release --no-build -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" -o artifacts/packages
@@ -79,7 +80,9 @@ jobs:
         if: always()
         with:
           name: verification-${{ matrix.os }}-${{ env.PLAYWRIGHT_VERSION }}
-          path: artifacts
+          # Package archives stay local to the job while dataset redistribution
+          # rights are unresolved; CI upload must not bypass the release gate.
+          path: artifacts/test-results
           if-no-files-found: warn
 
   headed-chrome:
@@ -101,6 +104,7 @@ jobs:
       SPYBROWSER_RUN_BROWSER_TESTS: "1"
       SPYBROWSER_BROWSER_CHANNEL: ${{ matrix.channel }}
       SPYBROWSER_HEADED: ${{ matrix.headed }}
+      SPYBROWSER_RUN_HEADED_PROBE_TESTS: ${{ matrix.headed }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
@@ -125,8 +129,8 @@ jobs:
       - name: Run real-browser integration tests
         shell: pwsh
         run: |
-          if ($IsLinux) { xvfb-run -a dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests|FullyQualifiedName~NativeCursoryMovementTests" --logger "trx" --results-directory artifacts/test-results }
-          else { dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests|FullyQualifiedName~NativeCursoryMovementTests" --logger "trx" --results-directory artifacts/test-results }
+          if ($IsLinux) { xvfb-run -a dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests|FullyQualifiedName~NativeCursoryMovementTests|FullyQualifiedName~Headed_probe_does_not_change" --logger "trx" --results-directory artifacts/test-results }
+          else { dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion="$env:PLAYWRIGHT_VERSION" --filter "FullyQualifiedName~BrowserIntegrationTests|FullyQualifiedName~PlaywrightApiAuditTests|FullyQualifiedName~NativeCursoryMovementTests|FullyQualifiedName~Headed_probe_does_not_change" --logger "trx" --results-directory artifacts/test-results }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v7
         if: always()

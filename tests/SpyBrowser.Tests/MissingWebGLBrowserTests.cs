@@ -3,6 +3,7 @@ using SpyBrowser.Playwright;
 
 namespace SpyBrowser.Tests;
 
+[Collection(TimedInputCollection.Name)]
 public sealed class MissingWebGLBrowserTests
 {
     [BrowserFact]
