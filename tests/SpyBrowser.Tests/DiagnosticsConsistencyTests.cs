@@ -67,6 +67,87 @@ public sealed class DiagnosticsConsistencyTests
         Assert.Contains(report.Findings, finding => finding.Code == "gpu.webgl-unavailable" && finding.Severity == ConsistencySeverity.Warning);
     }
 
+    [Fact]
+    public void Surface_probes_are_opt_in_and_configuration_warnings_do_not_fail_consistency()
+    {
+        Assert.False(new SpyBrowserLaunchOptions { IdentityId = "default-probe" }.RunGpuProbe);
+        var identity = BrowserIdentity.Create("config-warning");
+        var expectations = ConsistencyExpectations.FromIdentity(identity) with
+        {
+            BrowserFamily = "edge",
+            UserAgent = "Mozilla/5.0 Chrome/128.0"
+        };
+
+        var report = IdentityConsistencyValidator.ValidateConfiguration(identity, GpuPolicy.AllowSoftware,
+            expectations, new BrowserRuntimeProvenance("edge", "msedge", "128.0", "playwright.browser.version",
+                "playwright.launch-configuration", "none", "none"));
+
+        Assert.Contains(report.Findings, finding => finding.Code == "browser.configured-family-ua-mismatch");
+        Assert.False(report.HasErrors);
+    }
+
+    [Fact]
+    public void Configuration_checks_are_probe_free_and_use_actual_runtime_family()
+    {
+        var identity = BrowserIdentity.Create("configured-runtime");
+        var runtime = new BrowserRuntimeProvenance("edge", "msedge", "128.0.0.0",
+            "playwright.browser.version", "playwright.launch-configuration", "none", "none");
+        var expectations = ConsistencyExpectations.FromIdentity(identity) with
+        {
+            BrowserFamily = runtime.BrowserFamily,
+            UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) Chrome/128.0 Safari/537.36",
+            Platform = "Win32"
+        };
+
+        var configured = IdentityConsistencyValidator.ValidateConfiguration(identity,
+            GpuPolicy.AllowSoftware, expectations, runtime);
+        Assert.Equal(runtime, configured.Runtime);
+        Assert.Contains(configured.Findings, finding => finding.Code == "browser.configured-family-ua-mismatch" &&
+            finding.Severity == ConsistencySeverity.Warning);
+        Assert.Contains(configured.Findings, finding => finding.Code == "browser.configured-platform-ua-mismatch" &&
+            finding.Severity == ConsistencySeverity.Warning);
+        Assert.False(configured.HasErrors);
+
+        var observed = IdentityConsistencyValidator.Validate(identity, GpuPolicy.AllowSoftware,
+            Diagnostics(userAgent: "Mozilla/5.0 Chrome/128.0"), expectations, runtime);
+        Assert.Contains(observed.Findings, finding => finding.Code == "browser.family-ua-mismatch");
+        Assert.Equal("playwright.browser.version", observed.Runtime?.BrowserVersionSource);
+    }
+
+    [Fact]
+    public void Language_preferences_client_hints_scale_warnings_and_no_viewport_are_conservative()
+    {
+        var identity = BrowserIdentity.Create("conservative");
+        var expected = ConsistencyExpectations.FromIdentity(identity) with
+        {
+            Locale = "en_US", DeviceScaleFactor = 1.25, ViewportWidth = 1280, ViewportHeight = 720
+        };
+        var coherent = IdentityConsistencyValidator.Validate(identity, GpuPolicy.AllowSoftware,
+            Diagnostics(timezone: identity.TimezoneId, languages: ["en-US", "fr-FR"]) with
+            {
+                ClientHintsAvailable = false,
+                Screen = new ScreenSurfaceDiagnostics { DevicePixelRatio = 1.5 }
+            }, expected);
+        Assert.DoesNotContain(coherent.Findings, finding => finding.Severity == ConsistencySeverity.Error);
+        // A configured DPR 1.25 versus observed 1.5 is a real difference. Without
+        // observed zoom evidence, report it as a warning rather than hiding it.
+        Assert.Contains(coherent.Findings, finding => finding.Code == "identity.device-scale-mismatch" &&
+            finding.Severity == ConsistencySeverity.Warning);
+        Assert.DoesNotContain(coherent.Findings, finding => finding.Code == "identity.viewport-mismatch");
+
+        var contradiction = IdentityConsistencyValidator.Validate(identity, GpuPolicy.AllowSoftware,
+            Diagnostics(timezone: identity.TimezoneId, languages: ["en-US", "fr-FR"]) with
+            {
+                ClientHintsAvailable = true,
+                ClientHintPlatform = "Linux x86_64",
+                Platform = "Win32",
+                Screen = new ScreenSurfaceDiagnostics { DevicePixelRatio = 2 }
+            }, expected);
+        Assert.Contains(contradiction.Findings, finding => finding.Code == "browser.client-hints-platform-mismatch");
+        Assert.Contains(contradiction.Findings, finding => finding.Code == "identity.device-scale-mismatch" && finding.Severity == ConsistencySeverity.Warning);
+        Assert.DoesNotContain(contradiction.Findings, finding => finding.Code == "identity.viewport-mismatch");
+    }
+
     private static BrowserSurfaceDiagnostics Diagnostics(
         string timezone = "Etc/UTC", string[]? languages = null, string userAgent = "Mozilla/5.0 Chrome/126.0") => new()
     {

@@ -139,6 +139,7 @@ public sealed class DiagnosticSnapshotStore
         Add("browser.version", baseline.Versions.BrowserVersion, current.Versions.BrowserVersion, ConsistencySeverity.Information);
         Add("browser.version-source", baseline.Versions.BrowserVersionSource, current.Versions.BrowserVersionSource, ConsistencySeverity.Information);
         Add("playwright.version", baseline.Versions.Playwright, current.Versions.Playwright, ConsistencySeverity.Information);
+        Add("playwright.version-source", baseline.Versions.PlaywrightVersionSource, current.Versions.PlaywrightVersionSource, ConsistencySeverity.Information);
         Add("algorithm", baseline.Versions.Algorithm, current.Versions.Algorithm, ConsistencySeverity.Information);
         Add("dataset", baseline.Versions.Dataset, current.Versions.Dataset, ConsistencySeverity.Information);
         Add("timezone", baseline.Characteristics.TimezoneId, current.Characteristics.TimezoneId, ConsistencySeverity.Warning);
@@ -146,9 +147,9 @@ public sealed class DiagnosticSnapshotStore
         Add("user-agent", baseline.Characteristics.UserAgent, current.Characteristics.UserAgent, ConsistencySeverity.Information);
         Add("platform", baseline.Characteristics.Platform, current.Characteristics.Platform, ConsistencySeverity.Information);
         Add("screen", Screen(baseline), Screen(current), ConsistencySeverity.Information);
-        Add("webgl1.renderer", baseline.Characteristics.WebGl1.Renderer, current.Characteristics.WebGl1.Renderer, ConsistencySeverity.Information);
-        Add("webgl2.renderer", baseline.Characteristics.WebGl2.Renderer, current.Characteristics.WebGl2.Renderer, ConsistencySeverity.Information);
-        Add("webgpu.device", baseline.Characteristics.WebGpu.Device, current.Characteristics.WebGpu.Device, ConsistencySeverity.Information);
+        Add("webgl1.renderer-category", SafeGpuLabel(baseline.Characteristics.WebGl1.Renderer), SafeGpuLabel(current.Characteristics.WebGl1.Renderer), ConsistencySeverity.Information);
+        Add("webgl2.renderer-category", SafeGpuLabel(baseline.Characteristics.WebGl2.Renderer), SafeGpuLabel(current.Characteristics.WebGl2.Renderer), ConsistencySeverity.Information);
+        Add("webgpu.device-category", SafeGpuLabel(baseline.Characteristics.WebGpu.Device), SafeGpuLabel(current.Characteristics.WebGpu.Device), ConsistencySeverity.Information);
         var beforeFindings = string.Join(',', baseline.Findings.Select(f => $"{f.Code}:{f.Severity}").OrderBy(x => x));
         var afterFindings = string.Join(',', current.Findings.Select(f => $"{f.Code}:{f.Severity}").OrderBy(x => x));
         Add("findings", beforeFindings, afterFindings, current.Findings.Any(f => f.Severity == ConsistencySeverity.Error)
@@ -176,6 +177,7 @@ public sealed class DiagnosticSnapshotStore
         {
             SpyBrowser = SafeVersion(snapshot.Versions.SpyBrowser),
             Playwright = SafeVersion(snapshot.Versions.Playwright),
+            PlaywrightVersionSource = SafeProvenanceSource(snapshot.Versions.PlaywrightVersionSource),
             BrowserFamily = SafeFamily(snapshot.Versions.BrowserFamily),
             BrowserFamilySource = SafeProvenanceSource(snapshot.Versions.BrowserFamilySource),
             BrowserChannel = SafeChannel(snapshot.Versions.BrowserChannel),
@@ -234,7 +236,7 @@ public sealed class DiagnosticSnapshotStore
 
     private static string SafeProvenanceSource(string? value) => value switch
     {
-        "playwright.launch-configuration" or "playwright.browser.version" => value,
+        "playwright.launch-configuration" or "playwright.browser.version" or "playwright.assembly.version" => value,
         _ => "unknown"
     };
 
@@ -288,14 +290,66 @@ public sealed class DiagnosticSnapshotStore
         "android" or "iphone" or "ipad" or "ios" => value.Trim().ToLowerInvariant(), _ => null
     };
 
+    // Keep enough coarse renderer taxonomy to surface legitimate model-family/backend changes,
+    // without persisting raw driver strings, exact model names, or hardware hashes.
     private static string? SafeGpuLabel(string? value)
     {
         if (string.IsNullOrWhiteSpace(value)) return null;
         var text = value.ToLowerInvariant();
-        if (text.Contains("swiftshader", StringComparison.Ordinal) || text.Contains("llvmpipe", StringComparison.Ordinal) || text.Contains("software", StringComparison.Ordinal)) return "software";
-        foreach (var vendor in new[] { "nvidia", "amd", "radeon", "intel", "apple", "qualcomm", "arm", "mesa" })
-            if (text.Contains(vendor, StringComparison.Ordinal)) return vendor;
-        return "other";
+        var backend = text.Contains("d3d11", StringComparison.Ordinal) || text.Contains("direct3d11", StringComparison.Ordinal) ? "d3d11" :
+            text.Contains("d3d12", StringComparison.Ordinal) || text.Contains("direct3d12", StringComparison.Ordinal) ? "d3d12" :
+            text.Contains("vulkan", StringComparison.Ordinal) ? "vulkan" :
+            text.Contains("metal", StringComparison.Ordinal) ? "metal" :
+            text.Contains("opengl", StringComparison.Ordinal) || text.Contains("gl_", StringComparison.Ordinal) ? "opengl" : null;
+        if (text.Contains("swiftshader", StringComparison.Ordinal) || text.Contains("llvmpipe", StringComparison.Ordinal) || text.Contains("software", StringComparison.Ordinal) || text.Contains("softpipe", StringComparison.Ordinal))
+            return backend is null ? "software" : $"software-{backend}";
+        var vendor = text.Contains("nvidia", StringComparison.Ordinal) ? "nvidia" :
+            text.Contains("amd", StringComparison.Ordinal) || text.Contains("radeon", StringComparison.Ordinal) ? "amd" :
+            text.Contains("intel", StringComparison.Ordinal) ? "intel" :
+            text.Contains("apple", StringComparison.Ordinal) ? "apple" :
+            text.Contains("qualcomm", StringComparison.Ordinal) ? "qualcomm" :
+            text.Contains("arm", StringComparison.Ordinal) ? "arm" :
+            text.Contains("mesa", StringComparison.Ordinal) ? "mesa" : null;
+        if (vendor is null) return "other";
+
+        var family = vendor switch
+        {
+            "nvidia" when text.Contains("rtx", StringComparison.Ordinal) => "rtx",
+            "nvidia" when text.Contains("gtx", StringComparison.Ordinal) => "gtx",
+            "amd" when text.Contains("rx", StringComparison.Ordinal) => "radeon-rx",
+            "intel" when text.Contains("arc", StringComparison.Ordinal) => "arc",
+            "intel" when text.Contains("uhd", StringComparison.Ordinal) => "uhd",
+            "apple" when text.Contains("m1", StringComparison.Ordinal) || text.Contains("m2", StringComparison.Ordinal) || text.Contains("m3", StringComparison.Ordinal) || text.Contains("m4", StringComparison.Ordinal) => "apple-silicon",
+            _ => vendor
+        };
+        var generation = family switch
+        {
+            "rtx" => Generation(text, "rtx", 2),
+            "gtx" => Generation(text, "gtx", 2),
+            "radeon-rx" => Generation(text, "rx", 1),
+            _ => null
+        };
+        return string.Join('-', new[] { vendor, family == vendor ? null : family, generation, backend }.Where(part => part is not null));
+    }
+
+    private static string? Generation(string text, string marker, int digits)
+    {
+        var index = text.IndexOf(marker, StringComparison.Ordinal);
+        if (index < 0) return null;
+        index += marker.Length;
+        while (index < text.Length && !char.IsAsciiDigit(text[index])) index++;
+        var start = index;
+        while (index < text.Length && char.IsAsciiDigit(text[index]) && index - start < digits) index++;
+        var series = index > start ? text[start..index] : null;
+        // Only known coarse generations survive projection. Never persist arbitrary
+        // digits found later in an untrusted renderer or device string.
+        return marker switch
+        {
+            "rtx" when series is "20" or "30" or "40" or "50" => series + "-series",
+            "gtx" when series is "10" or "16" => series + "-series",
+            "rx" when series is "4" or "5" or "6" or "7" or "9" => series + "-series",
+            _ => null
+        };
     }
 
     private static string SafeFindingCode(string? code) => code switch
@@ -304,7 +358,8 @@ public sealed class DiagnosticSnapshotStore
         "identity.timezone-mismatch" or "identity.viewport-mismatch" or "browser.client-hints-platform-mismatch" or
         "browser.family-ua-mismatch" or "browser.platform-mismatch" or "browser.ua-family-mismatch" or
         "gpu.experimental-mask" or "gpu.hardware-required" or "gpu.surface-capability-difference" or
-        "gpu.webgl-unavailable" or "navigator.experimental-overrides" => code,
+        "gpu.webgl-unavailable" or "navigator.experimental-overrides" or
+        "browser.configured-family-ua-mismatch" or "browser.configured-platform-ua-mismatch" => code,
         _ => "diagnostic.other"
     };
 
@@ -323,7 +378,8 @@ public sealed class DiagnosticSnapshotStore
     {
         var protectedPath = protectedBaselinePath is null ? null : Path.GetFullPath(protectedBaselinePath);
         var files = new DirectoryInfo(_directory).GetFiles("snapshot-*.json")
-            .OrderByDescending(file => file.LastWriteTimeUtc).ToArray();
+            .OrderByDescending(file => file.LastWriteTimeUtc)
+            .ThenByDescending(file => file.Name, StringComparer.Ordinal).ToArray();
         var retained = 0;
         foreach (var file in files)
         {

@@ -25,6 +25,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
         BrowserSurfaceDiagnostics? diagnostics,
         ConsistencyReport consistency,
         ConsistencyExpectations effectiveExpectations,
+        GpuPolicy effectiveGpuPolicy,
         PlaywrightHumanizer? humanizer,
         BrowserRuntimeProvenance runtimeProvenance)
     {
@@ -38,6 +39,7 @@ public class SpyBrowserContextHandle : IAsyncDisposable
         Diagnostics = diagnostics;
         Consistency = consistency;
         EffectiveExpectations = effectiveExpectations;
+        EffectiveGpuPolicy = effectiveGpuPolicy;
         RuntimeProvenance = runtimeProvenance;
         Context = humanizer?.Wrap(rawContext) ?? rawContext;
         Browser = rawBrowser is null ? null : humanizer?.Wrap(rawBrowser) ?? rawBrowser;
@@ -62,6 +64,9 @@ public class SpyBrowserContextHandle : IAsyncDisposable
 
     /// <summary>Context configuration after caller callbacks; safe to reuse for additional validation.</summary>
     public ConsistencyExpectations EffectiveExpectations { get; }
+
+    /// <summary>GPU policy after applying any launch override.</summary>
+    public GpuPolicy EffectiveGpuPolicy { get; }
 
     /// <summary>Immutable launch/runtime facts, sourced from the selected Playwright launch and browser process (not the spoofable UA).</summary>
     public BrowserRuntimeProvenance RuntimeProvenance { get; }

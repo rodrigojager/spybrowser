@@ -210,7 +210,7 @@ internal static class SpyBrowserCli
         var currentDiagnostics = await GpuProbe.RunAsync(page).ConfigureAwait(false);
         var expectations = session.EffectiveExpectations;
         var currentReport = IdentityConsistencyValidator.Validate(session.Identity,
-            session.Identity.Gpu.Policy, currentDiagnostics, expectations);
+            session.EffectiveGpuPolicy, currentDiagnostics, expectations, session.RuntimeProvenance);
         string? snapshotPath = null;
         DiagnosticSnapshotComparison? comparison = null;
         if (command.Get("snapshot-dir") is { } snapshotDirectory)
@@ -221,7 +221,8 @@ internal static class SpyBrowserCli
                 Versions = new RuntimeVersionRecord
                 {
                     SpyBrowser = typeof(SpyBrowserCli).Assembly.GetName().Version?.ToString() ?? "unknown",
-                    Playwright = typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version?.ToString() ?? "unknown",
+                    Playwright = session.RuntimeProvenance.PlaywrightVersion,
+                    PlaywrightVersionSource = session.RuntimeProvenance.PlaywrightVersionSource,
                     BrowserFamily = session.RuntimeProvenance.BrowserFamily,
                     BrowserFamilySource = session.RuntimeProvenance.BrowserFamilySource,
                     BrowserChannel = session.RuntimeProvenance.BrowserChannel,
@@ -247,6 +248,7 @@ internal static class SpyBrowserCli
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             session.Identity.Id,
+            Runtime = session.RuntimeProvenance,
             InitialDiagnostics = session.Diagnostics,
             CurrentDiagnostics = currentDiagnostics,
             Consistency = currentReport,

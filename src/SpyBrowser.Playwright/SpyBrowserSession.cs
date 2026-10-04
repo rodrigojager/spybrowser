@@ -16,6 +16,7 @@ public sealed class SpyBrowserSession : SpyBrowserContextHandle
         BrowserSurfaceDiagnostics? diagnostics,
         ConsistencyReport consistency,
         ConsistencyExpectations effectiveExpectations,
+        GpuPolicy effectiveGpuPolicy,
         PlaywrightHumanizer? humanizer,
         BrowserRuntimeProvenance runtimeProvenance)
         : base(
@@ -28,6 +29,7 @@ public sealed class SpyBrowserSession : SpyBrowserContextHandle
             diagnostics,
             consistency,
             effectiveExpectations,
+            effectiveGpuPolicy,
             humanizer,
             runtimeProvenance)
     {

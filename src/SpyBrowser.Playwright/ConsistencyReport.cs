@@ -18,6 +18,9 @@ public sealed record ConsistencyFinding(
 public sealed record ConsistencyReport(IReadOnlyList<ConsistencyFinding> Findings)
 {
     public bool HasErrors => Findings.Any(finding => finding.Severity == ConsistencySeverity.Error);
+
+    /// <summary>Actual Playwright/browser runtime facts, separate from User-Agent claims.</summary>
+    public BrowserRuntimeProvenance? Runtime { get; init; }
 }
 
 /// <summary>Values actually applied to the browser context after caller callbacks.</summary>
@@ -57,6 +60,24 @@ public sealed record ConsistencyExpectations
 
 public static class IdentityConsistencyValidator
 {
+    /// <summary>Absolute DPR tolerance for numeric reporting variation, not unobserved browser zoom.</summary>
+    public const double DeviceScaleTolerance = 0.01;
+
+    /// <summary>Checks launch-time values only; it never opens a page or runs a surface probe.</summary>
+    public static ConsistencyReport ValidateConfiguration(
+        BrowserIdentity identity,
+        GpuPolicy effectiveGpuPolicy,
+        ConsistencyExpectations expectations,
+        BrowserRuntimeProvenance? runtime = null)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+        ArgumentNullException.ThrowIfNull(expectations);
+        var findings = new List<ConsistencyFinding>();
+        AddConfiguredBrowserFindings(expectations, runtime, findings);
+        AddExperimentalOverrideFindings(identity, effectiveGpuPolicy, findings);
+        return new ConsistencyReport(findings) { Runtime = runtime };
+    }
+
     public static ConsistencyReport Validate(
         BrowserIdentity identity,
         GpuPolicy effectiveGpuPolicy,
@@ -67,7 +88,8 @@ public static class IdentityConsistencyValidator
         BrowserIdentity identity,
         GpuPolicy effectiveGpuPolicy,
         BrowserSurfaceDiagnostics diagnostics,
-        ConsistencyExpectations expectations)
+        ConsistencyExpectations expectations,
+        BrowserRuntimeProvenance? runtime = null)
     {
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(diagnostics);
@@ -76,7 +98,7 @@ public static class IdentityConsistencyValidator
         if (!diagnostics.WebGl1.Available && !diagnostics.WebGl2.Available)
         {
             findings.Add(new ConsistencyFinding(
-                effectiveGpuPolicy == GpuPolicy.RequireHardware ? ConsistencySeverity.Error : ConsistencySeverity.Warning,
+                ConsistencySeverity.Warning,
                 "gpu.webgl-unavailable",
                 "WebGL1 and WebGL2 are both unavailable."));
         }
@@ -119,7 +141,7 @@ public static class IdentityConsistencyValidator
         }
 
         if (expectations.DeviceScaleFactor is double expectedScale && diagnostics.Screen.DevicePixelRatio > 0 &&
-            Math.Abs(expectedScale - diagnostics.Screen.DevicePixelRatio) > 0.01)
+            Math.Abs(expectedScale - diagnostics.Screen.DevicePixelRatio) > DeviceScaleTolerance)
         {
             findings.Add(new ConsistencyFinding(ConsistencySeverity.Warning, "identity.device-scale-mismatch",
                 $"Expected device scale factor {expectedScale}, observed DPR {diagnostics.Screen.DevicePixelRatio}."));
@@ -133,20 +155,49 @@ public static class IdentityConsistencyValidator
                 $"Expected viewport {viewportWidth}x{viewportHeight}, observed {diagnostics.Screen.ViewportWidth}x{diagnostics.Screen.ViewportHeight}."));
         }
 
-        AddBrowserFindings(expectations, diagnostics, findings);
+        AddBrowserFindings(expectations, diagnostics, findings, runtime);
+        AddExperimentalOverrideFindings(identity, effectiveGpuPolicy, findings);
+
+        return new ConsistencyReport(findings) { Runtime = runtime };
+    }
+
+    private static void AddExperimentalOverrideFindings(
+        BrowserIdentity identity,
+        GpuPolicy effectiveGpuPolicy,
+        ICollection<ConsistencyFinding> findings)
+    {
+        if (effectiveGpuPolicy == GpuPolicy.ExperimentalMask)
+            findings.Add(new ConsistencyFinding(ConsistencySeverity.Warning, "gpu.experimental-mask",
+                "The WebGL string mask does not alter pixels, timing, WebGPU, or native function introspection."));
         if (identity.Navigator.EnableExperimentalOverrides)
-        {
             findings.Add(new ConsistencyFinding(ConsistencySeverity.Warning, "navigator.experimental-overrides",
                 "Navigator overrides are script-level and remain distinguishable from native browser values."));
-        }
+    }
 
-        return new ConsistencyReport(findings);
+    private static void AddConfiguredBrowserFindings(
+        ConsistencyExpectations expected,
+        BrowserRuntimeProvenance? runtime,
+        ICollection<ConsistencyFinding> findings)
+    {
+        var launchedFamily = runtime?.BrowserFamily ?? expected.BrowserFamily;
+        if (!string.IsNullOrWhiteSpace(launchedFamily) && !string.IsNullOrWhiteSpace(expected.UserAgent) &&
+            TryBrowserFamily(launchedFamily, out var actualFamily) &&
+            TryBrowserFamily(expected.UserAgent, out var uaFamily) &&
+            !BrowserFamiliesCompatible(actualFamily, uaFamily))
+            findings.Add(new ConsistencyFinding(ConsistencySeverity.Warning, "browser.configured-family-ua-mismatch",
+                $"Launched browser family '{actualFamily}' conflicts with the configured User-Agent family '{uaFamily}'."));
+
+        if (!string.IsNullOrWhiteSpace(expected.Platform) && !string.IsNullOrWhiteSpace(expected.UserAgent) &&
+            TryUaPlatform(expected.UserAgent, out var uaPlatform) && !PlatformCompatible(expected.Platform, uaPlatform))
+            findings.Add(new ConsistencyFinding(ConsistencySeverity.Warning, "browser.configured-platform-ua-mismatch",
+                $"Configured platform '{expected.Platform}' conflicts with the configured User-Agent platform '{uaPlatform}'."));
     }
 
     private static void AddBrowserFindings(
         ConsistencyExpectations expected,
         BrowserSurfaceDiagnostics observed,
-        ICollection<ConsistencyFinding> findings)
+        ICollection<ConsistencyFinding> findings,
+        BrowserRuntimeProvenance? runtime)
     {
         if (!string.IsNullOrWhiteSpace(expected.UserAgent) && !string.IsNullOrWhiteSpace(observed.UserAgent) &&
             TryBrowserFamily(expected.UserAgent, out var expectedUaFamily) &&
@@ -157,8 +208,9 @@ public static class IdentityConsistencyValidator
                 $"Configured UA indicates '{expectedUaFamily}', observed UA indicates '{actualUaFamily}'."));
         }
 
-        if (!string.IsNullOrWhiteSpace(expected.BrowserFamily) &&
-            TryBrowserFamily(expected.BrowserFamily, out var expectedFamily) &&
+        var launchedFamily = runtime?.BrowserFamily ?? expected.BrowserFamily;
+        if (!string.IsNullOrWhiteSpace(launchedFamily) &&
+            TryBrowserFamily(launchedFamily, out var expectedFamily) &&
             TryBrowserFamily(observed.UserAgent, out var uaFamily) &&
             !BrowserFamiliesCompatible(expectedFamily, uaFamily))
         {
@@ -227,6 +279,17 @@ public static class IdentityConsistencyValidator
         value.Equals("Etc/GMT", StringComparison.OrdinalIgnoreCase) ||
         value.Equals("GMT", StringComparison.OrdinalIgnoreCase) ||
         value.Equals("Coordinated Universal Time", StringComparison.OrdinalIgnoreCase);
+
+    private static bool TryUaPlatform(string userAgent, out string platform)
+    {
+        if (userAgent.Contains("Android", StringComparison.OrdinalIgnoreCase)) platform = "android";
+        else if (userAgent.Contains("iPhone", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("iPad", StringComparison.OrdinalIgnoreCase)) platform = "ios";
+        else if (userAgent.Contains("Windows", StringComparison.OrdinalIgnoreCase)) platform = "windows";
+        else if (userAgent.Contains("Macintosh", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Mac OS", StringComparison.OrdinalIgnoreCase)) platform = "macos";
+        else if (userAgent.Contains("Linux", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("X11", StringComparison.OrdinalIgnoreCase)) platform = "linux";
+        else { platform = string.Empty; return false; }
+        return true;
+    }
 
     private static bool PlatformCompatible(string left, string right)
     {

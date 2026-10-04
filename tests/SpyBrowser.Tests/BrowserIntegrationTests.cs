@@ -115,6 +115,104 @@ public sealed class BrowserIntegrationTests
     }
 
     [BrowserFact]
+    public async Task Effective_callbacks_are_reported_for_persistent_context_and_browser_page_modes()
+    {
+        using var temporary = new TemporaryDirectory();
+        var identity = BrowserIdentity.Create("effective-callbacks") with
+        {
+            Browser = new BrowserIdentitySettings { Engine = BrowserEngine.Chromium, Channel = null }
+        };
+        var common = new SpyBrowserLaunchOptions
+        {
+            IdentityId = identity.Id,
+            IdentityOverride = identity,
+            IdentitiesRoot = temporary.Path,
+            Headless = BrowserTestSettings.Headless,
+            ChannelOverride = BrowserTestSettings.Channel,
+            RunGpuProbe = false,
+            GpuPolicyOverride = GpuPolicy.AllowSoftware,
+            FailOnConsistencyErrors = true
+        };
+
+        await using (var persistent = await SpyBrowserLauncher.LaunchPersistentContextAsync(common with
+        {
+            ConfigurePersistentContext = options =>
+            {
+                options.Locale = "fr-FR";
+                options.TimezoneId = "UTC";
+                options.ViewportSize = new Microsoft.Playwright.ViewportSize { Width = 1280, Height = 720 };
+                options.UserAgent = "Mozilla/5.0 Firefox/128.0";
+            }
+        }))
+        {
+            Assert.Equal("fr-FR", persistent.EffectiveExpectations.Locale);
+            Assert.Equal("UTC", persistent.EffectiveExpectations.TimezoneId);
+            Assert.Equal(1280, persistent.EffectiveExpectations.ViewportWidth);
+            Assert.Equal(GpuPolicy.AllowSoftware, persistent.EffectiveGpuPolicy);
+            Assert.NotNull(persistent.Consistency.Runtime);
+            Assert.False(persistent.Consistency.HasErrors);
+            Assert.Contains(persistent.Consistency.Findings, finding =>
+                finding.Code == "browser.configured-family-ua-mismatch" && finding.Severity == ConsistencySeverity.Warning);
+            Assert.Equal("playwright.browser.version", persistent.RuntimeProvenance.BrowserVersionSource);
+            Assert.Equal(typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version?.ToString(),
+                persistent.RuntimeProvenance.PlaywrightVersion);
+            Assert.Equal("playwright.assembly.version", persistent.RuntimeProvenance.PlaywrightVersionSource);
+        }
+
+        var localTimezone = TimeZoneInfo.Local.Id;
+        if (TimeZoneInfo.TryConvertWindowsIdToIanaId(localTimezone, out var localIanaTimezone))
+            localTimezone = localIanaTimezone;
+        await using (var context = await SpyBrowserLauncher.LaunchContextAsync(common with
+        {
+            ConfigureContext = options =>
+            {
+                options.Locale = "de-DE";
+                options.TimezoneId = localTimezone;
+            }
+        }))
+        {
+            Assert.Equal("de-DE", context.EffectiveExpectations.Locale);
+            Assert.Equal(localTimezone, context.EffectiveExpectations.TimezoneId);
+            Assert.NotNull(context.Consistency.Runtime);
+            var localPage = await context.NewPageAsync();
+            Assert.Equal(localTimezone, await localPage.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().timeZone"));
+        }
+
+        await using (var browser = await SpyBrowserLauncher.LaunchBrowserAsync(common with
+        {
+            ConfigureContext = options =>
+            {
+                options.Locale = "it-IT";
+                options.TimezoneId = "UTC";
+            },
+            ConfigurePage = options =>
+            {
+                options.Locale = "es-ES";
+                options.TimezoneId = "UTC";
+            }
+        }))
+        {
+            Assert.Equal(typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version?.ToString(),
+                browser.RuntimeProvenance.PlaywrightVersion);
+            var context = await browser.NewContextAsync(new Microsoft.Playwright.BrowserNewContextOptions { Locale = "fr-FR" });
+            var contextDiagnostics = Assert.IsType<ContextConsistencyDiagnostics>(browser.GetConsistencyDiagnostics(context));
+            Assert.Equal("it-IT", contextDiagnostics.EffectiveExpectations.Locale);
+            Assert.Equal("UTC", contextDiagnostics.EffectiveExpectations.TimezoneId);
+            Assert.Equal(browser.RuntimeProvenance.BrowserFamily, contextDiagnostics.Consistency.Runtime?.BrowserFamily);
+            var contextPage = await context.NewPageAsync();
+            Assert.Equal("it-IT", await contextPage.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().locale"));
+            await context.CloseAsync();
+
+            var page = await browser.NewPageAsync();
+            var pageDiagnostics = Assert.IsType<ContextConsistencyDiagnostics>(browser.GetConsistencyDiagnostics(page.Context));
+            Assert.Equal("es-ES", pageDiagnostics.EffectiveExpectations.Locale);
+            Assert.Equal("UTC", pageDiagnostics.EffectiveExpectations.TimezoneId);
+            Assert.Equal("es-ES", await page.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().locale"));
+            Assert.Equal("UTC", await page.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().timeZone"));
+        }
+    }
+
+    [BrowserFact]
     public async Task Cloak_shaped_facade_runs_ordinary_playwright_code()
     {
 

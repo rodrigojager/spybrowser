@@ -60,7 +60,8 @@ public sealed record SpyBrowserLaunchOptions
 
     public float DefaultNavigationTimeoutMilliseconds { get; init; } = 60_000;
 
-    public bool RunGpuProbe { get; init; } = true;
+    /// <summary>Runs an isolated WebGL/WebGPU surface probe after context setup; opt-in and disabled by default.</summary>
+    public bool RunGpuProbe { get; init; }
 
     public bool FailOnConsistencyErrors { get; init; } = true;
 

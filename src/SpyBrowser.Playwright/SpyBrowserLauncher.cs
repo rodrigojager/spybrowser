@@ -43,9 +43,13 @@ public static class SpyBrowserLauncher
             context = await state.BrowserType.LaunchPersistentContextAsync(
                 userDataDirectory,
                 persistentOptions).ConfigureAwait(false);
+            var runtime = BrowserRuntimeProvenance.Create(identity, persistentOptions.Channel,
+                context.Browser?.Version ?? "unavailable",
+                options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null);
             var prepared = await PrepareContextAsync(context, state, options, cancellationToken,
                 CreateExpectations(identity, persistentOptions.Locale, persistentOptions.TimezoneId, persistentOptions.ViewportSize,
-                    persistentOptions.ScreenSize, persistentOptions.DeviceScaleFactor, persistentOptions.UserAgent)).ConfigureAwait(false);
+                    persistentOptions.ScreenSize, persistentOptions.DeviceScaleFactor, persistentOptions.UserAgent)
+                    with { BrowserFamily = runtime.BrowserFamily }, runtime).ConfigureAwait(false);
             return new SpyBrowserSession(
                 state.Playwright,
                 context,
@@ -54,9 +58,9 @@ public static class SpyBrowserLauncher
                 prepared.Diagnostics,
                 prepared.Consistency,
                 prepared.Expectations,
+                state.GpuPolicy,
                 state.Humanizer,
-                BrowserRuntimeProvenance.Create(identity, persistentOptions.Channel, context.Browser?.Version ?? "unavailable",
-                    options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null));
+                runtime);
         }
         catch
         {
@@ -98,9 +102,12 @@ public static class SpyBrowserLauncher
             var contextOptions = CreateContextOptions(identity);
             options.ConfigureContext?.Invoke(contextOptions);
             context = await browser.NewContextAsync(contextOptions).ConfigureAwait(false);
+            var runtime = BrowserRuntimeProvenance.Create(identity, browserOptions.Channel, browser.Version,
+                options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null);
             var prepared = await PrepareContextAsync(context, state, options, cancellationToken,
                 CreateExpectations(identity, contextOptions.Locale, contextOptions.TimezoneId, contextOptions.ViewportSize,
-                    contextOptions.ScreenSize, contextOptions.DeviceScaleFactor, contextOptions.UserAgent)).ConfigureAwait(false);
+                    contextOptions.ScreenSize, contextOptions.DeviceScaleFactor, contextOptions.UserAgent)
+                    with { BrowserFamily = runtime.BrowserFamily }, runtime).ConfigureAwait(false);
             return new SpyBrowserContextHandle(
                 state.Playwright,
                 context,
@@ -111,9 +118,9 @@ public static class SpyBrowserLauncher
                 prepared.Diagnostics,
                 prepared.Consistency,
                 prepared.Expectations,
+                state.GpuPolicy,
                 state.Humanizer,
-                BrowserRuntimeProvenance.Create(identity, browserOptions.Channel, browser.Version,
-                    options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null));
+                runtime);
         }
         catch
         {
@@ -158,7 +165,7 @@ public static class SpyBrowserLauncher
             var capturedBrowser = browser;
             var capturedState = state;
 
-            async Task<IBrowserContext> CreateConfiguredContextAsync(BrowserNewContextOptions? supplied)
+            async Task<(IBrowserContext Context, ConsistencyExpectations Expectations, ConsistencyReport Report)> CreateConfiguredContextAsync(BrowserNewContextOptions? supplied)
             {
                 var contextOptions = supplied is null
                     ? CreateContextOptions(identity)
@@ -168,8 +175,14 @@ public static class SpyBrowserLauncher
                 var rawContext = await capturedBrowser.NewContextAsync(contextOptions).ConfigureAwait(false);
                 try
                 {
-                    await ConfigureContextRuntimeAsync(rawContext, capturedState, options).ConfigureAwait(false);
-                    return capturedState.Humanizer?.Wrap(rawContext) ?? rawContext;
+                    var runtime = BrowserRuntimeProvenance.Create(identity, browserOptions.Channel,
+                        capturedBrowser.Version,
+                        options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null);
+                    var prepared = await PrepareContextAsync(rawContext, capturedState, options, CancellationToken.None,
+                        CreateExpectations(identity, contextOptions.Locale, contextOptions.TimezoneId,
+                            contextOptions.ViewportSize, contextOptions.ScreenSize, contextOptions.DeviceScaleFactor,
+                            contextOptions.UserAgent) with { BrowserFamily = runtime.BrowserFamily }, runtime).ConfigureAwait(false);
+                    return (capturedState.Humanizer?.Wrap(rawContext) ?? rawContext, prepared.Expectations, prepared.Consistency);
                 }
                 catch
                 {
@@ -179,7 +192,7 @@ public static class SpyBrowserLauncher
                 }
             }
 
-            async Task<IPage> CreateConfiguredPageAsync(BrowserNewPageOptions? supplied)
+            async Task<(IPage Page, ConsistencyExpectations Expectations, ConsistencyReport Report)> CreateConfiguredPageAsync(BrowserNewPageOptions? supplied)
             {
                 var pageOptions = supplied is null
                     ? CreatePageOptions(identity)
@@ -189,8 +202,14 @@ public static class SpyBrowserLauncher
                 var rawPage = await capturedBrowser.NewPageAsync(pageOptions).ConfigureAwait(false);
                 try
                 {
-                    await ConfigureContextRuntimeAsync(rawPage.Context, capturedState, options).ConfigureAwait(false);
-                    return capturedState.Humanizer?.Wrap(rawPage) ?? rawPage;
+                    var runtime = BrowserRuntimeProvenance.Create(identity, browserOptions.Channel,
+                        capturedBrowser.Version,
+                        options.Humanize ? options.HumanInteraction ?? new HumanInteractionOptions() : null);
+                    var prepared = await PrepareContextAsync(rawPage.Context, capturedState, options, CancellationToken.None,
+                        CreateExpectations(identity, pageOptions.Locale, pageOptions.TimezoneId,
+                            pageOptions.ViewportSize, pageOptions.ScreenSize, pageOptions.DeviceScaleFactor,
+                            pageOptions.UserAgent) with { BrowserFamily = runtime.BrowserFamily }, runtime).ConfigureAwait(false);
+                    return (capturedState.Humanizer?.Wrap(rawPage) ?? rawPage, prepared.Expectations, prepared.Consistency);
                 }
                 catch
                 {
@@ -389,7 +408,8 @@ public static class SpyBrowserLauncher
         LaunchState state,
         SpyBrowserLaunchOptions options,
         CancellationToken cancellationToken,
-        ConsistencyExpectations expectations)
+        ConsistencyExpectations expectations,
+        BrowserRuntimeProvenance runtime)
     {
         await ConfigureContextRuntimeAsync(context, state, options).ConfigureAwait(false);
         BrowserSurfaceDiagnostics? diagnostics = null;
@@ -400,8 +420,8 @@ public static class SpyBrowserLauncher
         }
 
         var consistency = diagnostics is null
-            ? new ConsistencyReport(Array.Empty<ConsistencyFinding>())
-            : IdentityConsistencyValidator.Validate(state.Identity, state.GpuPolicy, diagnostics, expectations);
+            ? IdentityConsistencyValidator.ValidateConfiguration(state.Identity, state.GpuPolicy, expectations, runtime)
+            : IdentityConsistencyValidator.Validate(state.Identity, state.GpuPolicy, diagnostics, expectations, runtime);
 
         if (options.FailOnConsistencyErrors && consistency.HasErrors)
         {

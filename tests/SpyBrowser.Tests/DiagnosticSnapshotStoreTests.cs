@@ -40,13 +40,50 @@ public sealed class DiagnosticSnapshotStoreTests
     }
 
     [Fact]
+    public void Gpu_model_family_and_backend_changes_are_informational_coarse_categories()
+    {
+        var baseline = Snapshot("1", null) with
+        {
+            Characteristics = new BrowserSurfaceDiagnostics
+            {
+                WebGl1 = new WebGlSurfaceDiagnostics { Available = true, Renderer = "ANGLE (NVIDIA GeForce RTX 3060 Direct3D11 vs_5_0)" },
+                WebGpu = new WebGpuSurfaceDiagnostics { Available = true, Device = "NVIDIA GeForce RTX 3060" }
+            }
+        };
+        var current = baseline with
+        {
+            Characteristics = baseline.Characteristics with
+            {
+                WebGl1 = baseline.Characteristics.WebGl1 with { Renderer = "ANGLE (NVIDIA GeForce RTX 4070 Vulkan)" },
+                WebGpu = baseline.Characteristics.WebGpu with { Device = "NVIDIA GeForce RTX 4070" }
+            }
+        };
+
+        var changes = DiagnosticSnapshotStore.Compare(baseline, current).Changes;
+        Assert.Contains(changes, change => change.Field == "webgl1.renderer-category" &&
+            change.Before == "nvidia-rtx-30-series-d3d11" && change.After == "nvidia-rtx-40-series-vulkan" &&
+            change.Severity == ConsistencySeverity.Information);
+        Assert.Contains(changes, change => change.Field == "webgpu.device-category" &&
+            change.Before == "nvidia-rtx-30-series" && change.After == "nvidia-rtx-40-series" &&
+            change.Severity == ConsistencySeverity.Information);
+        Assert.DoesNotContain("RTX 3060", System.Text.Json.JsonSerializer.Serialize(changes), StringComparison.Ordinal);
+
+        var softwareChanges = DiagnosticSnapshotStore.Compare(
+            Snapshot("1", null) with { Characteristics = new BrowserSurfaceDiagnostics { WebGl1 = new WebGlSurfaceDiagnostics { Renderer = "SwiftShader Vulkan" } } },
+            Snapshot("1", null) with { Characteristics = new BrowserSurfaceDiagnostics { WebGl1 = new WebGlSurfaceDiagnostics { Renderer = "llvmpipe OpenGL" } } }).Changes;
+        Assert.Contains(softwareChanges, change => change.Field == "webgl1.renderer-category" &&
+            change.Before == "software-vulkan" && change.After == "software-opengl" &&
+            change.Severity == ConsistencySeverity.Information);
+    }
+
+    [Fact]
     public async Task Every_serialized_string_field_is_projected_to_bounded_safe_values()
     {
         using var directory = new TemporaryDirectory();
         const string sentinel = "secret-sentinel https://private.invalid C:\\Users\\private\\failure";
         var source = Snapshot(sentinel, sentinel) with
         {
-            Versions = new RuntimeVersionRecord { SpyBrowser = sentinel, Playwright = sentinel, BrowserFamily = sentinel, BrowserFamilySource = sentinel, BrowserChannel = sentinel, BrowserVersion = sentinel, BrowserVersionSource = sentinel, Algorithm = sentinel, Dataset = sentinel },
+            Versions = new RuntimeVersionRecord { SpyBrowser = sentinel, Playwright = sentinel, PlaywrightVersionSource = sentinel, BrowserFamily = sentinel, BrowserFamilySource = sentinel, BrowserChannel = sentinel, BrowserVersion = sentinel, BrowserVersionSource = sentinel, Algorithm = sentinel, Dataset = sentinel },
             Expectations = new ConsistencyExpectations { Locale = sentinel, TimezoneId = sentinel, UserAgent = sentinel, BrowserFamily = sentinel, Platform = sentinel },
             Characteristics = new BrowserSurfaceDiagnostics
             {
@@ -62,6 +99,7 @@ public sealed class DiagnosticSnapshotStoreTests
         var json = await File.ReadAllTextAsync(path);
         Assert.DoesNotContain(sentinel, json, StringComparison.Ordinal);
         var safe = await DiagnosticSnapshotStore.ReadAsync(path);
+        Assert.Equal("unknown", safe.Versions.PlaywrightVersionSource);
         Assert.Equal("unknown", safe.Versions.BrowserFamily);
         Assert.Equal("unknown", safe.Versions.BrowserFamilySource);
         Assert.Null(safe.Versions.BrowserChannel);

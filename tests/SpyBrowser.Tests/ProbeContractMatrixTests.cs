@@ -28,6 +28,23 @@ public sealed class ProbeContractMatrixTests
     }
 
     [Fact]
+    public void No_viewport_or_missing_geometry_measurements_are_indeterminate()
+    {
+        var identity = BrowserIdentity.Create("no-viewport");
+        var expected = ConsistencyExpectations.FromIdentity(identity) with
+        {
+            ViewportWidth = null,
+            ViewportHeight = null,
+            DeviceScaleFactor = null
+        };
+        var report = IdentityConsistencyValidator.Validate(identity, GpuPolicy.AllowSoftware,
+            new BrowserSurfaceDiagnostics { Screen = new ScreenSurfaceDiagnostics() }, expected);
+
+        Assert.DoesNotContain(report.Findings, finding => finding.Code is
+            "identity.viewport-mismatch" or "identity.device-scale-mismatch");
+    }
+
+    [Fact]
     public void Effective_callback_expectations_do_not_report_stale_manifest_values_as_conflicts()
     {
         var identity = BrowserIdentity.Create("effective-probe");

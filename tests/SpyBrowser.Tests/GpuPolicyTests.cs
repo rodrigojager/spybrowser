@@ -21,6 +21,21 @@ public sealed class GpuPolicyTests
     }
 
     [Fact]
+    public void Missing_renderer_under_hardware_policy_is_unverified_not_proof_of_software_rendering()
+    {
+        var identity = BrowserIdentity.Create("missing-renderer") with
+        {
+            Gpu = new GpuIdentitySettings { Policy = GpuPolicy.RequireHardware }
+        };
+        var report = IdentityConsistencyValidator.Validate(identity, GpuPolicy.RequireHardware,
+            new BrowserSurfaceDiagnostics());
+
+        Assert.Contains(report.Findings, finding => finding.Code == "gpu.webgl-unavailable" &&
+            finding.Severity == ConsistencySeverity.Warning);
+        Assert.False(report.HasErrors);
+    }
+
+    [Fact]
     public void Hardware_policy_rejects_swiftshader()
     {
         var identity = BrowserIdentity.Create("cliente-a") with

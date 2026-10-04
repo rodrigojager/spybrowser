@@ -1,7 +1,13 @@
+using System.Runtime.CompilerServices;
 using Microsoft.Playwright;
 using SpyBrowser.Core;
 
 namespace SpyBrowser.Playwright;
+
+/// <summary>The effective configuration and consistency findings for a context created by this browser handle.</summary>
+public sealed record ContextConsistencyDiagnostics(
+    ConsistencyExpectations EffectiveExpectations,
+    ConsistencyReport Consistency);
 
 /// <summary>
 /// Owns a launched browser and creates identity-configured contexts and pages.
@@ -9,6 +15,7 @@ namespace SpyBrowser.Playwright;
 public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
 {
     private readonly IPlaywright _playwright;
+    private readonly ConditionalWeakTable<IBrowserContext, ContextConsistencyDiagnostics> _contextDiagnostics = new();
     private int _disposed;
 
     internal SpyBrowserBrowserHandle(
@@ -17,14 +24,30 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
         BrowserIdentity identity,
         PlaywrightHumanizer? humanizer,
         BrowserRuntimeProvenance runtimeProvenance,
-        Func<BrowserNewContextOptions?, Task<IBrowserContext>> contextFactory,
-        Func<BrowserNewPageOptions?, Task<IPage>> pageFactory)
+        Func<BrowserNewContextOptions?, Task<(IBrowserContext Context, ConsistencyExpectations Expectations, ConsistencyReport Report)>> contextFactory,
+        Func<BrowserNewPageOptions?, Task<(IPage Page, ConsistencyExpectations Expectations, ConsistencyReport Report)>> pageFactory)
     {
         _playwright = playwright;
         RawBrowser = rawBrowser;
         Identity = identity;
         RuntimeProvenance = runtimeProvenance;
-        var configured = ConfiguredBrowserProxy.Create(rawBrowser, contextFactory, pageFactory, humanizer);
+        async Task<IBrowserContext> CreateContextAsync(BrowserNewContextOptions? options)
+        {
+            var created = await contextFactory(options).ConfigureAwait(false);
+            var rawContext = (IBrowserContext)PlaywrightHumanizer.Unwrap(created.Context);
+            _contextDiagnostics.Add(rawContext, new ContextConsistencyDiagnostics(created.Expectations, created.Report));
+            return created.Context;
+        }
+
+        async Task<IPage> CreatePageAsync(BrowserNewPageOptions? options)
+        {
+            var created = await pageFactory(options).ConfigureAwait(false);
+            var rawContext = (IBrowserContext)PlaywrightHumanizer.Unwrap(created.Page.Context);
+            _contextDiagnostics.Add(rawContext, new ContextConsistencyDiagnostics(created.Expectations, created.Report));
+            return created.Page;
+        }
+
+        var configured = ConfiguredBrowserProxy.Create(rawBrowser, CreateContextAsync, CreatePageAsync, humanizer);
         Browser = configured;
     }
 
@@ -51,6 +74,17 @@ public sealed class SpyBrowserBrowserHandle : IAsyncDisposable
 
     public Task<IPage> NewPageAsync(BrowserNewPageOptions? options = null) =>
         Browser.NewPageAsync(options);
+
+    /// <summary>
+    /// Returns the effective post-callback expectations and findings for a context created by this handle.
+    /// Returns null for raw-browser contexts or contexts not created by this handle.
+    /// </summary>
+    public ContextConsistencyDiagnostics? GetConsistencyDiagnostics(IBrowserContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        var rawContext = (IBrowserContext)PlaywrightHumanizer.Unwrap(context);
+        return _contextDiagnostics.TryGetValue(rawContext, out var diagnostics) ? diagnostics : null;
+    }
 
     public async ValueTask DisposeAsync()
     {

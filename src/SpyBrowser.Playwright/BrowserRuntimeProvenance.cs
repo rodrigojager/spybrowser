@@ -12,6 +12,11 @@ public sealed record BrowserRuntimeProvenance(
     string Algorithm,
     string Dataset)
 {
+    /// <summary>Playwright assembly version used by the running process.</summary>
+    public string PlaywrightVersion { get; init; } =
+        typeof(Microsoft.Playwright.IPage).Assembly.GetName().Version?.ToString() ?? "unknown";
+
+    public string PlaywrightVersionSource => "playwright.assembly.version";
     internal static BrowserRuntimeProvenance Create(BrowserIdentity identity, string? channel,
         string browserVersion, HumanInteractionOptions? humanization)
     {
