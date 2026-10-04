@@ -15,11 +15,17 @@ for (var i = 0; i < trajectory.Points.Count; i++)
 
 The DLL has no runtime dependency other than the .NET 8 BCL and carries a
 compressed recording dataset. RNG state is per generation; the dataset is
-validated and loaded once. Seeded exact upstream parity has **not yet been
-established** (see `docs/cursory-port.md`); do not rely on this preview for
-bitwise reproducibility against cursory-js until the differential tests pass.
+validated and loaded once. The current differential suite matches 160 pinned
+cursory-js trajectory cases at 1e-9 absolute pixel tolerance, plus exact PCG64
+and distribution vectors. This is fixture-scoped evidence, not a guarantee of
+exhaustive parity; see `docs/cursory-port.md` for incomplete criteria and the
+benchmark baseline.
 
-Package license is LGPL-3.0-or-later, overriding repository-wide MIT metadata.
-See `LICENSE`, `COPYING.LESSER`, `NOTICE`, and `Data/upstream-manifest.json`.
-Dataset redistribution remains gated pending independent provenance/legal
-review. This project is not cleared for external release.
+Package metadata declares LGPL-3.0-or-later, overriding repository-wide MIT
+metadata. Algorithm source files are included under `src/`; a corresponding
+source bundle still needs the embedded gzip input and build instructions that
+recreate the exact package. Required full GPL/third-party license texts also
+remain absent. See `LICENSE`, `COPYING.LESSER`, `NOTICE`, and
+`Data/upstream-manifest.json`. Dataset redistribution remains gated pending
+independent provenance/legal review. This project is not cleared for external
+release.

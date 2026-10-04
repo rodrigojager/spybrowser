@@ -20,5 +20,12 @@
     { "component": "NumPy PCG64 and SeedSequence/distributions", "version": "2.3.5", "license": "BSD-3-Clause" },
     { "component": "PCG reference implementation", "copyright": "Melissa O'Neill (2014); Robert Kern (2015)", "license": "MIT" }
   ],
+  "fixtures": {
+    "path": "tests/SpyBrowser.Cursory.Tests/Fixtures/parity.json",
+    "sha256": "f48dc331139c212d9c2d1407afc4a7de784a7787995522213dacb80e59db38ba",
+    "trajectoryCases": 160,
+    "sourceCommit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
+    "generator": "tools/cursory-reference/generate-js-fixtures.cjs"
+  },
   "redistributionReview": "The algorithm/code licenses and upstream notices are recorded. The historical provenance and independent redistribution terms for the recorded trajectory dataset have not been conclusively established; external redistribution is blocked pending legal/provenance review."
 }

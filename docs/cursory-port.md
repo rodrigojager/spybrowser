@@ -21,35 +21,55 @@ call.
 The library provides candidate ranking and weighted selection, morph, knots,
 jitter, timing resampling/interpolation, PCG64/SeedSequence seeding, integer
 sampling and normal ziggurat tables. It preserves integer-path jitter-normal
-truncation behavior. The implementation is **not yet upstream-parity complete**:
-its differential trajectory fixture test currently demonstrates a mismatch
-(trajectory point count 3 vs 5 for the first case). In particular, exact NumPy
-numeric compatibility and broad intermediate-stage vectors are not complete;
-`Math.Sqrt(x*x+y*y)` and the tail `Math.Log(1-u)` are not the CPython/NumPy
-compatibility implementations. No parity claim is made and acceptance of ticket
-03 remains unmet.
+truncation behavior. The .NET port currently matches 160 trajectory cases emitted by the pinned
+cursory-js commit at `16fff97fab05bb6b0c6753b2dc136a7692634cec`, within the
+existing absolute `1e-9` pixel tolerance; timings and point counts are exact.
+The trajectory fixtures cover varied fixed seeds, endpoints, frequency,
+frequency randomizer and directness, and use the pinned 2,356-record dataset.
+The fixture also contains exact PCG64 raw words, doubles, ziggurat normal draws
+(including rejection paths), bounded-integer vectors (including rejection),
+and seeds through 128-bit maximum. Tests cover 2,000 deterministic invariant
+cases and concurrent generation. This is evidence for the exercised fixtures,
+not a claim of exhaustive cross-platform parity: intermediate-stage fixtures
+and a Windows/Linux result matrix remain outstanding.
 
-Fixtures under `tests/SpyBrowser.Cursory.Tests/Fixtures/parity.json` are emitted
-by the pinned cursory-js `generateTrajectory` using the same data package, not
-reused Python-dataset fixtures. The upstream JS suite was run locally with
-`npm ci && npm test` and passed 34 tests. To regenerate the compact local
-fixture, build the pinned upstream checkout and call its `dist/cursory.js`
-`generateTrajectory` for explicit seeded cases; update the source commit/hash
-metadata whenever either pin changes. The checked-in .NET differential test is
-expected to remain red until the known divergence is fixed; do not hide it or
-loosen its 1e-9 pixel tolerance.
+Numeric helpers now include compensated CPython-compatible `hypot`, NumPy-style
+pairwise sum for rescaling, and a compensated `log1p` path for ziggurat tails.
+Endpoint displacement overflow and invalid/absurd options are rejected, and
+sampling is guarded at 100,000 points. The generator and RNG still need a
+readability-focused decomposition into cohesive internal helpers; no architecture
+expansion is intended.
+
+To regenerate the trajectory and RNG fixtures from the pinned JS checkout, run
+`npm --prefix <pinned-checkout> run build`, then set
+`CURSORY_JS_DIST=<pinned-checkout>/dist/index.js` and run
+`node tools/cursory-reference/generate-js-fixtures.cjs`. The committed compact
+fixture is consumed by .NET tests; Node remains a maintenance-only tool. Review
+the dataset hash, source commit, and all diffs before accepting regenerated
+fixtures. No tool currently emits intermediate-stage feature snapshots.
 
 ## Reproducible commands
 
 ```sh
-dotnet test tests/SpyBrowser.Cursory.Tests
+dotnet test tests/SpyBrowser.Cursory.Tests -c Release
+dotnet run --project tools/Cursory.Benchmark/Cursory.Benchmark.csproj -c Release
 dotnet pack src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj -c Release
 ```
 
+Initial local benchmark (Windows 10.0.19045, x64, .NET 8.0.22, 16 logical
+processors; command above; 500 warmed samples): first generation/cold dataset
+load 326.575 ms, warmed p50 8.549 ms, p95 11.787 ms, mean managed allocations
+2,964,547 bytes/trajectory. This is a baseline only; p95 exceeds the proposed
+10 ms investigation target and allocation volume warrants investigation. It is
+not a cross-machine guarantee. Linux measurements have not been captured.
+
 Package inspection should confirm `PackageLicenseExpression=LGPL-3.0-or-later`,
 embedded gzip, NOTICE, full license text and source-correspondence information.
-Before external distribution, a legal review must address the dataset's
-independent terms/rights, and a release must provide complete corresponding
-source for the exact DLL (including this port and build instructions).
+The repository currently lacks the full GPL-3.0 base text and complete separate
+NumPy/PCG/PSF notices requested by the licensing plan; do not publish until
+those source-verified notices and source replacement/build instructions are
+included. Independent dataset terms/rights remain unverified. No independent
+legal clearance is claimed; publication and external redistribution stay blocked
+pending those artifacts and review.
 
 This preview is deliberately not referenced by `SpyBrowser.Playwright`.
