@@ -77,6 +77,23 @@ public sealed class ActionsCompatibilityTests
         Assert.Equal("2", await page.Locator("#target").GetAttributeAsync("data-detail"));
     }
 
+    [Fact]
+    public async Task Public_compatible_humanactions_delegate_clicks_to_native_locator_actions()
+    {
+        await using var browser = await LaunchChromiumAsync();
+        var page = await browser.NewPageAsync();
+        await page.SetContentAsync("<button id='b'>go</button><script>window.clicks=[];b.onclick=e=>clicks.push(e.detail);b.ondblclick=()=>window.doubles=(window.doubles||0)+1;</script>");
+        var actions = new HumanActions(new HumanInteractionOptions
+        {
+            CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible,
+            MouseMinimumDurationMilliseconds = 0,
+            MouseMaximumDurationMilliseconds = 0
+        });
+        await actions.DoubleClickAsync(page.Locator("#b"));
+        Assert.Equal(new[] { 1, 2 }, await page.EvaluateAsync<int[]>("clicks"));
+        Assert.Equal(1, await page.EvaluateAsync<int>("doubles"));
+    }
+
     private static async Task<IBrowser> LaunchChromiumAsync()
     {
         var playwright = await Microsoft.Playwright.Playwright.CreateAsync();

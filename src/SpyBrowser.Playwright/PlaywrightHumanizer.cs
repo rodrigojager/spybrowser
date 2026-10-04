@@ -133,6 +133,18 @@ internal sealed class HumanizationScope
         ? null
         : WrapValue(value, value.GetType(), ResolvePage(value, null));
 
+    public async Task RunInputAsync(IPage page, MethodInfo method, Func<Task> invoke)
+    {
+        var typing = method.Name.Contains("Fill", StringComparison.Ordinal) ||
+                     method.Name.Contains("Type", StringComparison.Ordinal) ||
+                     method.Name.Contains("InsertText", StringComparison.Ordinal);
+        var budget = typing ? _options.TypingDeadlineMilliseconds : _options.ActionDeadlineMilliseconds;
+        await PageInputState.For(page).RunAsync(invoke, budget).ConfigureAwait(false);
+    }
+
+    public void TrackDefaultTimeout(IPage page, int milliseconds) =>
+        PageInputState.For(page).SetDefaultTimeout(milliseconds);
+
     public bool TryHumanize(
         object target,
         IPage? pageHint,
@@ -440,11 +452,37 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
             }
         }
 
-        if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var humanizedResult))
+        var page = _target switch
         {
-            return humanizedResult;
+            IPage ownedPage => ownedPage,
+            ILocator locator => locator.Page,
+            IFrame frame => frame.Page,
+            _ => _pageHint
+        };
+        if (page is not null && targetMethod.Name == "SetDefaultTimeout" && arguments.ElementAtOrDefault(0) is float timeout)
+        {
+            _scope.TrackDefaultTimeout(page, Math.Max(1, (int)timeout));
         }
 
+        if (page is not null && IsInputMethod(targetMethod.Name) && typeof(Task).IsAssignableFrom(targetMethod.ReturnType))
+        {
+            return _scope.RunInputAsync(page, targetMethod, async () =>
+            {
+                if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var action))
+                {
+                    await ((Task)action!).ConfigureAwait(false);
+                    return;
+                }
+
+                try { await ((Task)targetMethod.Invoke(_target, arguments)!).ConfigureAwait(false); }
+                catch (TargetInvocationException exception) when (exception.InnerException is not null)
+                {
+                    ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                }
+            });
+        }
+
+        if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var humanizedResult)) return humanizedResult;
         try
         {
             var result = targetMethod.Invoke(_target, arguments);
@@ -456,4 +494,10 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
             throw;
         }
     }
+
+    private static bool IsInputMethod(string name) => name is
+        "ClickAsync" or "DblClickAsync" or "TapAsync" or "HoverAsync" or "FillAsync" or "ClearAsync" or
+        "TypeAsync" or "PressAsync" or "PressSequentiallyAsync" or "InsertTextAsync" or "MoveAsync" or
+        "DownAsync" or "UpAsync" or "WheelAsync" or "CheckAsync" or "UncheckAsync" or "SetCheckedAsync" or
+        "SelectOptionAsync" or "SetInputFilesAsync" or "DragToAsync";
 }

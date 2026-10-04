@@ -29,6 +29,12 @@ public sealed class HumanActions
     public async Task ClickAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            await CompatibleLocatorActionAsync(locator, "click", cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
         var (page, _, _) = await MoveToLocatorAsync(locator, cancellationToken).ConfigureAwait(false);
         await ClickCurrentPositionAsync(page, cancellationToken).ConfigureAwait(false);
     }
@@ -36,6 +42,12 @@ public sealed class HumanActions
     public async Task DoubleClickAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            await CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
         var (page, _, _) = await MoveToLocatorAsync(locator, cancellationToken).ConfigureAwait(false);
         await ClickCurrentPositionAsync(page, cancellationToken).ConfigureAwait(false);
         await DelayAsync(
@@ -48,6 +60,12 @@ public sealed class HumanActions
     public async Task HoverAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            await CompatibleLocatorActionAsync(locator, "hover", cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
         _ = await MoveToLocatorAsync(locator, cancellationToken).ConfigureAwait(false);
     }
 
@@ -74,6 +92,13 @@ public sealed class HumanActions
         CancellationToken cancellationToken = default)
     {
         await MoveAsync(page, targetX, targetY, cancellationToken).ConfigureAwait(false);
+        if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            if (doubleClick) await page.Mouse.DblClickAsync((float)targetX, (float)targetY).ConfigureAwait(false);
+            else await page.Mouse.ClickAsync((float)targetX, (float)targetY).ConfigureAwait(false);
+            return;
+        }
+
         await ClickCurrentPositionAsync(page, cancellationToken).ConfigureAwait(false);
         if (doubleClick)
         {
@@ -104,6 +129,22 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(locator);
         ArgumentNullException.ThrowIfNull(text);
+        if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
+        {
+            using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
+            var typeOptions = new LocatorPressSequentiallyOptions { Timeout = deadline.RemainingMilliseconds };
+            if (replaceExisting)
+            {
+                await locator.FillAsync(text, new LocatorFillOptions { Timeout = deadline.RemainingMilliseconds })
+                    .WaitAsync(deadline.Token).ConfigureAwait(false);
+            }
+            else
+            {
+                await locator.PressSequentiallyAsync(text, typeOptions).WaitAsync(deadline.Token).ConfigureAwait(false);
+            }
+            return;
+        }
+
         await ClickAsync(locator, cancellationToken).ConfigureAwait(false);
         if (replaceExisting)
         {
@@ -166,22 +207,23 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(text);
-        foreach (var rune in text.EnumerateRunes())
+        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
+        var runes = text.EnumerateRunes().ToArray();
+        for (var index = 0; index < runes.Length; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            var rune = runes[index];
+            deadline.ThrowIfExpired();
+            if (page.IsClosed) throw new InvalidOperationException("The page closed during human-paced typing.");
             if (_random.NextDouble() < _options.ThinkingPauseProbability)
             {
-                await DelayAsync(
-                    _options.ThinkingPauseMinimumMilliseconds,
-                    _options.ThinkingPauseMaximumMilliseconds,
-                    cancellationToken).ConfigureAwait(false);
+                await DelayAsync(_options.ThinkingPauseMinimumMilliseconds, _options.ThinkingPauseMaximumMilliseconds, deadline.Token).ConfigureAwait(false);
             }
 
-            await page.Keyboard.TypeAsync(rune.ToString()).ConfigureAwait(false);
-            await DelayAsync(
-                _options.KeyMinimumDelayMilliseconds,
-                _options.KeyMaximumDelayMilliseconds,
-                cancellationToken).ConfigureAwait(false);
+            await page.Keyboard.TypeAsync(rune.ToString()).WaitAsync(deadline.Token).ConfigureAwait(false);
+            if (index + 1 < runes.Length)
+            {
+                await DelayAsync(_options.KeyMinimumDelayMilliseconds, _options.KeyMaximumDelayMilliseconds, deadline.Token).ConfigureAwait(false);
+            }
         }
     }
 
@@ -192,9 +234,9 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
-        await page.Keyboard.DownAsync(key).ConfigureAwait(false);
-        await DelayAsync(35, 115, cancellationToken).ConfigureAwait(false);
-        await page.Keyboard.UpAsync(key).ConfigureAwait(false);
+        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
+        await page.Keyboard.PressAsync(key, new KeyboardPressOptions { Delay = Math.Min(75, deadline.RemainingMilliseconds) })
+            .WaitAsync(deadline.Token).ConfigureAwait(false);
     }
 
     internal async Task CompatibleLocatorActionAsync(ILocator locator, string action, CancellationToken cancellationToken = default)
@@ -205,42 +247,43 @@ public sealed class HumanActions
             throw new ArgumentOutOfRangeException(nameof(action));
         }
 
-        // Trial verifies Playwright actionability before any preparatory pointer side effects.
+        using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
+        // Trial verifies actionability before preparatory pointer side effects; every stage gets only
+        // the remaining part of the same monotonic budget.
         if (action == "click")
         {
-            await locator.ClickAsync(new LocatorClickOptions { Trial = true }).ConfigureAwait(false);
+            await locator.ClickAsync(new LocatorClickOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
         }
         else if (action == "dblclick")
         {
-            await locator.DblClickAsync(new LocatorDblClickOptions { Trial = true }).ConfigureAwait(false);
+            await locator.DblClickAsync(new LocatorDblClickOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
         }
         else
         {
-            await locator.HoverAsync(new LocatorHoverOptions { Trial = true }).ConfigureAwait(false);
+            await locator.HoverAsync(new LocatorHoverOptions { Trial = true, Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
         }
 
         try
         {
-            await locator.ScrollIntoViewIfNeededAsync().ConfigureAwait(false);
-            var box = await locator.BoundingBoxAsync().ConfigureAwait(false);
+            await locator.ScrollIntoViewIfNeededAsync(new LocatorScrollIntoViewIfNeededOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
+            var box = await locator.BoundingBoxAsync().WaitAsync(deadline.Token).ConfigureAwait(false);
             if (box is not null && box.Width > 0 && box.Height > 0)
             {
-                var x = box.X + box.Width / 2d;
-                var y = box.Y + box.Height / 2d;
-                await MoveAsync(page, x, y, cancellationToken).ConfigureAwait(false);
+                await MoveAsync(page, box.X + box.Width / 2d, box.Y + box.Height / 2d, deadline.Token).ConfigureAwait(false);
             }
         }
-        catch (PlaywrightException) when (!cancellationToken.IsCancellationRequested)
+        catch (PlaywrightException) when (!deadline.Token.IsCancellationRequested)
         {
-            // Preparation is best effort; the one native action below owns final actionability/errors.
+            // Preparation is best effort only while budget remains; final actionability belongs to Playwright.
         }
 
-        // Always leave the semantic action (including dblclick/detail and revalidation) to Playwright.
+        deadline.ThrowIfExpired();
+        // Exactly one native semantic action owns click/dblclick effects; never retry after it starts.
         switch (action)
         {
-            case "click": await locator.ClickAsync().ConfigureAwait(false); break;
-            case "dblclick": await locator.DblClickAsync().ConfigureAwait(false); break;
-            case "hover": await locator.HoverAsync().ConfigureAwait(false); break;
+            case "click": await locator.ClickAsync(new LocatorClickOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false); break;
+            case "dblclick": await locator.DblClickAsync(new LocatorDblClickOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false); break;
+            case "hover": await locator.HoverAsync(new LocatorHoverOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false); break;
         }
     }
 
@@ -248,7 +291,7 @@ public sealed class HumanActions
     {
         ArgumentNullException.ThrowIfNull(text);
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
-        await locator.FocusAsync().ConfigureAwait(false);
+        await locator.FocusAsync(new LocatorFocusOptions { Timeout = deadline.RemainingMilliseconds }).WaitAsync(deadline.Token).ConfigureAwait(false);
         var runes = text.EnumerateRunes().ToArray();
         for (var index = 0; index < runes.Length; index++)
         {
@@ -258,7 +301,8 @@ public sealed class HumanActions
                 throw new InvalidOperationException("The page closed during human-paced typing.");
             }
 
-            await locator.Page.Keyboard.TypeAsync(runes[index].ToString()).ConfigureAwait(false);
+            await locator.Page.Keyboard.TypeAsync(runes[index].ToString(), new KeyboardTypeOptions { Delay = 0 })
+                .WaitAsync(deadline.Token).ConfigureAwait(false);
             if (index + 1 < runes.Length)
             {
                 await DelayAsync(_options.KeyMinimumDelayMilliseconds, _options.KeyMaximumDelayMilliseconds, deadline.Token).ConfigureAwait(false);
@@ -286,11 +330,18 @@ public sealed class HumanActions
     private async Task ClickCurrentPositionAsync(IPage page, CancellationToken cancellationToken)
     {
         await page.Mouse.DownAsync().ConfigureAwait(false);
-        await DelayAsync(
-            _options.ClickHoldMinimumMilliseconds,
-            _options.ClickHoldMaximumMilliseconds,
-            cancellationToken).ConfigureAwait(false);
-        await page.Mouse.UpAsync().ConfigureAwait(false);
+        try
+        {
+            await DelayAsync(
+                _options.ClickHoldMinimumMilliseconds,
+                _options.ClickHoldMaximumMilliseconds,
+                cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            // This method releases only the button it pressed; it never spans public calls.
+            await page.Mouse.UpAsync().ConfigureAwait(false);
+        }
     }
 
     private async Task MoveMouseAsync(

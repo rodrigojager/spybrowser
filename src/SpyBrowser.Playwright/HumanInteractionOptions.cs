@@ -10,7 +10,10 @@ public sealed record HumanInteractionOptions
 {
     public HumanizationCompatibilityMode CompatibilityMode { get; init; } = HumanizationCompatibilityMode.Legacy;
 
-    /// <summary>Maximum budget for one compatible human-paced typing operation.</summary>
+    /// <summary>Maximum total budget for a compatible action, including queue/readiness/preparation.</summary>
+    public int ActionDeadlineMilliseconds { get; init; } = 30_000;
+
+    /// <summary>Maximum total budget for one human-paced typing operation.</summary>
     public int TypingDeadlineMilliseconds { get; init; } = 30_000;
 
     public int MouseMinimumDurationMilliseconds { get; init; } = 180;
@@ -44,6 +47,11 @@ public sealed record HumanInteractionOptions
         if (!Enum.IsDefined(CompatibilityMode))
         {
             throw new ArgumentOutOfRangeException(nameof(CompatibilityMode));
+        }
+
+        if (ActionDeadlineMilliseconds <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ActionDeadlineMilliseconds));
         }
 
         if (TypingDeadlineMilliseconds <= 0)
