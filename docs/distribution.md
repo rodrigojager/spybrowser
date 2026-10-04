@@ -76,6 +76,9 @@ python tools/verification/distribution-checks/run.py \
   --repository . \
   --feed artifacts/packages \
   --candidate-version 0.2.0-beta.1 \
+  --feed-manifest artifacts/packages/distribution-manifest.json \
+  --expected-source-commit <exact-source-commit> \
+  --declared-final-commit <exact-final-commit> \
   --dependency-feed "$HOME/.nuget/packages" \
   --output artifacts/distribution-checks \
   --evidence-input artifacts/rpablockly/evidence.json \
@@ -86,7 +89,7 @@ The command builds the previous SpyBrowser.Core/Playwright packages from baselin
 
 Set `SPYBROWSER_BROWSER_EXECUTABLE` to an installed Chrome/Chromium executable if it is not discoverable by Playwright, and provision the normal browser cache before running. The consumer CWD and app are temporary and do not need source-workspace access. `distribution-evidence.json` hashes package/nuspec, runtime DLL, source/license entries and symbol packages, records commands and evidence-input paths, and distinguishes PASS/PENDING/FAIL/BLOCKED. Exit status is nonzero for any pending or blocked item; `allPassed` is never true unless every criterion is PASS.
 
-Snapshot tests are conditional on the installed artifact actually exposing the approved `DiagnosticSnapshotStore` API. Until the ticket 19 API is integrated into a final package, they are explicitly PENDING; the harness does not vendor/copy SDK implementation into the consumer. External distribution remains BLOCKED pending accepted dataset redistribution clearance. No command here publishes or pushes artifacts.
+Snapshot tests reflect the supplied installed artifact. An absent API is PENDING and an incomplete API fails; the harness exercises comparison, concurrency, child-process interruption, cancellation, schema rejection, permission-denial limits and isolated discard without copying SDK implementation into the consumer. External rights review remains BLOCKED: that expected fail-closed distribution guard is not a technical PASS. Evidence reports technical status separately, while `allPassed` and `externalPublicationAllowed` stay false during the block. No command here publishes or pushes artifacts.
 
 ## Release checklist
 

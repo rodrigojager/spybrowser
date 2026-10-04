@@ -7,6 +7,9 @@ Run against an existing final package feed (no source repack workaround). Linux/
 ```sh
 python3 tools/verification/distribution-checks/run.py \
   --repository . --feed artifacts/packages --candidate-version 0.2.0-beta.1 \
+  --feed-manifest artifacts/packages/distribution-manifest.json \
+  --expected-source-commit 0123456789abcdef0123456789abcdef01234567 \
+  --declared-final-commit 89abcdef0123456789abcdef0123456789abcdef \
   --dependency-feed "$HOME/.nuget/packages" --output artifacts/distribution-checks \
   --evidence-input artifacts/rpablockly/evidence.json \
   --evidence-input artifacts/browser-contracts/result.json \
@@ -18,13 +21,16 @@ Windows PowerShell (Python 3.12+):
 ```powershell
 python tools/verification/distribution-checks/run.py `
   --repository . --feed artifacts/packages --candidate-version 0.2.0-beta.1 `
+  --feed-manifest artifacts/packages/distribution-manifest.json `
+  --expected-source-commit 0123456789abcdef0123456789abcdef01234567 `
+  --declared-final-commit 89abcdef0123456789abcdef0123456789abcdef `
   --dependency-feed "$env:USERPROFILE/.nuget/packages" --output artifacts/distribution-checks `
   --evidence-input artifacts/rpablockly/evidence.json `
   --evidence-input artifacts/browser-contracts/result.json `
   --evidence-input artifacts/benchmarks/report.json
 ```
 
-The same command works from PowerShell (use backticks instead of `\` for line continuation). Python 3.12+, .NET 8 SDK, the final local NuGet feed, and an installed Playwright-compatible Chrome/Chromium are required. The regular Microsoft.Playwright driver/browser cache is expected; a Cursory-specific helper or generation process is not. Set `SPYBROWSER_BROWSER_EXECUTABLE` if browser discovery is not automatic. The local source configuration disallows NuGet.org during consumer restore. Candidate/previous artifacts and Microsoft.Playwright plus its pinned transitive NuGet packages must be available in the supplied local feed(s); pass `--dependency-feed PATH` for each additional offline feed (the hierarchical `$HOME/.nuget/packages` cache is usable as a local source while `NUGET_PACKAGES` is redirected to the clean temp cache). No NuGet.org source is added.
+The same command works from PowerShell 5.1 (use backticks instead of `\\` for line continuation). Replace the example commits with exact immutable provenance values from the supplied feed. Its existing JSON manifest must contain exactly `candidateVersion`, `sourceCommit`, `declaredFinalCommit`, and `packages` (a filename-to-SHA256 map); all candidate `.nupkg` files and hashes must match exactly. The verifier never repacks in `--feed` consumer mode. Python 3.12+, .NET 8 SDK, the final local NuGet feed, and an installed Playwright-compatible Chrome/Chromium are required. The regular Microsoft.Playwright driver/browser cache is expected; a Cursory-specific helper or generation process is not. Set `SPYBROWSER_BROWSER_EXECUTABLE` if browser discovery is not automatic. The local source configuration disallows NuGet.org during consumer restore. Candidate/previous artifacts and Microsoft.Playwright plus its pinned transitive NuGet packages must be available in the supplied local feed(s); pass `--dependency-feed PATH` for each additional offline feed (the hierarchical `$HOME/.nuget/packages` cache is usable as a local source while `NUGET_PACKAGES` is redirected to the clean temp cache). No NuGet.org source is added.
 
 `--repository` builds the previous Core/Playwright packages from pinned baseline `e217359d19a29635f2b3b5ba54664d299fd16d36` using a version different from the candidate. Alternatively supply `--previous-feed` and `--previous-version`; in this mode provenance is marked PENDING unless separately proven. This is a package install test, not a project-reference test. Consumer source/CWD, outputs and clean NuGet cache are all in a temporary directory outside the workspace.
 
@@ -32,11 +38,11 @@ The same generated identity manifest and profile directory are reused across can
 
 ## Evidence interpretation and snapshot gate
 
-Review `distribution-evidence.json`, including every status and nested command output. PASS means only that the stated local check ran. PENDING is not a pass, and any PENDING/BLOCKED item forces nonzero exit and `allPassed: false`. Evidence input paths associate existing RpaBlockly/browser-contract/parity/benchmark proof; path inclusion does not claim those proofs passed. The manifest hashes all local feed nupkg/nuspecs, runtime DLLs, source/license/notice entries and symbol packages.
+Review `distribution-evidence.json`, including every status and nested command output. PASS means only that the stated local check ran. PENDING is not a pass; technical results are separately summarized by `technicalAllPassed`, `technicalFailures`, and `technicalPending`. `allPassed` and `externalPublicationAllowed` remain false while the external rights review is blocked. That expected fail-closed distribution guard is not a technical PASS or legal clearance. Evidence input paths associate existing RpaBlockly/browser-contract/parity/benchmark proof; path inclusion does not claim those proofs passed. The manifest hashes all local feed nupkg/nuspecs, runtime DLLs, source/license/notice entries and symbol packages.
 
-Snapshot API discovery is runtime reflection against the installed SpyBrowser.Playwright assembly. If `DiagnosticSnapshotStore` is absent, report PENDING and do not imitate or copy the implementation. Once ticket 19 and final integration expose the API, extend this harness to exercise Save → explicitly selected protected baseline → Read/Compare, safe discard, unknown schema rejection, permission denial, cancellation/fault cleanup and two concurrent sessions with separate atomic files. Verify that snapshots are optional and that profile, manifest, cookies and storage state survive feature-off and rollback. Version/GPU differences should be informational and never auto-promote a baseline. Feature deletion must not delete the identity/profile tree.
+Snapshot API discovery is runtime reflection against the installed SpyBrowser.Playwright assembly. If `DiagnosticSnapshotStore` is absent, report PENDING; if present, missing or mismatched public methods fail the run. The installed test exercises Save → explicit protected baseline → Read/Compare, version/GPU/context changes, two separate store instances, concurrent saves, child-process interruption during active filesystem writes, cancellation cleanup, unknown schema rejection, Linux permission denial where the OS enforces it, secret-sentinel sanitization, and safe discard. No public SDK test hook is required. Root Linux hosts that bypass chmod are explicitly PENDING rather than faked. Snapshot API privacy producer defects are tracked separately; the verifier does not patch product source. Verify snapshots are optional and profile, manifest, cookies and storage state survive discard and rollback. Version/GPU differences are informational and never auto-promote a baseline.
 
-The current source branch has no public snapshot capture API: an installed artifact without the store cannot honestly pass snapshot distribution checks. No snapshot feature or external release is claimed on the strength of the scaffold. External dataset redistribution remains BLOCKED until explicit accepted licensing/redistribution clearance; no external publication or push is performed here.
+The consumer checks the actual supplied package only; its preliminary status is not evidence for a later final artifact. External dataset redistribution and independent rights review remain BLOCKED until explicit clearance; this expected distribution guard does not excuse technical pending/failures. No external publication or push is performed here.
 
 ## Operational use
 

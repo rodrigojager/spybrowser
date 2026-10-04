@@ -10,6 +10,7 @@ import sys
 import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
+from xml.sax.saxutils import quoteattr
 from pathlib import Path
 
 BASELINE = "e217359d19a29635f2b3b5ba54664d299fd16d36"
@@ -55,7 +56,7 @@ def package_manifest(feeds):
                 rows.append({"feed": str(feed), "file": p.name, "sha256": sha(p), "nuspec": nuspecs,
                              "nuspecMetadata": nuspec_metadata,
                              "nuspecSha256": {n: hashlib.sha256(z.read(n)).hexdigest() for n in nuspecs},
-                             "runtimeAssemblies": {n: hashlib.sha256(z.read(n)).hexdigest() for n in names if n.endswith(".dll") and "/lib/" in n},
+                             "runtimeAssemblies": {n: hashlib.sha256(z.read(n)).hexdigest() for n in names if n.endswith(".dll") and n.startswith("lib/")},
                              "licenseAndSourceEntries": {n: hashlib.sha256(z.read(n)).hexdigest() for n in names if "license" in n.lower() or n.startswith("source/") or "notice" in n.lower()},
                              "symbols": next(({"file": p.with_name(p.stem + ".snupkg").name,
                                                 "sha256": sha(p.with_name(p.stem + ".snupkg"))}
@@ -67,6 +68,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--feed", type=Path, required=True, help="Existing final local NuGet feed; never repacked from source")
     ap.add_argument("--candidate-version", required=True)
+    ap.add_argument("--expected-source-commit", required=True, help="Source commit recorded by the feed manifest")
+    ap.add_argument("--declared-final-commit", required=True, help="Final integration commit recorded by the feed manifest")
+    ap.add_argument("--feed-manifest", type=Path, required=True, help="Existing provenance manifest for the candidate feed")
     ap.add_argument("--previous-feed", type=Path)
     ap.add_argument("--previous-version", default="0.1.0-baseline.e217359")
     ap.add_argument("--dependency-feed", type=Path, action="append", default=[], help="Additional local-only feed for exact pinned transitive packages such as Microsoft.Playwright")
@@ -79,6 +83,28 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     if not feed.is_dir() or not any(feed.glob("SpyBrowser.Playwright.*.nupkg")):
         ap.error(f"Existing candidate feed must contain SpyBrowser.Playwright nupkg: {feed}")
+    manifest_path = args.feed_manifest.resolve()
+    if not manifest_path.is_file():
+        ap.error(f"Required existing feed manifest is missing: {manifest_path}")
+    try:
+        provenance = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        ap.error(f"Cannot read feed provenance manifest {manifest_path}: {exc}")
+    if provenance.get("candidateVersion") != args.candidate_version:
+        ap.error("Feed manifest candidateVersion does not match --candidate-version")
+    if provenance.get("sourceCommit") != args.expected_source_commit:
+        ap.error("Feed manifest sourceCommit does not match --expected-source-commit")
+    if provenance.get("declaredFinalCommit") != args.declared_final_commit:
+        ap.error("Feed manifest declaredFinalCommit does not match --declared-final-commit")
+    declared_hashes = provenance.get("packages")
+    if not isinstance(declared_hashes, dict) or not declared_hashes:
+        ap.error("Feed manifest must contain packages as {package filename: sha256}")
+    actual_candidate_packages = {p.name: sha(p) for p in sorted(feed.glob("*.nupkg")) if not p.name.endswith(".snupkg")}
+    for filename, digest in actual_candidate_packages.items():
+        if declared_hashes.get(filename) != digest:
+            ap.error(f"Feed manifest hash missing/mismatched for {filename}")
+    if set(declared_hashes) != set(actual_candidate_packages):
+        ap.error("Feed manifest package list does not exactly match candidate .nupkg files")
     logs = []
     statuses = []
     previous_feed = args.previous_feed.resolve() if args.previous_feed else None
@@ -111,7 +137,10 @@ def main():
                 statuses.append({"check": "previous-package-build", "status": "FAIL", "baseline": BASELINE, "reason": str(exc)})
                 failed = {"schemaVersion": 1, "candidateVersion": args.candidate_version, "previousVersion": args.previous_version,
                           "baselineCommit": BASELINE, "candidateFeed": str(feed), "previousFeed": str(previous_feed),
-                          "statuses": statuses, "allPassed": False, "commands": logs}
+                          "statuses": statuses, "technicalAllPassed": False,
+                          "technicalFailures": [s for s in statuses if s["status"] == "FAIL"],
+                          "technicalPending": [s for s in statuses if s["status"] == "PENDING"],
+                          "externalPublicationAllowed": False, "allPassed": False, "commands": logs}
                 evidence_path = output / "distribution-evidence.json"
                 evidence_path.write_text(json.dumps(failed, indent=2) + "\n", encoding="utf-8")
                 print(f"Evidence: {evidence_path}", file=sys.stderr)
@@ -135,7 +164,7 @@ def main():
         (consumer / "global.json").write_text(json.dumps({"sdk": {"version": sdk_version, "rollForward": "latestPatch"}}, indent=2) + "\n", encoding="utf-8")
         dep_feeds = [Path(p).resolve() for p in args.dependency_feed]
         sources = [feed, previous_feed, *dep_feeds]
-        source_xml = "".join(f"<add key=\"local-{i}\" value=\"{p.as_posix()}\"/>" for i, p in enumerate(sources))
+        source_xml = "".join(f"<add key={quoteattr(f'local-{i}')} value={quoteattr(p.as_posix())}/>" for i, p in enumerate(sources))
         (consumer / "NuGet.Config").write_text(
             "<?xml version=\"1.0\" encoding=\"utf-8\"?><configuration><packageSources><clear/>" +
             source_xml + "</packageSources></configuration>\n", encoding="utf-8")
@@ -170,12 +199,16 @@ def main():
                 statuses.append({"check": name, "status": "PASS"})
             if "PASS: installed snapshot round-trip" in last_candidate_output:
                 statuses.append({"check": "snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard", "status": "PASS"})
+                if "PASS: child-process write interruption" in last_candidate_output:
+                    statuses.append({"check": "snapshot-interrupted-write-during-filesystem-write", "status": "PASS"})
+                else:
+                    statuses.append({"check": "snapshot-interrupted-write-during-filesystem-write", "status": "FAIL", "reason": "Consumer did not confirm interruption of an active child-process writer."})
                 if "PASS: real Linux chmod" in last_candidate_output:
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PASS"})
                 else:
                     statuses.append({"check": "snapshot-real-permission-denial", "status": "PENDING", "reason": "The host cannot establish real Linux chmod denial or is not Linux; no fake file blocker was used."})
-                statuses.append({"check": "snapshot-interrupted-write-midstream-and-gpu-context-information", "status": "PENDING",
-                                 "reason": "Only cancellation cleanup is tested; public fault injection is unavailable and GPU/context comparison needs the final diagnostic capture contract."})
+                statuses.append({"check": "snapshot-gpu-context-information", "status": "FAIL",
+                                 "reason": "Snapshot API is present but no installed comparison evidence was emitted."})
             else:
                 statuses.append({"check": "snapshot-save-compare-retention-permissions-cancellation-concurrency-schema-secrets", "status": "PENDING",
                                  "reason": "Snapshot API is not present in this candidate artifact; consumer runtime reflection did not find the approved public API."})
@@ -194,14 +227,23 @@ def main():
             statuses.append({"check": "consumer-execution", "status": "FAIL", "reason": execution_error})
         statuses.append({"check": "external-dataset-distribution-license", "status": "BLOCKED",
                          "reason": "Dataset license/redistribution clearance is not accepted; no external distribution is authorized."})
-        manifest = {"schemaVersion": 1, "candidateVersion": args.candidate_version, "previousVersion": args.previous_version,
+        technical_statuses = [s for s in statuses if s["status"] != "BLOCKED"]
+        technical_all_passed = all(s["status"] == "PASS" for s in technical_statuses)
+        manifest = {"schemaVersion": 1, "candidateVersion": args.candidate_version,
+                    "sourceCommit": args.expected_source_commit, "declaredFinalCommit": args.declared_final_commit,
+                    "feedManifest": str(manifest_path), "feedManifestSha256": sha(manifest_path),
+                    "previousVersion": args.previous_version,
                     "baselineCommit": BASELINE if args.repository else None, "playwrightVersion": PLAYWRIGHT,
                     "candidateFeed": str(feed), "previousFeed": str(previous_feed), "dependencyFeeds": [str(p) for p in dep_feeds], "consumerWorkingDirectory": str(consumer),
                     "profileDirectory": str(profile), "manifestSha256": sha(identity_dir / "identity.json") if (identity_dir / "identity.json").exists() else None,
                     "storageStateSha256": sha(state_path) if state_path.exists() else None,
                     "packages": package_manifest([feed, previous_feed]),
                     "evidenceInputs": [{"path": str(Path(p).resolve()), "exists": Path(p).exists()} for p in args.evidence_input],
-                    "statuses": statuses, "allPassed": all(s["status"] == "PASS" for s in statuses),
+                    "statuses": statuses, "technicalAllPassed": technical_all_passed,
+                    "technicalFailures": [s for s in technical_statuses if s["status"] == "FAIL"],
+                    "technicalPending": [s for s in technical_statuses if s["status"] == "PENDING"],
+                    "externalPublicationAllowed": False,
+                    "allPassed": all(s["status"] == "PASS" for s in statuses),
                     "commands": logs}
         evidence_path = output / "distribution-evidence.json"
         evidence_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
