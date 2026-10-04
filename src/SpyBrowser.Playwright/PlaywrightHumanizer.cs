@@ -282,26 +282,26 @@ internal sealed class HumanizationScope
     }
 
     public void TrackDefaultTimeout(IPage page, int milliseconds) =>
-        PageInputState.For(page).SetDefaultTimeout(milliseconds);
+        PageInputState.For(page).SetPageExplicitTimeout(milliseconds);
 
     public void TrackContextDefaultTimeout(IBrowserContext context, int milliseconds)
     {
         var state = _contextTimeouts.GetValue(context, static _ => new ContextTimeoutState());
         Volatile.Write(ref state.Milliseconds, Math.Max(0, milliseconds));
-        foreach (var page in context.Pages) PageInputState.For(page).SetDefaultTimeout(milliseconds);
+        foreach (var page in context.Pages) PageInputState.For(page).SetContextDefaultTimeout(milliseconds);
     }
 
     private object WrapContext(IBrowserContext context, IPage? pageHint)
     {
         if (_contextTimeouts.TryGetValue(context, out var state))
-            foreach (var page in context.Pages) PageInputState.For(page).SetDefaultTimeout(Volatile.Read(ref state.Milliseconds));
+            foreach (var page in context.Pages) PageInputState.For(page).SetContextDefaultTimeout(Volatile.Read(ref state.Milliseconds));
         return GetOrCreate(context, pageHint);
     }
 
     private object WrapPage(IPage page)
     {
         if (_contextTimeouts.TryGetValue(page.Context, out var state))
-            PageInputState.For(page).SetDefaultTimeout(Volatile.Read(ref state.Milliseconds));
+            PageInputState.For(page).SetContextDefaultTimeout(Volatile.Read(ref state.Milliseconds));
         return GetOrCreate(page, page);
     }
 

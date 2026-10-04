@@ -464,6 +464,7 @@ public static class SpyBrowserLauncher
         SpyBrowserLaunchOptions options)
     {
         context.SetDefaultTimeout(options.DefaultTimeoutMilliseconds);
+        state.Humanizer?.Scope.TrackContextDefaultTimeout(context, Math.Max(0, (int)options.DefaultTimeoutMilliseconds));
         context.SetDefaultNavigationTimeout(options.DefaultNavigationTimeoutMilliseconds);
         var initScript = IdentityInitScriptBuilder.Build(state.Identity, state.GpuPolicy);
         if (!string.IsNullOrWhiteSpace(initScript))

@@ -14,6 +14,8 @@ internal sealed class PageInputState
     private readonly CancellationTokenSource _lifetime = new();
     private readonly CancellationToken _lifetimeToken;
     private int _defaultTimeout = Timeout.Infinite;
+    private int _contextDefaultTimeout = Timeout.Infinite;
+    private int _pageExplicitTimeout = -1;
     private int _disposed;
 
     private PageInputState(IPage page)
@@ -26,7 +28,26 @@ internal sealed class PageInputState
 
     public static PageInputState For(IPage page) => States.GetValue(page, static value => new PageInputState(value));
 
+    // Direct effective-timeout setter retained for focused internal tests.
     public void SetDefaultTimeout(int milliseconds) => Volatile.Write(ref _defaultTimeout, Math.Max(0, milliseconds));
+
+    public void SetContextDefaultTimeout(int milliseconds)
+    {
+        Volatile.Write(ref _contextDefaultTimeout, Math.Max(0, milliseconds));
+        RefreshEffectiveTimeout();
+    }
+
+    public void SetPageExplicitTimeout(int milliseconds)
+    {
+        Volatile.Write(ref _pageExplicitTimeout, Math.Max(0, milliseconds));
+        RefreshEffectiveTimeout();
+    }
+
+    private void RefreshEffectiveTimeout()
+    {
+        var pageTimeout = Volatile.Read(ref _pageExplicitTimeout);
+        Volatile.Write(ref _defaultTimeout, pageTimeout >= 0 ? pageTimeout : Volatile.Read(ref _contextDefaultTimeout));
+    }
 
     public async Task RunAsync(
         Func<CancellationToken, Task> operation,
