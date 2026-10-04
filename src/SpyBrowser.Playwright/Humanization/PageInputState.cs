@@ -10,55 +10,85 @@ internal sealed class PageInputState
     private readonly IPage _page;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private readonly CancellationTokenSource _lifetime = new();
-    private int _defaultTimeout = 30_000;
+    private readonly CancellationToken _lifetimeToken;
+    private int _defaultTimeout = Timeout.Infinite;
     private int _disposed;
 
     private PageInputState(IPage page)
     {
         _page = page;
-        page.Close += (_, _) => Dispose();
-        page.Context.Close += (_, _) => Dispose();
+        _lifetimeToken = _lifetime.Token;
+        page.Close += OnPageClose;
+        page.Context.Close += OnContextClose;
     }
 
     public static PageInputState For(IPage page) => States.GetValue(page, static value => new PageInputState(value));
 
-    public void SetDefaultTimeout(int milliseconds) => Volatile.Write(ref _defaultTimeout, milliseconds);
+    public void SetDefaultTimeout(int milliseconds) => Volatile.Write(ref _defaultTimeout, Math.Max(0, milliseconds));
 
-    public async Task RunAsync(Func<Task> operation, int configuredBudgetMilliseconds, CancellationToken cancellationToken = default)
+    public async Task RunAsync(Func<CancellationToken, Task> operation, int configuredBudgetMilliseconds, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(operation);
         var observedDefault = Volatile.Read(ref _defaultTimeout);
-        var budget = Math.Min(configuredBudgetMilliseconds, observedDefault);
-        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetime.Token, cancellationToken);
-        deadline.CancelAfter(budget);
+        var budget = observedDefault == 0 || observedDefault == Timeout.Infinite
+            ? configuredBudgetMilliseconds
+            : Math.Min(configuredBudgetMilliseconds, observedDefault);
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(_lifetimeToken, cancellationToken);
+        if (budget > 0) deadline.CancelAfter(budget);
         await _gate.WaitAsync(deadline.Token).ConfigureAwait(false);
+        Task? operationTask = null;
+        var gateTransferred = false;
         try
         {
             deadline.Token.ThrowIfCancellationRequested();
-            var task = operation();
+            operationTask = operation(deadline.Token);
+            await operationTask.WaitAsync(deadline.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (deadline.IsCancellationRequested)
+        {
             try
             {
-                await task.WaitAsync(deadline.Token).ConfigureAwait(false);
+                await _page.CloseAsync(new PageCloseOptions { RunBeforeUnload = false })
+                    .WaitAsync(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
             }
-            catch (OperationCanceledException) when (deadline.IsCancellationRequested)
+            catch { /* Preserve the initiating cancellation/timeout. */ }
+            if (operationTask is not null)
             {
-                // Playwright calls do not accept CancellationToken. Close the owned page to stop
-                // the driver operation, then observe its actual task before releasing the gate.
-                try { await _page.CloseAsync(new PageCloseOptions { RunBeforeUnload = false }).ConfigureAwait(false); }
-                catch { /* Preserve timeout, cancellation, or the original operation failure. */ }
-                try { await task.ConfigureAwait(false); }
-                catch { /* The underlying task is observed; never replace the initiating cause. */ }
-                deadline.Token.ThrowIfCancellationRequested();
+                try
+                {
+                    await operationTask.WaitAsync(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
+                }
+                catch (TimeoutException)
+                {
+                    gateTransferred = true;
+                    _ = operationTask.ContinueWith(
+                        completed =>
+                        {
+                            _ = completed.Exception;
+                            _gate.Release();
+                        },
+                        CancellationToken.None,
+                        TaskContinuationOptions.ExecuteSynchronously,
+                        TaskScheduler.Default);
+                }
+                catch { /* The underlying operation is observed; preserve cancellation. */ }
             }
+            throw;
         }
         finally
         {
-            _gate.Release();
+            if (!gateTransferred) _gate.Release();
         }
     }
+
+    private void OnPageClose(object? sender, IPage page) => Dispose();
+    private void OnContextClose(object? sender, IBrowserContext context) => Dispose();
 
     private void Dispose()
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        _page.Close -= OnPageClose;
+        _page.Context.Close -= OnContextClose;
         _lifetime.Cancel();
         _lifetime.Dispose();
     }

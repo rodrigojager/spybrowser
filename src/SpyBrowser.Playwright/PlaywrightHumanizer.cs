@@ -163,7 +163,7 @@ internal sealed class HumanizationScope
         ? null
         : WrapValue(value, value.GetType(), ResolvePage(value, null));
 
-    public async Task RunInputAsync(IPage page, MethodInfo method, Func<Task> invoke)
+    public async Task RunInputAsync(IPage page, MethodInfo method, Func<CancellationToken, Task> invoke)
     {
         var typing = method.Name.Contains("Fill", StringComparison.Ordinal) ||
                      method.Name.Contains("Type", StringComparison.Ordinal) ||
@@ -196,7 +196,8 @@ internal sealed class HumanizationScope
         IPage? pageHint,
         MethodInfo method,
         object?[] arguments,
-        out object? result)
+        out object? result,
+        CancellationToken cancellationToken = default)
     {
         var page = ResolvePage(target, pageHint);
         if (page is null)
@@ -206,29 +207,29 @@ internal sealed class HumanizationScope
         }
 
         var actions = _actions.GetValue(page, _ => new HumanActions(_options));
-        if (target is ILocator locator && TryLocator(actions, locator, method, arguments, out result))
+        if (target is ILocator locator && TryLocator(actions, locator, method, arguments, cancellationToken, out result))
         {
             return true;
         }
 
         if (target is IPage targetPage &&
-            TrySelectorOwner(actions, selector => targetPage.Locator(selector), method, arguments, out result))
+            TrySelectorOwner(actions, selector => targetPage.Locator(selector), method, arguments, cancellationToken, out result))
         {
             return true;
         }
 
         if (target is IFrame frame &&
-            TrySelectorOwner(actions, selector => frame.Locator(selector), method, arguments, out result))
+            TrySelectorOwner(actions, selector => frame.Locator(selector), method, arguments, cancellationToken, out result))
         {
             return true;
         }
 
-        if (target is IMouse && TryMouse(actions, page, method, arguments, out result))
+        if (target is IMouse && TryMouse(actions, page, method, arguments, cancellationToken, out result))
         {
             return true;
         }
 
-        if (target is IKeyboard && TryKeyboard(actions, page, method, arguments, out result))
+        if (target is IKeyboard && TryKeyboard(actions, page, method, arguments, cancellationToken, out result))
         {
             return true;
         }
@@ -262,6 +263,7 @@ internal sealed class HumanizationScope
         ILocator locator,
         MethodInfo method,
         object?[] arguments,
+        CancellationToken cancellationToken,
         out object? result)
     {
         var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
@@ -283,13 +285,13 @@ internal sealed class HumanizationScope
         if (!compatible && method.Name == nameof(ILocator.FillAsync) &&
             arguments.ElementAtOrDefault(0) is string fill && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.TypeAsync(locator, fill, replaceExisting: true);
+            result = actions.TypeAsync(locator, fill, replaceExisting: true, cancellationToken);
             return true;
         }
         if ((method.Name == nameof(ILocator.TypeAsync) || method.Name == nameof(ILocator.PressSequentiallyAsync)) &&
             arguments.ElementAtOrDefault(0) is string text && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleTypeAsync(locator, text) : actions.TypeAsync(locator, text, replaceExisting: false);
+            result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeAsync(locator, text, replaceExisting: false, cancellationToken);
             return true;
         }
         if (!compatible && method.Name == nameof(ILocator.PressAsync) &&
@@ -312,6 +314,7 @@ internal sealed class HumanizationScope
         Func<string, ILocator> locatorFactory,
         MethodInfo method,
         object?[] arguments,
+        CancellationToken cancellationToken,
         out object? result)
     {
         if (arguments.ElementAtOrDefault(0) is not string selector)
@@ -344,7 +347,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string fill &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.TypeAsync(locator, fill, replaceExisting: true);
+            result = actions.TypeAsync(locator, fill, replaceExisting: true, cancellationToken);
             return true;
         }
 
@@ -352,7 +355,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string text &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = compatible ? actions.CompatibleTypeAsync(locator, text) : actions.TypeAsync(locator, text, replaceExisting: false);
+            result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeAsync(locator, text, replaceExisting: false, cancellationToken);
             return true;
         }
 
@@ -373,6 +376,7 @@ internal sealed class HumanizationScope
         IPage page,
         MethodInfo method,
         object?[] arguments,
+        CancellationToken cancellationToken,
         out object? result)
     {
         if (method.Name == nameof(IMouse.MoveAsync) &&
@@ -412,6 +416,7 @@ internal sealed class HumanizationScope
         IPage page,
         MethodInfo method,
         object?[] arguments,
+        CancellationToken cancellationToken,
         out object? result)
     {
         if ((method.Name == nameof(IKeyboard.TypeAsync) ||
@@ -514,15 +519,16 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         };
         if (page is not null && targetMethod.Name == "SetDefaultTimeout" && arguments.ElementAtOrDefault(0) is float timeout)
         {
-            _scope.TrackDefaultTimeout(page, Math.Max(1, (int)timeout));
+            _scope.TrackDefaultTimeout(page, Math.Max(0, (int)timeout));
         }
 
         if (page is not null && IsInputMethod(targetMethod.Name) && typeof(Task).IsAssignableFrom(targetMethod.ReturnType))
         {
             Task? pending = null;
-            var gate = _scope.RunInputAsync(page, targetMethod, async () =>
+            var gate = _scope.RunInputAsync(page, targetMethod, async cancellationToken =>
             {
-                if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var action))
+                cancellationToken.ThrowIfCancellationRequested();
+                if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var action, cancellationToken))
                 {
                     pending = (Task)action!;
                     await pending.ConfigureAwait(false);
