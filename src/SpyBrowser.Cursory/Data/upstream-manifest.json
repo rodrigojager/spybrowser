@@ -1,24 +1,99 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "upstream": {
+    "cursoryJs": {
+      "repository": "https://github.com/JWriter20/cursory-js",
+      "commit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
+      "version": "2.0.1",
+      "license": "LGPL-3.0-or-later",
+      "licenseFileSha256": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059",
+      "noticeSha256": "96f17d3ef1a202482f3f1d188d1388676bfc112b780be30c2c6b66889578bde4"
+    },
+    "cursoryPython": {
+      "repository": "https://github.com/Vinyzu/cursory",
+      "commit": "5caa9d3477a1ff7b2d413978ea168a93fdc01dfc",
+      "distributionLicense": "LGPL-3.0-or-later AND GPL-3.0-or-later (as stated by pinned cursory-js notice)",
+      "licenseEvidence": "The pinned cursory-js LICENSE and NOTICE say original Cursory is retroactively dual-licensed; this package selects LGPL-3.0-or-later for this derivative.",
+      "recordings": 2357
+    }
+  },
   "dataset": {
     "sourceRepository": "https://github.com/JWriter20/cursory-js",
-    "commit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
-    "path": "src/trajectories.json.gz",
-    "sha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+    "sourceCommit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
+    "sourcePath": "src/trajectories.json.gz",
+    "repositorySourceUrl": "https://github.com/JWriter20/cursory-js/blob/16fff97fab05bb6b0c6753b2dc136a7692634cec/src/trajectories.json.gz",
+    "sha256Gzip": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
     "gzipBytes": 637556,
+    "sha256ExpandedJson": "84468e214bf23c5ec422d566f5d3412a532b95feafd584bc0d54ade33035d9b8",
+    "expandedBytes": 2023688,
     "recordings": 2356,
     "points": 112984,
-    "pythonComparison": "Cursory Python commit 5caa9d3477a1ff7b2d413978ea168a93fdc01dfc contains 2357 records; cursory-js removes recording id 2281. Fixtures must use the 2356-record JavaScript dataset."
+    "pythonComparison": {
+      "sourceCommit": "5caa9d3477a1ff7b2d413978ea168a93fdc01dfc",
+      "recordings": 2357,
+      "difference": "The selected cursory-js snapshot removes recording id 2281; parity fixtures use only the 2356-record dataset."
+    },
+    "rightsReview": {
+      "upstreamAttribution": "cursory-js NOTICE attributes recordings to Margit Antal, Norbert Fejer and Krisztian Buza (SapiMouse; https://ieeexplore.ieee.org/document/9465583) and MIMIC-LOGICS (MouseSynthesizer; https://github.com/MIMIC-LOGICS/Mouse-Synthesizer).",
+      "status": "UNVERIFIED — independent chain of rights and dataset redistribution terms have not been established.",
+      "externalDistribution": "BLOCKED pending provenance and rights review; upstream license statements are retained as source claims, not legal clearance."
+    }
   },
   "code": {
-    "algorithm": "https://github.com/JWriter20/cursory-js",
-    "commit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
-    "version": "2.0.1",
-    "license": "LGPL-3.0-or-later"
+    "derivativeOf": "https://github.com/JWriter20/cursory-js/tree/16fff97fab05bb6b0c6753b2dc136a7692634cec",
+    "algorithmLicense": "LGPL-3.0-or-later",
+    "dllMustRemainSeparate": true,
+    "correspondingSource": "The package's source/SpyBrowser.Cursory folder carries matching C# implementation, gzip data, manifest and project file; complete license texts are in the package LICENSE folder. See source/BUILD-AND-MODIFY.md."
   },
   "numericDependencies": [
-    { "component": "NumPy PCG64 and SeedSequence/distributions", "version": "2.3.5", "license": "BSD-3-Clause" },
-    { "component": "PCG reference implementation", "copyright": "Melissa O'Neill (2014); Robert Kern (2015)", "license": "MIT" }
+    {
+      "component": "NumPy SeedSequence, distribution methods and ziggurat tables (PCG64 is listed separately)",
+      "upstream": "https://github.com/numpy/numpy/tree/v2.3.5",
+      "license": "BSD-3-Clause",
+      "copyright": "Copyright (c) 2005-2025, NumPy Developers.",
+      "licenseText": "Licenses/NUMPY-BSD-3-CLAUSE.txt",
+      "licenseTextSha256": "1be1df33863f97a7bc1c4d67980bd6c69c9a6fef0a5ee76e6ad6cb91e56e8491"
+    },
+    {
+      "component": "PCG reference implementation",
+      "upstream": "https://github.com/numpy/numpy/blob/v2.3.5/numpy/random/src/pcg64/pcg64.h",
+      "upstreamFileSha256": "2ce9cc9366a9993cfd786a1ee63eaad35d8761c0ff9744ee5508192156f33d4a",
+      "license": "MIT (upstream file header also records Apache-2.0 and says relicensed MIT in May 2019)",
+      "copyright": "Copyright 2014 Melissa O'Neill <oneill@pcg-random.org>; Copyright 2015 Robert Kern <robert.kern@gmail.com> (upstream PCG64 header attribution).",
+      "licenseText": "Licenses/PCG-MIT.txt",
+      "licenseTextSha256": "290a0ab1748090ac60ee5451da0e2cbf4bfacf532af568c77a3de8d4e6a48440",
+      "additionalLicenseText": "Licenses/APACHE-2.0.txt",
+      "additionalLicenseTextSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "component": "CPython math.hypot compatibility behavior",
+      "upstream": "https://github.com/python/cpython/tree/v3.14.0",
+      "license": "PSF-2",
+      "copyright": "Copyright (c) 2001 Python Software Foundation; All Rights Reserved.",
+      "licenseText": "Licenses/PSF-2.txt",
+      "licenseTextSha256": "ccedf6b82e8c6e4a163f3352e77b0b1fbc3d90bbf030e63790d22c673211818d",
+      "sourceLicenseFileSha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
+    }
+  ],
+  "licenseTexts": [
+    {
+      "file": "Licenses/APACHE-2.0.txt",
+      "license": "Apache-2.0 (included because the pinned NumPy PCG64 source header includes its terms before noting relicensing under MIT)",
+      "source": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "COPYING",
+      "license": "GPL-3.0",
+      "source": "https://www.gnu.org/licenses/gpl-3.0.txt",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "file": "COPYING.LESSER",
+      "license": "LGPL-3.0",
+      "source": "https://github.com/JWriter20/cursory-js/blob/16fff97fab05bb6b0c6753b2dc136a7692634cec/LICENSE",
+      "sha256": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059"
+    }
   ],
   "fixtures": {
     "path": "tests/SpyBrowser.Cursory.Tests/Fixtures/parity.json",
@@ -27,5 +102,5 @@
     "sourceCommit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
     "generator": "tools/cursory-reference/generate-js-fixtures.cjs"
   },
-  "redistributionReview": "The algorithm/code licenses and upstream notices are recorded. The historical provenance and independent redistribution terms for the recorded trajectory dataset have not been conclusively established; external redistribution is blocked pending legal/provenance review."
+  "scope": "No new human data was collected or added."
 }

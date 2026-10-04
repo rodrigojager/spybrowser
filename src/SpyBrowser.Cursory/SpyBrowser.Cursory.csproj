@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Deterministic>true</Deterministic>
     <AssemblyName>SpyBrowser.Cursory</AssemblyName>
     <RootNamespace>SpyBrowser.Cursory</RootNamespace>
     <IsPackable>true</IsPackable>
@@ -11,17 +15,33 @@
     <Authors>Vinyzu; Jake Writer; SpyBrowser contributors</Authors>
     <Copyright>Upstream Cursory and cursory-js contributors; see NOTICE</Copyright>
     <Description>Experimental native .NET 8 port of the Cursory recorded mouse-trajectory generator. Not integrated with SpyBrowser automation.</Description>
+    <Company />
     <PackageTags>cursory;trajectory;experimental</PackageTags>
+    <PackageProjectUrl>https://github.com/rodrigojager/spybrowser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rodrigojager/spybrowser</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Do not inherit the parent repository's Playwright-specific notice for this standalone package. -->
+    <None Update="$(MSBuildProjectDirectory)/../../THIRD_PARTY_NOTICES.md" Pack="false" />
     <EmbeddedResource Include="Data/trajectories.json.gz" LogicalName="SpyBrowser.Cursory.trajectories.json.gz" />
     <None Include="LICENSE" Pack="true" PackagePath="LICENSE/" />
+    <None Include="COPYING" Pack="true" PackagePath="LICENSE/" />
     <None Include="COPYING.LESSER" Pack="true" PackagePath="LICENSE/" />
+    <None Include="Licenses/**/*.txt" Pack="true" PackagePath="LICENSE/third-party/" />
     <None Include="NOTICE" Pack="true" PackagePath="" />
     <None Include="README.md" Pack="true" PackagePath="" />
-    <None Include="CursoryTrajectoryGenerator.cs;Trajectory.cs;Internal/**/*.cs;Properties/**/*.cs" Pack="true" PackagePath="src/" />
+    <None Include="CursoryTrajectoryGenerator.cs;Trajectory.cs;SpyBrowser.Cursory.csproj" Pack="true" PackagePath="source/SpyBrowser.Cursory/" />
+    <None Include="Internal/**/*.cs" Pack="true" PackagePath="source/SpyBrowser.Cursory/Internal/%(RecursiveDir)" />
+    <None Include="Properties/**/*.cs" Pack="true" PackagePath="source/SpyBrowser.Cursory/Properties/%(RecursiveDir)" />
+    <None Include="Data/trajectories.json.gz;Data/upstream-manifest.json" Pack="true" PackagePath="source/SpyBrowser.Cursory/Data/" />
     <None Include="Data/upstream-manifest.json" Pack="true" PackagePath="provenance/upstream-manifest.json" />
+    <None Include="../../docs/cursory-package.md" Pack="true" PackagePath="source/BUILD-AND-MODIFY.md" />
   </ItemGroup>
 </Project>

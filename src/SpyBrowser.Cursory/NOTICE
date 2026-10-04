@@ -1,27 +1,45 @@
-SpyBrowser.Cursory — third-party notices
+SpyBrowser.Cursory — third-party notices and distribution status
 
-This package is an experimental native C# port of cursory-js, itself a TypeScript
-port of Cursory (https://github.com/Vinyzu/cursory). The upstream cursory-js
-commit used as source is 16fff97fab05bb6b0c6753b2dc136a7692634cec; its notice
-credits the original Cursory © Vinyzu and cursory-js © Jake Writer under
-LGPL-3.0-or-later (the original work is also stated to be dual licensed under
-GPL-3.0-or-later). This package's derivative algorithm code is intended under
-LGPL-3.0-or-later. Full license texts and corresponding source must accompany
-redistribution; see LICENSE and COPYING in the repository.
+This is an experimental native C# port of cursory-js, a TypeScript port of
+Cursory (https://github.com/Vinyzu/cursory). The source references are pinned:
+- cursory-js: https://github.com/JWriter20/cursory-js/tree/16fff97fab05bb6b0c6753b2dc136a7692634cec
+- Cursory Python: https://github.com/Vinyzu/cursory/tree/5caa9d3477a1ff7b2d413978ea168a93fdc01dfc
+The cursory-js commit's LICENSE/NOTICE credits original Cursory © Vinyzu and
+cursory-js © Jake Writer, and states LGPL-3.0-or-later for this TypeScript
+port. It reports the original work retroactively dual-licensed under
+LGPL-3.0-or-later and GPL-3.0-or-later. This C# derivative is distributed
+under LGPL-3.0-or-later. The full LGPL and GPL texts are provided as
+COPYING.LESSER and COPYING; the LGPL incorporates GPLv3 terms. This package's
+own modifications are identified in the corresponding-source documentation.
 
-Dataset: src/Data/trajectories.json.gz is byte-for-byte from the cursory-js
-commit above (SHA-256 and count in Data/upstream-manifest.json). The cursory-js
-NOTICE attributes upstream recordings to Margit Antal, Norbert Fejer and
-Krisztian Buza (SapiMouse; https://ieeexplore.ieee.org/document/9465583) and
-MIMIC-LOGICS (Mouse-Synthesizer; https://github.com/MIMIC-LOGICS/Mouse-Synthesizer),
-and asserts redistribution under the original project's license. Independent
-source dataset terms/chain of rights have not been verified in this task. This
-assertion is preserved as upstream provenance, not adopted as independent legal
-clearance. Do not externally distribute the package/data until this is reviewed.
+DATASET — NOT CLEARED FOR EXTERNAL DISTRIBUTION
+src/SpyBrowser.Cursory/Data/trajectories.json.gz is byte-for-byte the
+cursory-js pinned dataset. The upstream NOTICE attributes recordings to
+Margit Antal, Norbert Fejer and Krisztian Buza (SapiMouse,
+https://ieeexplore.ieee.org/document/9465583) and MIMIC-LOGICS
+(MouseSynthesizer, https://github.com/MIMIC-LOGICS/Mouse-Synthesizer), and
+asserts redistribution under the original project's license. Those references
+and the assertion are preserved as provenance, not treated as independently
+verified rights or permission. The dataset's chain of title and redistribution
+terms remain unverified. External publication/redistribution is blocked until
+that review is resolved. No new human data is collected or introduced here.
 
-NumPy-derived numeric implementation: PCG64, SeedSequence, ziggurat constants,
-and distribution methods are derived from NumPy 2.3.5, BSD-3-Clause. PCG64
-credits Melissa O'Neill (2014) and Robert Kern (2015), MIT. CPython math.hypot
-compatibility behavior is associated with Python Software Foundation License
-Version 2. The implementation subset and notices are recorded in the manifest.
-The LGPL-3.0-or-later package license does not remove these separate notices.
+NUMERIC IMPLEMENTATION ATTRIBUTIONS
+- NumPy 2.3.5-derived PCG64, SeedSequence, distribution methods and ziggurat
+tables: Copyright (c) 2005-2025 NumPy Developers; BSD-3-Clause. Full notice
+and disclaimer: Licenses/NUMPY-BSD-3-CLAUSE.txt. Source URL:
+https://github.com/numpy/numpy/blob/v2.3.5/LICENSE.txt
+- PCG64 source attribution: Copyright 2014 Melissa O'Neill
+<oneill@pcg-random.org>; Copyright 2015 Robert Kern
+<robert.kern@gmail.com>. The pinned NumPy PCG64 header carries Apache-2.0
+terms and states "Relicensed MIT in May 2019" followed by the MIT text;
+full applicable texts are in Licenses/APACHE-2.0.txt and Licenses/PCG-MIT.txt.
+Pinned source: https://github.com/numpy/numpy/blob/v2.3.5/numpy/random/src/pcg64/pcg64.h
+- CPython math.hypot-compatible behavior: Copyright (c) 2001 Python Software
+Foundation; PSF License Version 2. Full applicable license:
+Licenses/PSF-2.txt. Source: https://github.com/python/cpython/blob/v3.14.0/LICENSE
+
+The pinned cursory-js NOTICE is the basis for these component attributions;
+see Data/upstream-manifest.json for the traceability record and verification
+hashes of the full license texts. Do not interpret these notices as independent
+legal clearance, especially of the recordings dataset.

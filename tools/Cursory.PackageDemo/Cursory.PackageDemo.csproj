@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Cursory.PackageDemo</AssemblyName>
+    <RootNamespace>Cursory.PackageDemo</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <UseAppHost>false</UseAppHost>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="SpyBrowser.Cursory" Version="0.2.0-beta.1" />
+    <!-- Deliberately package-only: never replace this with a ProjectReference. -->
+    <PackageReference Include="SpyBrowser.Cursory" />
+  </ItemGroup>
+</Project>
