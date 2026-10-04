@@ -6,7 +6,7 @@ The required `verify` lane runs on Windows and Linux against Microsoft.Playwrigh
 
 ## Scheduled/manual compatibility checks
 
-The weekly schedule and `workflow_dispatch` first resolve the newest stable Microsoft.Playwright NuGet version in a dedicated job. The resolved version is recorded in the workflow summary and passed unchanged to the related Windows/Linux build and browser jobs. This lane is evidence for an upgrade, not permission to raise the supported minimum automatically.
+The weekly schedule and `workflow_dispatch` resolve the newest stable Microsoft.Playwright NuGet version once in a dedicated job. The Windows/Linux matrix always retains **1.61.0**, including on scheduled/manual runs, and adds the resolved stable version when different. The recorded value is reused for build, browser installation, tests and package dependency metadata. These local artifact packages are upgrade evidence, not external publication or permission to raise the supported minimum automatically.
 
 The scheduled/manual jobs also exercise headed Chrome on Linux under Xvfb and Edge on Windows. Xvfb supplies a virtual display, **not hardware GPU acceleration**. Browser version, Playwright assembly version, .NET SDK, OS, and test results are written to test logs/artifacts. Browser installation and availability failures fail the lane rather than silently falling back to a different browser.
 
@@ -21,14 +21,14 @@ dotnet build SpyBrowser.sln -c Release -p:MicrosoftPlaywrightVersion=1.61.0
 $driver = Get-ChildItem tests/SpyBrowser.Tests/bin -Filter playwright.ps1 -Recurse | Select-Object -First 1
 & $driver.FullName install chromium
 $env:SPYBROWSER_RUN_BROWSER_TESTS = '1'
-dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release -p:MicrosoftPlaywrightVersion=1.61.0 --filter FullyQualifiedName~BrowserIntegrationTests
+dotnet test SpyBrowser.sln -c Release -p:MicrosoftPlaywrightVersion=1.61.0
 ```
 
 On Linux install browser system dependencies with `playwright.ps1 install --with-deps chromium`; for headed tests use `xvfb-run -a` and set `SPYBROWSER_HEADED=1`. To include the actual SDK version in local browser test diagnostics, set `$env:SPYBROWSER_DOTNET_SDK_VERSION = (dotnet --version)` before running the test command. Choose an installed Playwright channel with `SPYBROWSER_BROWSER_CHANNEL=chrome` or `msedge`; install it first with `playwright.ps1 install chrome` or `playwright.ps1 install msedge`. `SPYBROWSER_HEADED` defaults to headless.
 
 ## Playwright API audit
 
-`PlaywrightApiAuditTests` snapshots public Playwright types, interfaces, enums, members, option signatures, parameter types, and return types against `tools/verification/playwright-api-baseline.json` (approved baseline 1.61.0). Added or changed surface fails with a focused diff so maintainers can assess whether SpyBrowser's wrapper must adapt it. New/unknown APIs continue to be delegated by the generic wrapper; this audit is a compatibility signal, **not a claim that every Playwright API is wrapped or supported**.
+`PlaywrightApiAuditTests` snapshots public Playwright types, interfaces, enums, members, option signatures, parameter types, and return types against `tools/verification/playwright-api-baseline.json` (approved 1.61.0) or a separately reviewed `playwright-api-baseline-<version>.json`. The 1.63.0 assessment is in `docs/implementation/playwright-api-review-1.63.0.md`; its new locator-returning property and locator function are exercised by a real-browser test. Unknown versions or changed surfaces fail rather than overwriting the minimum-version baseline. New/unknown APIs continue to be delegated by the generic wrapper; this audit is a compatibility signal, **not a claim that every Playwright API is wrapped or supported**.
 
 Only approve a deliberate baseline update after inspecting API documentation, added options/defaults, and return-object wrapping needs:
 
