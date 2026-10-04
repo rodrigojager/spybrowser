@@ -36,56 +36,70 @@ public sealed class HumanActions
         _random = new Random(_options.RandomSeed ?? RandomNumberGenerator.GetInt32(int.MaxValue));
     }
 
-    public async Task ClickAsync(ILocator locator, CancellationToken cancellationToken = default)
+    public Task ClickAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => ClickCoreAsync(locator, token));
+    }
+
+    internal async Task ClickCoreAsync(ILocator locator, CancellationToken cancellationToken)
+    {
         if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
         {
             await CompatibleLocatorActionAsync(locator, "click", cancellationToken).ConfigureAwait(false);
             return;
         }
-
         var (page, _, _) = await MoveToLocatorAsync(locator, cancellationToken).ConfigureAwait(false);
         await ClickCurrentPositionAsync(page, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task DoubleClickAsync(ILocator locator, CancellationToken cancellationToken = default)
+    public Task DoubleClickAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => DoubleClickCoreAsync(locator, token));
+    }
+
+    internal async Task DoubleClickCoreAsync(ILocator locator, CancellationToken cancellationToken)
+    {
         if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
         {
             await CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken).ConfigureAwait(false);
             return;
         }
-
         var (page, _, _) = await MoveToLocatorAsync(locator, cancellationToken).ConfigureAwait(false);
         await ClickCurrentPositionAsync(page, cancellationToken).ConfigureAwait(false);
-        await DelayAsync(
-            _options.DoubleClickIntervalMinimumMilliseconds,
-            _options.DoubleClickIntervalMaximumMilliseconds,
-            cancellationToken).ConfigureAwait(false);
+        await DelayAsync(_options.DoubleClickIntervalMinimumMilliseconds, _options.DoubleClickIntervalMaximumMilliseconds, cancellationToken).ConfigureAwait(false);
         await ClickCurrentPositionAsync(page, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task HoverAsync(ILocator locator, CancellationToken cancellationToken = default)
+    public Task HoverAsync(ILocator locator, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
+        return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => HoverCoreAsync(locator, token));
+    }
+
+    internal async Task HoverCoreAsync(ILocator locator, CancellationToken cancellationToken)
+    {
         if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
         {
             await CompatibleLocatorActionAsync(locator, "hover", cancellationToken).ConfigureAwait(false);
             return;
         }
-
         _ = await MoveToLocatorAsync(locator, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task MoveAsync(
+    public Task MoveAsync(
         IPage page,
         double targetX,
         double targetY,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
+        return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken, token => MoveCoreAsync(page, targetX, targetY, token));
+    }
+
+    internal async Task MoveCoreAsync(IPage page, double targetX, double targetY, CancellationToken cancellationToken)
+    {
         var state = _mouseStates.GetValue(page, _ => new PageMouseState());
         cancellationToken.ThrowIfCancellationRequested();
         if (page.IsClosed) throw new InvalidOperationException("The page is closed.");
@@ -96,6 +110,7 @@ public sealed class HumanActions
             {
                 // The cursor's physical position is unavailable. Bootstrap with one endpoint only;
                 // during an observed drag, avoid trajectory preparation and preserve button ownership.
+                cancellationToken.ThrowIfCancellationRequested();
                 await page.Mouse.MoveAsync((float)targetX, (float)targetY).ConfigureAwait(false);
                 state.ConfirmPosition(targetX, targetY);
                 return;
@@ -130,14 +145,17 @@ public sealed class HumanActions
             cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ClickAsync(
-        IPage page,
-        double targetX,
-        double targetY,
-        bool doubleClick = false,
-        CancellationToken cancellationToken = default)
+    public Task ClickAsync(IPage page, double targetX, double targetY, bool doubleClick = false, CancellationToken cancellationToken = default)
     {
-        await MoveAsync(page, targetX, targetY, cancellationToken).ConfigureAwait(false);
+        ArgumentNullException.ThrowIfNull(page);
+        return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken,
+            token => ClickCoreAsync(page, targetX, targetY, doubleClick, token));
+    }
+
+    internal async Task ClickCoreAsync(IPage page, double targetX, double targetY, bool doubleClick, CancellationToken cancellationToken)
+    {
+        await MoveCoreAsync(page, targetX, targetY, cancellationToken).ConfigureAwait(false);
+        cancellationToken.ThrowIfCancellationRequested();
         if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
         {
             if (doubleClick) await page.Mouse.DblClickAsync((float)targetX, (float)targetY).ConfigureAwait(false);
@@ -156,25 +174,30 @@ public sealed class HumanActions
         }
     }
 
-    public async Task PressAsync(
-        ILocator locator,
-        string key,
-        CancellationToken cancellationToken = default)
+    public Task PressAsync(ILocator locator, string key, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
-        await HoverAsync(locator, cancellationToken).ConfigureAwait(false);
-        await locator.FocusAsync().ConfigureAwait(false);
-        await PressFocusedAsync(locator.Page, key, cancellationToken).ConfigureAwait(false);
+        return RunDirectAsync(locator.Page, _options.ActionDeadlineMilliseconds, cancellationToken, token => PressCoreAsync(locator, key, token));
     }
 
-    public async Task TypeAsync(
-        ILocator locator,
-        string text,
-        bool replaceExisting = true,
-        CancellationToken cancellationToken = default)
+    internal async Task PressCoreAsync(ILocator locator, string key, CancellationToken cancellationToken)
+    {
+        await HoverCoreAsync(locator, cancellationToken).ConfigureAwait(false);
+        cancellationToken.ThrowIfCancellationRequested();
+        await locator.FocusAsync().ConfigureAwait(false);
+        await PressFocusedCoreAsync(locator.Page, key, cancellationToken).ConfigureAwait(false);
+    }
+
+    public Task TypeAsync(ILocator locator, string text, bool replaceExisting = true, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(locator);
         ArgumentNullException.ThrowIfNull(text);
+        return RunDirectAsync(locator.Page, _options.TypingDeadlineMilliseconds, cancellationToken,
+            token => TypeCoreAsync(locator, text, replaceExisting, token));
+    }
+
+    internal async Task TypeCoreAsync(ILocator locator, string text, bool replaceExisting, CancellationToken cancellationToken = default)
+    {
         if (CompatibilityMode == HumanizationCompatibilityMode.PlaywrightCompatible)
         {
             using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
@@ -191,11 +214,13 @@ public sealed class HumanActions
             return;
         }
 
-        await ClickAsync(locator, cancellationToken).ConfigureAwait(false);
+        await ClickCoreAsync(locator, cancellationToken).ConfigureAwait(false);
         if (replaceExisting)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             await locator.Page.Keyboard.PressAsync("Control+A").ConfigureAwait(false);
             await DelayAsync(30, 90, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
             await locator.Page.Keyboard.PressAsync("Backspace").ConfigureAwait(false);
         }
 
@@ -210,6 +235,7 @@ public sealed class HumanActions
                     cancellationToken).ConfigureAwait(false);
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
             await locator.Page.Keyboard.TypeAsync(rune.ToString()).ConfigureAwait(false);
             await DelayAsync(
                 _options.KeyMinimumDelayMilliseconds,
@@ -218,19 +244,16 @@ public sealed class HumanActions
         }
     }
 
-    public async Task ScrollAsync(
-        IPage page,
-        double deltaY,
-        CancellationToken cancellationToken = default)
-        => await ScrollAsync(page, 0, deltaY, cancellationToken).ConfigureAwait(false);
+    public Task ScrollAsync(IPage page, double deltaY, CancellationToken cancellationToken = default) => ScrollAsync(page, 0, deltaY, cancellationToken);
 
-    public async Task ScrollAsync(
-        IPage page,
-        double deltaX,
-        double deltaY,
-        CancellationToken cancellationToken = default)
+    public Task ScrollAsync(IPage page, double deltaX, double deltaY, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
+        return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken, token => ScrollCoreAsync(page, deltaX, deltaY, token));
+    }
+
+    internal async Task ScrollCoreAsync(IPage page, double deltaX, double deltaY, CancellationToken cancellationToken)
+    {
         var steps = _random.Next(_options.ScrollMinimumSteps, _options.ScrollMaximumSteps + 1);
         var weights = Enumerable.Range(0, steps)
             .Select(index => Math.Sin(Math.PI * (index + 1d) / (steps + 1d)))
@@ -246,13 +269,15 @@ public sealed class HumanActions
         }
     }
 
-    public async Task TypeFocusedAsync(
-        IPage page,
-        string text,
-        CancellationToken cancellationToken = default)
+    public Task TypeFocusedAsync(IPage page, string text, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(text);
+        return RunDirectAsync(page, _options.TypingDeadlineMilliseconds, cancellationToken, token => TypeFocusedCoreAsync(page, text, token));
+    }
+
+    internal async Task TypeFocusedCoreAsync(IPage page, string text, CancellationToken cancellationToken)
+    {
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.TypingDeadlineMilliseconds), cancellationToken);
         var runes = text.EnumerateRunes().ToArray();
         for (var index = 0; index < runes.Length; index++)
@@ -265,6 +290,7 @@ public sealed class HumanActions
                 await DelayAsync(_options.ThinkingPauseMinimumMilliseconds, _options.ThinkingPauseMaximumMilliseconds, deadline.Token).ConfigureAwait(false);
             }
 
+            deadline.ThrowIfExpired();
             await page.Keyboard.TypeAsync(rune.ToString()).ConfigureAwait(false);
             if (index + 1 < runes.Length)
             {
@@ -273,14 +299,17 @@ public sealed class HumanActions
         }
     }
 
-    public async Task PressFocusedAsync(
-        IPage page,
-        string key,
-        CancellationToken cancellationToken = default)
+    public Task PressFocusedAsync(IPage page, string key, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        return RunDirectAsync(page, _options.ActionDeadlineMilliseconds, cancellationToken, token => PressFocusedCoreAsync(page, key, token));
+    }
+
+    internal async Task PressFocusedCoreAsync(IPage page, string key, CancellationToken cancellationToken)
+    {
         using var deadline = new InteractionDeadline(TimeSpan.FromMilliseconds(_options.ActionDeadlineMilliseconds), cancellationToken);
+        deadline.ThrowIfExpired();
         await page.Keyboard.PressAsync(key, new KeyboardPressOptions { Delay = Math.Min(75, deadline.RemainingMilliseconds) })
             .ConfigureAwait(false);
     }
@@ -315,7 +344,7 @@ public sealed class HumanActions
             var box = await locator.BoundingBoxAsync().ConfigureAwait(false);
             if (box is not null && box.Width > 0 && box.Height > 0)
             {
-                await MoveAsync(page, box.X + box.Width / 2d, box.Y + box.Height / 2d, deadline.Token).ConfigureAwait(false);
+                await MoveCoreAsync(page, box.X + box.Width / 2d, box.Y + box.Height / 2d, deadline.Token).ConfigureAwait(false);
             }
         }
         catch (PlaywrightException) when (!deadline.Token.IsCancellationRequested)
@@ -347,6 +376,7 @@ public sealed class HumanActions
                 throw new InvalidOperationException("The page closed during human-paced typing.");
             }
 
+            deadline.Token.ThrowIfCancellationRequested();
             await locator.Page.Keyboard.TypeAsync(runes[index].ToString(), new KeyboardTypeOptions { Delay = 0 })
                 .ConfigureAwait(false);
             if (index + 1 < runes.Length)
@@ -369,12 +399,13 @@ public sealed class HumanActions
         var targetX = box.X + box.Width * NextDouble(0.25, 0.75);
         var targetY = box.Y + box.Height * NextDouble(0.25, 0.75);
         var page = locator.Page;
-        await MoveAsync(page, targetX, targetY, cancellationToken).ConfigureAwait(false);
+        await MoveCoreAsync(page, targetX, targetY, cancellationToken).ConfigureAwait(false);
         return (page, targetX, targetY);
     }
 
     private async Task ClickCurrentPositionAsync(IPage page, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         await page.Mouse.DownAsync().ConfigureAwait(false);
         try
         {
@@ -407,6 +438,9 @@ public sealed class HumanActions
             await Task.Delay(point.DelayMilliseconds, cancellationToken).ConfigureAwait(false);
         }
     }
+
+    private static Task RunDirectAsync(IPage page, int budgetMilliseconds, CancellationToken cancellationToken, Func<CancellationToken, Task> operation) =>
+        PageInputState.For(page).RunAsync(operation, budgetMilliseconds, cancellationToken);
 
     internal void InvalidateMousePosition(IPage page) => _mouseStates.GetValue(page, _ => new PageMouseState()).InvalidatePosition();
 

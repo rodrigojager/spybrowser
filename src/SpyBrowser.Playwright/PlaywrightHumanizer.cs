@@ -369,40 +369,40 @@ internal sealed class HumanizationScope
         var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
         if (method.Name == nameof(ILocator.ClickAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click", cancellationToken) : actions.ClickAsync(locator, cancellationToken);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click", cancellationToken) : actions.ClickCoreAsync(locator, cancellationToken);
             return true;
         }
         if (method.Name == nameof(ILocator.DblClickAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken) : actions.DoubleClickAsync(locator, cancellationToken);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken) : actions.DoubleClickCoreAsync(locator, cancellationToken);
             return true;
         }
         if (method.Name == nameof(ILocator.HoverAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover", cancellationToken) : actions.HoverAsync(locator, cancellationToken);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover", cancellationToken) : actions.HoverCoreAsync(locator, cancellationToken);
             return true;
         }
         if (!compatible && method.Name == nameof(ILocator.FillAsync) &&
             arguments.ElementAtOrDefault(0) is string fill && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.TypeAsync(locator, fill, replaceExisting: true, cancellationToken);
+            result = actions.TypeCoreAsync(locator, fill, replaceExisting: true, cancellationToken);
             return true;
         }
         if ((method.Name == nameof(ILocator.TypeAsync) || method.Name == nameof(ILocator.PressSequentiallyAsync)) &&
             arguments.ElementAtOrDefault(0) is string text && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeAsync(locator, text, replaceExisting: false, cancellationToken);
+            result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeCoreAsync(locator, text, replaceExisting: false, cancellationToken);
             return true;
         }
         if (!compatible && method.Name == nameof(ILocator.PressAsync) &&
             arguments.ElementAtOrDefault(0) is string key && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.PressAsync(locator, key, cancellationToken);
+            result = actions.PressCoreAsync(locator, key, cancellationToken);
             return true;
         }
         if (!compatible && method.Name == nameof(ILocator.ClearAsync) && HasOnlyDefaultOptions(arguments, 0))
         {
-            result = actions.TypeAsync(locator, string.Empty, replaceExisting: true);
+            result = actions.TypeCoreAsync(locator, string.Empty, replaceExisting: true, cancellationToken);
             return true;
         }
         result = null;
@@ -427,19 +427,19 @@ internal sealed class HumanizationScope
         var compatible = HumanizationPolicy.IsPlaywrightCompatible(actions.CompatibilityMode);
         if (method.Name is nameof(IPage.ClickAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click", cancellationToken) : actions.ClickAsync(locator, cancellationToken);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "click", cancellationToken) : actions.ClickCoreAsync(locator, cancellationToken);
             return true;
         }
 
         if (method.Name is nameof(IPage.DblClickAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken) : actions.DoubleClickAsync(locator, cancellationToken);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "dblclick", cancellationToken) : actions.DoubleClickCoreAsync(locator, cancellationToken);
             return true;
         }
 
         if (method.Name is nameof(IPage.HoverAsync) && HasOnlyDefaultOptions(arguments, 1))
         {
-            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover", cancellationToken) : actions.HoverAsync(locator, cancellationToken);
+            result = compatible ? actions.CompatibleLocatorActionAsync(locator, "hover", cancellationToken) : actions.HoverCoreAsync(locator, cancellationToken);
             return true;
         }
 
@@ -447,7 +447,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string fill &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.TypeAsync(locator, fill, replaceExisting: true, cancellationToken);
+            result = actions.TypeCoreAsync(locator, fill, replaceExisting: true, cancellationToken);
             return true;
         }
 
@@ -455,7 +455,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string text &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeAsync(locator, text, replaceExisting: false, cancellationToken);
+            result = compatible ? actions.CompatibleTypeAsync(locator, text, cancellationToken) : actions.TypeCoreAsync(locator, text, replaceExisting: false, cancellationToken);
             return true;
         }
 
@@ -463,7 +463,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is string key &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.PressAsync(locator, key, cancellationToken);
+            result = actions.PressCoreAsync(locator, key, cancellationToken);
             return true;
         }
 
@@ -484,7 +484,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is float y &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.MoveAsync(page, x, y, cancellationToken);
+            result = actions.MoveCoreAsync(page, x, y, cancellationToken);
             return true;
         }
 
@@ -494,7 +494,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(1) is float clickY &&
             HasOnlyDefaultOptions(arguments, 2))
         {
-            result = actions.ClickAsync(page, clickX, clickY, method.Name == nameof(IMouse.DblClickAsync), cancellationToken);
+            result = actions.ClickCoreAsync(page, clickX, clickY, method.Name == nameof(IMouse.DblClickAsync), cancellationToken);
             return true;
         }
 
@@ -503,7 +503,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is float deltaX &&
             arguments.ElementAtOrDefault(1) is float deltaY)
         {
-            result = actions.ScrollAsync(page, deltaX, deltaY, cancellationToken);
+            result = actions.ScrollCoreAsync(page, deltaX, deltaY, cancellationToken);
             return true;
         }
 
@@ -524,7 +524,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is string text &&
             HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.TypeFocusedAsync(page, text, cancellationToken);
+            result = actions.TypeFocusedCoreAsync(page, text, cancellationToken);
             return true;
         }
 
@@ -532,7 +532,7 @@ internal sealed class HumanizationScope
             arguments.ElementAtOrDefault(0) is string key &&
             HasOnlyDefaultOptions(arguments, 1))
         {
-            result = actions.PressFocusedAsync(page, key, cancellationToken);
+            result = actions.PressFocusedCoreAsync(page, key, cancellationToken);
             return true;
         }
 
