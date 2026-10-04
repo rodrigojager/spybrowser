@@ -96,6 +96,50 @@ public sealed class GeneratorTests
     }
 
     [Fact]
+    public void MatchesPinnedIntermediateStageFixtures()
+    {
+        string path = Path.Combine(AppContext.BaseDirectory, "Fixtures", "stage-parity.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(path));
+        string manifestPath = Path.Combine(AppContext.BaseDirectory, "Fixtures", "upstream-manifest.json");
+        using var manifest = JsonDocument.Parse(File.ReadAllText(manifestPath));
+        string expectedHash = manifest.RootElement.GetProperty("stageFixtures").GetProperty("sha256").GetString()!;
+        string actualHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant();
+        Assert.Equal(expectedHash, actualHash);
+        Assert.Equal("cursory-js@16fff97fab05bb6b0c6753b2dc136a7692634cec", document.RootElement.GetProperty("source").GetString());
+        Assert.Equal("1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203", document.RootElement.GetProperty("datasetSha256").GetString());
+        Assert.Equal(3, document.RootElement.GetProperty("cases").GetArrayLength());
+        Assert.Equal(230.2000002861023, Internal.Dataset.Shared.Value[1665].Timing[0]);
+
+        foreach (var testCase in document.RootElement.GetProperty("cases").EnumerateArray())
+        {
+            var input = testCase.GetProperty("input");
+            var start = input.GetProperty("start");
+            var end = input.GetProperty("end");
+            var actual = new Dictionary<string, object?>();
+            var trajectory = CursoryTrajectoryGenerator.GenerateWithTrace(
+                new(start[0].GetDouble(), start[1].GetDouble()), new(end[0].GetDouble(), end[1].GetDouble()),
+                new TrajectoryOptions
+                {
+                    Frequency = input.GetProperty("frequency").GetDouble(),
+                    FrequencyRandomizer = input.GetProperty("frequencyRandomizer").GetDouble(),
+                    Seed = (UInt128)input.GetProperty("seed").GetUInt64(),
+                    Directness = input.GetProperty("directness").GetDouble()
+                },
+                (stage, value) => actual.Add(stage, value));
+            Assert.Equal(trajectory.Points.Count, trajectory.Timings.Count);
+
+            var expected = testCase.GetProperty("stages");
+            Assert.Equal(expected.EnumerateObject().Select(property => property.Name).Order(), actual.Keys.Order());
+            foreach (var property in expected.EnumerateObject())
+            {
+                using var actualValue = JsonDocument.Parse(JsonSerializer.Serialize(actual[property.Name]));
+                double tolerance = property.Name == "selection" ? 1e-12 : 1e-9;
+                AssertJsonEquivalent(property.Value, actualValue.RootElement, tolerance, property.Name);
+            }
+        }
+    }
+
+    [Fact]
     public void MatchesPinnedRngBitstreamAndDistributionVectors()
     {
         using var document = ReadFixtures();
@@ -111,8 +155,15 @@ public sealed class GeneratorTests
                 Assert.Equal(expected.GetDouble(), doubles.NextDouble());
 
             var normals = new Internal.RandomSampler(new Internal.Pcg64(seed));
+            var observedNormals = new List<double>();
             foreach (var expected in vector.GetProperty("normals").EnumerateArray())
-                Assert.Equal(expected.GetDouble(), normals.StandardNormal());
+            {
+                double actual = normals.StandardNormal();
+                Assert.Equal(expected.GetDouble(), actual);
+                observedNormals.Add(actual);
+            }
+            if (seed == 0) Assert.Contains(observedNormals, value => value < -3.654152885361008);
+            if (seed == 1) Assert.Contains(observedNormals, value => value > 3.654152885361008);
 
             var integers = new Internal.RandomSampler(new Internal.Pcg64(seed));
             int[] bounds = [1, 2, 3, 5, 86, 256, 1000, 2356, 65536, 1000000];
@@ -120,29 +171,128 @@ public sealed class GeneratorTests
                 Assert.Equal(vector.GetProperty("integers")[i].GetInt32(), integers.Integer(bounds[i]));
 
             var rejection = new Internal.RandomSampler(new Internal.Pcg64(seed));
-            foreach (var expected in vector.GetProperty("rejectingIntegers").EnumerateArray())
+            var rejectingValues = vector.GetProperty("rejectingIntegers").EnumerateArray().ToArray();
+            foreach (var expected in rejectingValues)
                 Assert.Equal(expected.GetInt32(), rejection.Integer(1_000_000));
+        }
+
+        var forcedRejectionStream = new Internal.RandomSampler(new Internal.Pcg64((UInt128)0));
+        var expectedRejections = document.RootElement.GetProperty("integerRejectionProbe").EnumerateArray().ToArray();
+        foreach (var expected in expectedRejections)
+            Assert.Equal(expected.GetInt32(), forcedRejectionStream.Integer(2_000_000_000));
+        Assert.True(CountIntegerRejections(0, 2_000_000_000, expectedRejections.Length) > 0);
+    }
+
+    [Fact]
+    public async Task ThousandsOfConcurrentCallsUseSharedImmutableDataset()
+    {
+        var recordings = Internal.Dataset.Shared.Value;
+        byte[] before = HashDataset(recordings);
+        var trajectories = await Task.WhenAll(Enumerable.Range(0, 1_000).Select(index => Task.Run(() =>
+            CursoryTrajectoryGenerator.Generate(
+                new(index / 7.0, -index / 3.0), new(200 + index / 5.0, index / 11.0),
+                new() { Seed = (UInt128)(uint)index }))));
+
+        Assert.Equal(1_000, trajectories.Length);
+        Assert.All(trajectories, trajectory => Assert.Equal(trajectory.Points.Count, trajectory.Timings.Count));
+        Assert.Equal(before, HashDataset(recordings));
+    }
+
+    [Fact]
+    public void IntegerPathJitterRetainsTruncationAndNegativeSamples()
+    {
+        var integerDiagonal = Enumerable.Range(0, 64).Select(index => new TrajectoryPoint(index, index)).ToArray();
+        var truncatedNormals = Internal.TrajectoryTransforms.Jitter(
+            integerDiagonal, 63, new Internal.RandomSampler(new Internal.Pcg64((UInt128)1)));
+        Assert.Equal(integerDiagonal, truncatedNormals);
+
+        var vertical = Enumerable.Range(0, 64).Select(index => new TrajectoryPoint(0, index)).ToArray();
+        var jittered = Internal.TrajectoryTransforms.Jitter(
+            vertical, 63, new Internal.RandomSampler(new Internal.Pcg64((UInt128)1)));
+        Assert.Contains(jittered, point => point.X < 0);
+        Assert.Contains(jittered, point => point.X > 0);
+        Assert.Equal(vertical.Select(point => point.Y), jittered.Select(point => point.Y));
+    }
+
+    [Fact]
+    public void NumericCompatibilityCoversExtremeHypotPairwiseSumAndLog1p()
+    {
+        Assert.True(double.IsFinite(Internal.NumericCompat.Hypot(1e308, 1e308)));
+        Assert.InRange(Math.Abs(Math.Sqrt(2) - Internal.NumericCompat.Hypot(1, 1)), 0, 1e-15);
+        Assert.Equal(4, Internal.NumericCompat.PairwiseSum(new[] { 1e16, 1d, -1e16, 1d, 1d, 1d, 1d, 1d }));
+        Assert.InRange(Math.Abs(-1e-12 - Internal.NumericCompat.Log1P(-1e-12)), 0, 1e-24);
+    }
+
+    private static int CountIntegerRejections(UInt128 seed, int exclusiveUpperBound, int count)
+    {
+        var bitGenerator = new Internal.Pcg64(seed);
+        uint maximum = (uint)(exclusiveUpperBound - 1);
+        ulong range = (ulong)maximum + 1;
+        ulong threshold = (uint.MaxValue - maximum) % range;
+        int rejected = 0;
+        for (int i = 0; i < count; i++)
+        {
+            while (true)
+            {
+                ulong product = (ulong)bitGenerator.NextUInt32() * range;
+                if ((uint)product >= threshold) break;
+                rejected++;
+            }
+        }
+        return rejected;
+    }
+
+    private static void AssertJsonEquivalent(JsonElement expected, JsonElement actual, double tolerance, string path)
+    {
+        Assert.Equal(expected.ValueKind, actual.ValueKind);
+        switch (expected.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var expectedProperties = expected.EnumerateObject().ToArray();
+                var actualProperties = actual.EnumerateObject().ToDictionary(property => property.Name);
+                Assert.Equal(expectedProperties.Length, actualProperties.Count);
+                foreach (var property in expectedProperties)
+                    AssertJsonEquivalent(property.Value, actualProperties[property.Name].Value, tolerance, $"{path}.{property.Name}");
+                break;
+            case JsonValueKind.Array:
+                var expectedItems = expected.EnumerateArray().ToArray();
+                var actualItems = actual.EnumerateArray().ToArray();
+                Assert.Equal(expectedItems.Length, actualItems.Length);
+                for (int i = 0; i < expectedItems.Length; i++)
+                    AssertJsonEquivalent(expectedItems[i], actualItems[i], tolerance, $"{path}[{i}]");
+                break;
+            case JsonValueKind.Number:
+                double expectedNumber = expected.GetDouble();
+                double actualNumber = actual.GetDouble();
+                if (path.Contains("candidateRecordingIndices", StringComparison.Ordinal) ||
+                    path.EndsWith("selectedCandidate", StringComparison.Ordinal) ||
+                    path.EndsWith("selectedRecordingIndex", StringComparison.Ordinal) ||
+                    path.Contains("timings", StringComparison.Ordinal) ||
+                    path.Contains("sampledTimings", StringComparison.Ordinal))
+                    Assert.Equal(expectedNumber, actualNumber);
+                else
+                    Assert.True(Math.Abs(expectedNumber - actualNumber) <= tolerance,
+                        $"{path}: expected {expectedNumber:R}, actual {actualNumber:R}, tolerance {tolerance:R}.");
+                break;
+            default:
+                Assert.Equal(expected.ToString(), actual.ToString());
+                break;
         }
     }
 
-    [Fact]
-    public void GenerationDoesNotMutateSharedDataset()
+    private static byte[] HashDataset(Internal.Recording[] recordings)
     {
-        var recordings = Internal.Dataset.Shared.Value;
-        double before = recordings[0].Points[0].X;
-        var timing = recordings[0].Timing[0];
-        for (int seed = 0; seed < 100; seed++)
-            CursoryTrajectoryGenerator.Generate(new(seed, seed / 3.0), new(100 + seed, -seed), new() { Seed = (UInt128)(uint)seed });
-        Assert.Equal(before, recordings[0].Points[0].X);
-        Assert.Equal(timing, recordings[0].Timing[0]);
-    }
-
-    [Fact]
-    public async Task SharedDatasetSupportsConcurrentCalls()
-    {
-        var trajectories = await Task.WhenAll(Enumerable.Range(0, 32).Select(index => Task.Run(() =>
-            CursoryTrajectoryGenerator.Generate(new(index, 0), new(200, index + 1), new() { Seed = (UInt128)index }))));
-        Assert.All(trajectories, trajectory => Assert.Equal(trajectory.Points.Count, trajectory.Timings.Count));
+        using var stream = new MemoryStream();
+        using (var writer = new BinaryWriter(stream, System.Text.Encoding.UTF8, leaveOpen: true))
+        {
+            foreach (var recording in recordings)
+            {
+                writer.Write(recording.Length);
+                foreach (var point in recording.Points) { writer.Write(point.X); writer.Write(point.Y); }
+                foreach (double timing in recording.Timing) writer.Write(timing);
+            }
+        }
+        return System.Security.Cryptography.SHA256.HashData(stream.ToArray());
     }
 
     [Fact]

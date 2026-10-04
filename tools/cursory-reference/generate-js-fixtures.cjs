@@ -37,14 +37,16 @@ const rng = seeds.map(seed => {
   const doubleGenerator = defaultGenerator(seed);
   const doubles = Array.from({ length: 16 }, () => doubleGenerator.random());
   const normalGenerator = defaultGenerator(seed);
-  const normals = Array.from({ length: 256 }, () => normalGenerator.standardNormal());
+  const normals = Array.from({ length: 4096 }, () => normalGenerator.standardNormal());
   const integerGenerator = defaultGenerator(seed);
   const integers = [1, 2, 3, 5, 86, 256, 1000, 2356, 65536, 1000000].map(high => integerGenerator.integers(high));
   const rejectingGenerator = defaultGenerator(seed);
   const rejectingIntegers = Array.from({ length: 500 }, () => rejectingGenerator.integers(1000000));
   return { seed: seed.toString(), raw, doubles, normals, integers, rejectingIntegers };
 });
-const output = { schemaVersion: 2, source: 'cursory-js@16fff97fab05bb6b0c6753b2dc136a7692634cec', datasetSha256, rng, cases };
+const integerRejectionProbeGenerator = defaultGenerator(0n);
+const integerRejectionProbe = Array.from({ length: 128 }, () => integerRejectionProbeGenerator.integers(2000000000));
+const output = { schemaVersion: 2, source: 'cursory-js@16fff97fab05bb6b0c6753b2dc136a7692634cec', datasetSha256, rng, integerRejectionProbe, cases };
 const file = path.resolve(__dirname, '../../tests/SpyBrowser.Cursory.Tests/Fixtures/parity.json');
 fs.writeFileSync(file, `${JSON.stringify(output)}\n`);
 console.log(`Wrote ${cases.length} matching-dataset trajectory cases to ${file}`);

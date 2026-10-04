@@ -4,6 +4,7 @@
   <ItemGroup><ProjectReference Include="../../src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj"/></ItemGroup>
   <ItemGroup>
     <None Include="Fixtures/parity.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Fixtures/stage-parity.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../src/SpyBrowser.Cursory/Data/upstream-manifest.json" Link="Fixtures/upstream-manifest.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
