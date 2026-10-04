@@ -652,6 +652,14 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
             {
                 arguments[index] = wrapped.Original;
             }
+            else if (arguments[index] is LocatorLocatorOptions locatorOptions)
+            {
+                arguments[index] = UnwrapLocatorOptions(locatorOptions);
+            }
+            else if (arguments[index] is FrameLocatorLocatorOptions frameLocatorOptions)
+            {
+                arguments[index] = UnwrapFrameLocatorOptions(frameLocatorOptions);
+            }
         }
 
         if (_target is IBrowserContext browserContext && targetMethod.Name == nameof(IBrowserContext.NewPageAsync))
@@ -729,6 +737,34 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
             throw;
         }
     }
+
+    private static readonly MethodInfo ShallowCloneMethod = typeof(object).GetMethod(
+        "MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+    private static LocatorLocatorOptions UnwrapLocatorOptions(LocatorLocatorOptions options)
+    {
+        var has = UnwrapKnownLocator(options.Has);
+        var hasNot = UnwrapKnownLocator(options.HasNot);
+        if (ReferenceEquals(has, options.Has) && ReferenceEquals(hasNot, options.HasNot)) return options;
+        var clone = (LocatorLocatorOptions)ShallowCloneMethod.Invoke(options, null)!;
+        clone.Has = has;
+        clone.HasNot = hasNot;
+        return clone;
+    }
+
+    private static FrameLocatorLocatorOptions UnwrapFrameLocatorOptions(FrameLocatorLocatorOptions options)
+    {
+        var has = UnwrapKnownLocator(options.Has);
+        var hasNot = UnwrapKnownLocator(options.HasNot);
+        if (ReferenceEquals(has, options.Has) && ReferenceEquals(hasNot, options.HasNot)) return options;
+        var clone = (FrameLocatorLocatorOptions)ShallowCloneMethod.Invoke(options, null)!;
+        clone.Has = has;
+        clone.HasNot = hasNot;
+        return clone;
+    }
+
+    private static ILocator? UnwrapKnownLocator(ILocator? locator) =>
+        locator is IHumanizedPlaywrightObject wrapped ? (ILocator)wrapped.Original : locator;
 
     private static int? GetExplicitTimeoutMilliseconds(object?[] arguments)
     {

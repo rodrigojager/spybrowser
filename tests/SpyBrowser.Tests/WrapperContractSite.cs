@@ -41,6 +41,7 @@ internal sealed class WrapperContractSite : IDisposable
             var html = request.Request.Url?.AbsolutePath switch
             {
                 "/frames" => $"<iframe id='outer' src='{PeerUrl ?? Url}frame'></iframe>",
+                "/options" => "<div id='option-root'><div id='option-child'><span id='option-leaf'>match</span></div></div>",
                 "/frame" => $"<iframe id='inner' src='{Url}nested'></iframe>",
                 "/nested" => "<button id='policy-action' onclick=\"this.dataset.result='done'\">frame action</button><button class='item'>a</button><button class='item'>b</button>",
                 "/opener" => "<button id='open-work' onclick=\"window.open('/popup')\">open</button>",

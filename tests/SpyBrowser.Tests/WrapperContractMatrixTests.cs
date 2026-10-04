@@ -107,9 +107,11 @@ public sealed class WrapperContractMatrixTests
         var report = humanizer.GetDiagnosticsSnapshot();
         Assert.Contains(report!.Records, call => call.Method == "ClickAsync" && call.Reason == "humanization.preparation-or-paced-action");
 
-        var dto = new PayloadDto { LocatorLike = action, Value = "untouched" };
+        var nestedPayload = new Dictionary<string, object?> { ["locator"] = action };
+        var dto = new PayloadDto { LocatorLike = action, Nested = nestedPayload, Value = "untouched" };
         Assert.Same(dto, humanizer.Wrap(dto));
         Assert.Same(action, dto.LocatorLike); // arbitrary user payload is not recursively rewritten
+        Assert.Same(action, nestedPayload["locator"]); // nested application payloads stay intact too
         var returned = await diagnosticPage.EvaluateAsync<string>("() => JSON.stringify({nested:{value:1}})");
         Assert.Equal("{\"nested\":{\"value\":1}}", returned);
         Assert.Same(diagnosticPage.MainFrame, diagnosticPage.MainFrame);
@@ -119,10 +121,13 @@ public sealed class WrapperContractMatrixTests
         Assert.All(all, locator => Assert.Same(diagnosticPage, locator.Page));
         Assert.Equal("done", await page.FrameLocator("#outer").FrameLocator("#inner").Locator("#policy-action").GetAttributeAsync("data-result"));
 
-        var weakRefs = await CreateAndCloseDisposableContextAsync(handle, site.Url + "frames");
+        var rawWeakRefs = await CreateAndCloseDisposableContextAsync(handle.RawBrowser, site.Url + "frames");
+        var weakRefs = await CreateAndCloseDisposableContextAsync(handle.Browser, site.Url + "frames");
         ForceBoundedCollection();
-        Assert.False(weakRefs.Context.IsAlive, "Closed context remained rooted after all local strong references left scope.");
-        Assert.False(weakRefs.Page.IsAlive, "Closed page remained rooted after all local strong references left scope.");
+        Assert.False(rawWeakRefs.Context.IsAlive, "Closed raw context control remained rooted after all local strong references left scope.");
+        Assert.False(rawWeakRefs.Page.IsAlive, "Closed raw page control remained rooted after all local strong references left scope.");
+        Assert.False(weakRefs.Context.IsAlive, "Closed wrapped context remained rooted after all local strong references left scope.");
+        Assert.False(weakRefs.Page.IsAlive, "Closed wrapped page remained rooted after all local strong references left scope.");
         await context.CloseAsync();
 
         await using var rawMode = await SpyBrowserLauncher.LaunchBrowserAsync(Options(temp.Path, "wrapper-matrix-frame-raw", false));
@@ -220,12 +225,18 @@ public sealed class WrapperContractMatrixTests
         await using var handle = await SpyBrowserLauncher.LaunchBrowserAsync(Options(temp.Path, "wrapper-matrix-argument", true));
         var context = await handle.Browser.NewContextAsync();
         var page = await context.NewPageAsync();
-        await page.GotoAsync(site.Url + "frames");
+        await page.GotoAsync(site.Url + "options");
         var humanizer = new PlaywrightHumanizer();
         var wrapped = humanizer.Wrap(PlaywrightHumanizer.Unwrap(page));
-        var knownLocatorArgument = wrapped.FrameLocator("#outer").FrameLocator("#inner").Locator("#policy-action");
-        var filtered = wrapped.Locator("body").Locator("button", new LocatorLocatorOptions { Has = knownLocatorArgument });
-        Assert.Equal("policy-action", await filtered.GetAttributeAsync("id"));
+        var knownLocatorArgument = wrapped.Locator("#option-leaf");
+        var knownHasNotArgument = wrapped.Locator("#never-created");
+        var options = new LocatorLocatorOptions { Has = knownLocatorArgument, HasNot = knownHasNotArgument };
+        var filtered = wrapped.Locator("#option-root").Locator("div", options);
+        Assert.Equal("option-child", await filtered.GetAttributeAsync("id"));
+        Assert.Same(knownLocatorArgument, options.Has); // caller-owned options are never mutated
+        Assert.Same(knownHasNotArgument, options.HasNot);
+        var excluded = wrapped.Locator("#option-root").Locator("div", new LocatorLocatorOptions { HasNot = knownHasNotArgument });
+        Assert.Equal("option-child", await excluded.GetAttributeAsync("id"));
         await context.CloseAsync();
     }
 
@@ -266,14 +277,18 @@ public sealed class WrapperContractMatrixTests
     };
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static async Task<(WeakReference Context, WeakReference Page)> CreateAndCloseDisposableContextAsync(SpyBrowserBrowserHandle handle, string url)
+    private static async Task<(WeakReference Context, WeakReference Page)> CreateAndCloseDisposableContextAsync(IBrowser browser, string url)
     {
-        var context = await handle.Browser.NewContextAsync();
+        var context = await browser.NewContextAsync();
         var page = await context.NewPageAsync();
         await page.GotoAsync(url);
         var contextReference = new WeakReference(context);
         var pageReference = new WeakReference(page);
         await context.CloseAsync();
+        // Completed async state machines can remain rooted by their Task; clear the locals so
+        // this test measures product retention, not compiler-generated state-machine fields.
+        context = null!;
+        page = null!;
         return (contextReference, pageReference);
     }
 
@@ -291,6 +306,7 @@ public sealed class WrapperContractMatrixTests
     private sealed class PayloadDto
     {
         public object? LocatorLike { get; init; }
+        public object? Nested { get; init; }
         public string Value { get; init; } = string.Empty;
     }
 }
