@@ -62,8 +62,9 @@ try
     var shot = Path.Combine(output, "consumer.png");
     await page.ScreenshotAsync(new() { Path = shot });
     Require(File.Exists(shot) && new FileInfo(shot).Length > 0, "Screenshot artifact created");
+    var navigationTask = page.WaitForURLAsync("**/next");
     await page.GetByText("Navigate", new() { Exact = true }).ClickAsync();
-    await page.WaitForURLAsync("**/next");
+    await navigationTask;
     Require(page.Url.EndsWith("/next", StringComparison.Ordinal), "Navigation completed");
     checks.Add(Pass("Screenshot, navigation and local loopback served page"));
 
