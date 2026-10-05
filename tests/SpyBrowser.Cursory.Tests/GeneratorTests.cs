@@ -215,6 +215,31 @@ public sealed class GeneratorTests
     }
 
     [Fact]
+    public void BoundedNearestSelectionMatchesFullSortIncludingTies()
+    {
+        var random = new Random(776362);
+        foreach (int itemCount in new[] { 5, 6, 17, 2356 })
+        {
+            var scores = new (double Score, int Index)[itemCount];
+            for (int i = 0; i < scores.Length; i++)
+            {
+                // Repeated values deliberately exercise exact score ties and stable index ordering.
+                double score = i % 7 == 0 ? 0 : random.Next(-50, 51) / 10d;
+                scores[i] = (score, i);
+            }
+
+            var expected = scores.OrderBy(item => item.Score).ThenBy(item => item.Index).Take(5).ToArray();
+            var actual = new (double Score, int Index)[5];
+            int actualCount = 0;
+            foreach (var item in scores)
+                Internal.TrajectorySelection.InsertNearest(actual, ref actualCount, item.Score, item.Index);
+
+            Assert.Equal(expected, actual);
+            Assert.Equal(5, actualCount);
+        }
+    }
+
+    [Fact]
     public void NumericCompatibilityCoversExtremeHypotPairwiseSumAndLog1p()
     {
         Assert.True(double.IsFinite(Internal.NumericCompat.Hypot(1e308, 1e308)));

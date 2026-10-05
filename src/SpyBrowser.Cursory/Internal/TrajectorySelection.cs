@@ -49,7 +49,8 @@ internal static class TrajectorySelection
         double dx = target.X - start.X;
         double dy = target.Y - start.Y;
         double targetLength = NumericCompat.Hypot(dx, dy);
-        var scores = new (double Score, int Index)[dataset.Length];
+        Span<(double Score, int Index)> nearest = stackalloc (double Score, int Index)[count];
+        int nearestCount = 0;
 
         for (int i = 0; i < dataset.Length; i++)
         {
@@ -61,15 +62,31 @@ internal static class TrajectorySelection
                 ? recording.Length
                 : 0.8 * (1 - (recordingLength == 0 ? 0 : (recordingDx * dx + recordingDy * dy) / (recordingLength * targetLength)))
                     + 0.2 * Math.Abs(recordingLength - targetLength) / Math.Max(targetLength, 1);
-            scores[i] = (score, i);
+            InsertNearest(nearest, ref nearestCount, score, i);
         }
 
-        Array.Sort(scores, static (left, right) =>
-        {
-            int scoreOrder = left.Score.CompareTo(right.Score);
-            return scoreOrder != 0 ? scoreOrder : left.Index.CompareTo(right.Index);
-        });
-        for (int i = 0; i < count; i++) candidates.Add(scores[i].Index);
+        for (int i = 0; i < count; i++) candidates.Add(nearest[i].Index);
+    }
+
+    internal static void InsertNearest(
+        Span<(double Score, int Index)> nearest, ref int nearestCount, double score, int index)
+    {
+        int position = 0;
+        while (position < nearestCount && Compare(nearest[position], (score, index)) <= 0)
+            position++;
+        if (position >= nearest.Length) return;
+
+        int newCount = Math.Min(nearestCount + 1, nearest.Length);
+        for (int i = newCount - 1; i > position; i--)
+            nearest[i] = nearest[i - 1];
+        nearest[position] = (score, index);
+        nearestCount = newCount;
+    }
+
+    private static int Compare((double Score, int Index) left, (double Score, int Index) right)
+    {
+        int scoreOrder = left.Score.CompareTo(right.Score);
+        return scoreOrder != 0 ? scoreOrder : left.Index.CompareTo(right.Index);
     }
 
     private static double CandidateWeight(Recording recording, double[] sortedEfficiencies, double preferredRank)
