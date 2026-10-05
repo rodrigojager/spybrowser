@@ -389,6 +389,7 @@ public sealed class HumanActions
             case "dblclick": await locator.DblClickAsync(new LocatorDblClickOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
             case "hover": await locator.HoverAsync(new LocatorHoverOptions { Timeout = deadline.RemainingMilliseconds }).ConfigureAwait(false); break;
         }
+        if (action is "click" or "dblclick") state.ObserveButton("left", false);
     }
 
     internal static bool CanPaceText(string text)

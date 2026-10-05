@@ -95,7 +95,9 @@ internal sealed class HumanizationScope
             // transitions can partially apply too, so retain uncertainty until a successful Up.
             if (method is nameof(IMouse.MoveAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
                 actions.InvalidateMousePosition(page);
-            if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync)) actions.ObserveRawMouseButtonFailure(page, button);
+            if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync) ||
+                method is nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync) && HasClickTransition(arguments))
+                actions.ObserveRawMouseButtonFailure(page, button);
             throw;
         }
 
@@ -109,6 +111,7 @@ internal sealed class HumanizationScope
                 actions.ObserveRawMouseMove(page, clickX, clickY);
             else
                 actions.InvalidateMousePosition(page);
+            if (HasClickTransition(arguments)) actions.ObserveRawMouseButton(page, button, false);
         }
         else if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync))
         {
@@ -116,24 +119,43 @@ internal sealed class HumanizationScope
         }
     }
 
-    private static string GetMouseButton(object?[] arguments) =>
-        arguments.ElementAtOrDefault(0)?.GetType().GetProperty("Button")?.GetValue(arguments[0])?.ToString() ?? "left";
+    private static string GetMouseButton(object?[] arguments)
+    {
+        var options = arguments.LastOrDefault(argument => argument?.GetType().GetProperty("Button") is not null);
+        return options?.GetType().GetProperty("Button")?.GetValue(options)?.ToString() ?? "left";
+    }
+
+    private static bool HasClickTransition(object?[] arguments)
+    {
+        var options = arguments.LastOrDefault(argument => argument?.GetType().GetProperty("ClickCount") is not null);
+        return options?.GetType().GetProperty("ClickCount")?.GetValue(options) is not int count || count > 0;
+    }
 
     internal void MarkRawMouseCallStarted(IPage page, string method, object?[] arguments)
     {
         var actions = _actions.GetValue(page, _ => new HumanActions(_options));
         if (method is nameof(IMouse.MoveAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
             actions.InvalidateMousePosition(page);
-        if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync)) actions.ObserveRawMouseButtonFailure(page, GetMouseButton(arguments));
+        if (method is nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync) ||
+            method is nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync) && HasClickTransition(arguments))
+            actions.ObserveRawMouseButtonFailure(page, GetMouseButton(arguments));
     }
 
-    internal void InvalidateRawLocatorPointer(object target, string method, object?[] arguments)
+    internal void InvalidateRawLocatorPointer(object target, string method, object?[] arguments, IPage? pageHint = null)
     {
-        if (target is not (ILocator or IPage or IFrame) || method is not (
-            "ClickAsync" or "DblClickAsync" or "HoverAsync" or "CheckAsync" or "UncheckAsync" or "DragToAsync" or "DragAndDropAsync")) return;
+        if (target is not (ILocator or IPage or IFrame or IElementHandle) || method is not (
+            "ClickAsync" or "DblClickAsync" or "HoverAsync" or "CheckAsync" or "UncheckAsync" or "SetCheckedAsync" or "TapAsync" or "DragToAsync" or "DragAndDropAsync")) return;
         if (arguments.Any(argument => argument?.GetType().GetProperty("Trial")?.GetValue(argument) is true)) return;
-        var page = ResolvePage(target, null);
+        var page = ResolvePage(target, pageHint);
         if (page is not null) InvalidateMousePosition(page);
+    }
+
+    internal void ObserveRawLocatorCompletion(object target, string method, object?[] arguments, IPage page)
+    {
+        if (target is not (ILocator or IPage or IFrame or IElementHandle) ||
+            method is not ("ClickAsync" or "DblClickAsync") || !HasClickTransition(arguments) ||
+            arguments.Any(argument => argument?.GetType().GetProperty("Trial")?.GetValue(argument) is true)) return;
+        _actions.GetValue(page, _ => new HumanActions(_options)).ObserveRawMouseButton(page, GetMouseButton(arguments), false);
     }
 
     public HumanizationScope(HumanInteractionOptions options)
@@ -789,7 +811,7 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
                     {
                         nativeArguments = ApplyRemainingNativeTimeout(targetMethod, arguments, page, cancellationToken);
                     }
-                    _scope.InvalidateRawLocatorPointer(_target, targetMethod.Name, arguments);
+                    _scope.InvalidateRawLocatorPointer(_target, targetMethod.Name, arguments, _pageHint);
                     if (_target is IMouse && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.UpAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
                         _scope.MarkRawMouseCallStarted(page, targetMethod.Name, arguments);
                     pending = (Task)targetMethod.Invoke(_target, nativeArguments)!;
@@ -801,6 +823,7 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
                     else
                     {
                         await pending.ConfigureAwait(false);
+                        _scope.ObserveRawLocatorCompletion(_target, targetMethod.Name, arguments, page);
                     }
                 }
                 catch (TargetInvocationException exception) when (exception.InnerException is not null)
@@ -816,7 +839,7 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         if (_scope.TryHumanize(_target, _pageHint, targetMethod, arguments, out var humanizedResult)) return humanizedResult;
         try
         {
-            _scope.InvalidateRawLocatorPointer(_target, targetMethod.Name, arguments);
+            _scope.InvalidateRawLocatorPointer(_target, targetMethod.Name, arguments, _pageHint);
             if (_target is IMouse && _pageHint is not null && targetMethod.Name is nameof(IMouse.MoveAsync) or nameof(IMouse.DownAsync) or nameof(IMouse.ClickAsync) or nameof(IMouse.DblClickAsync))
                 _scope.MarkRawMouseCallStarted(_pageHint, targetMethod.Name, arguments);
             var result = targetMethod.Invoke(_target, arguments);

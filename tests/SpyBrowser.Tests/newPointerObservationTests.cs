@@ -125,6 +125,54 @@ public sealed class PointerObservationTests
         Assert.Equal(new[] { 500d, 350d }, moves[^1]);
     }
 
+    [BrowserFact]
+    public async Task Native_right_click_observes_the_selected_button_up_without_leaving_false_drag_state()
+    {
+        await using var runtime = await OwnedBrowserRuntime.LaunchAsync();
+        var rawPage = await runtime.Browser.NewPageAsync();
+        await rawPage.SetContentAsync("<script>window.moves=[];addEventListener('contextmenu',e=>e.preventDefault());addEventListener('mousemove',e=>moves.push([e.clientX,e.clientY,e.buttons]));</script>");
+        var page = new PlaywrightHumanizer(new HumanInteractionOptions
+        {
+            MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
+            MouseMinimumDurationMilliseconds = 300,
+            MouseMaximumDurationMilliseconds = 300
+        }).Wrap(rawPage);
+        await page.Mouse.MoveAsync(25, 30);
+        await page.Mouse.DownAsync(new MouseDownOptions { Button = MouseButton.Right });
+        await page.Mouse.ClickAsync(120, 140, new MouseClickOptions { Button = MouseButton.Right });
+        var beforePath = await rawPage.EvaluateAsync<int>("moves.length");
+        await page.Mouse.MoveAsync(500, 350);
+        var moves = await rawPage.EvaluateAsync<double[][]>("moves");
+        Assert.True(moves.Length > beforePath + 1, "A completed native right click must not leave an observed/uncertain right drag active.");
+        Assert.All(moves.Skip(beforePath), point => Assert.Equal(0, point[2]));
+    }
+
+    [BrowserFact]
+    public async Task Successful_native_locator_click_observes_its_up_without_sdk_cleanup_of_the_caller_drag()
+    {
+        await using var runtime = await OwnedBrowserRuntime.LaunchAsync();
+        var rawPage = await runtime.Browser.NewPageAsync();
+        await rawPage.SetContentAsync("<button id='target'>target</button><script>window.moves=[];window.ups=0;addEventListener('mousemove',e=>moves.push(e.buttons));addEventListener('mouseup',()=>ups++);</script>");
+        var page = new PlaywrightHumanizer(new HumanInteractionOptions
+        {
+            CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible,
+            MouseAlgorithm = MouseTrajectoryAlgorithm.Cursory,
+            MouseMinimumDurationMilliseconds = 300,
+            MouseMaximumDurationMilliseconds = 300
+        }).Wrap(rawPage);
+        await page.Mouse.MoveAsync(25, 30);
+        await page.Mouse.DownAsync();
+        await page.Locator("#target").ClickAsync();
+        Assert.Equal(1, await rawPage.EvaluateAsync<int>("ups"));
+        await page.Mouse.MoveAsync(410, 260); // Unknown native endpoint is bootstrapped, not guessed.
+        var beforePath = await rawPage.EvaluateAsync<int>("moves.length");
+        await page.Mouse.MoveAsync(500, 350);
+        var moves = await rawPage.EvaluateAsync<int[]>("moves");
+        Assert.True(moves.Length > beforePath + 1, "Native click Up should clear the observed left drag without issuing any extra SDK Up.");
+        Assert.All(moves.Skip(beforePath), buttons => Assert.Equal(0, buttons));
+        Assert.Equal(1, await rawPage.EvaluateAsync<int>("ups"));
+    }
+
     private sealed class OwnedBrowserRuntime : IAsyncDisposable
     {
         private readonly IPlaywright _playwright;
