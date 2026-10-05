@@ -18,7 +18,9 @@ public sealed class ProbeCleanupTests
         registry.ProbePageFactory = () => Task.FromResult(page);
         try
         {
-            using var cancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+            using var cancellation = new CancellationTokenSource();
+            // Cancel at the actual protocol boundary, not by racing two thread-pool timers.
+            pageState.OnEvaluation = cancellation.Cancel;
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => GpuProbe.RunAsync(context, TimeSpan.FromSeconds(3), cancellation.Token));
             Assert.Equal(1, pageState.EvaluationCalls);
             Assert.Equal(1, pageState.CloseCalls);
@@ -107,6 +109,7 @@ public sealed class ProbeCleanupTests
             if (method?.Name == "EvaluateAsync")
             {
                 state.EvaluationCalls++;
+                state.OnEvaluation?.Invoke();
                 return state.Evaluation;
             }
             return Default(method?.ReturnType);
@@ -135,6 +138,7 @@ public sealed class ProbeCleanupTests
         public Task<BrowserSurfaceDiagnostics> Evaluation { get; } = evaluation;
         public TaskCompletionSource CloseFaultObserved { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public Exception? CloseError { get; init; }
+        public Action? OnEvaluation { get; set; }
         public int EvaluationCalls;
         public int CloseCalls;
         public bool Closed;

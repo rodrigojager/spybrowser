@@ -28,7 +28,9 @@ public sealed class DefaultTimeoutPrecedenceTests
         });
 
         var page = await handle.NewPageAsync();
-        await page.SetContentAsync("<input id='hidden' style='display:none'>");
+        // Fixture loading is not the timed action under test; keep its own explicit budget.
+        // The observed context default and the following Fill/SDK stage remain exactly 100 ms.
+        await page.SetContentAsync("<input id='hidden' style='display:none'>", new PageSetContentOptions { Timeout = 10_000 });
         var timer = System.Diagnostics.Stopwatch.StartNew();
         var failure = await Record.ExceptionAsync(() => page.Locator("#hidden").FillAsync("value"));
         timer.Stop();
