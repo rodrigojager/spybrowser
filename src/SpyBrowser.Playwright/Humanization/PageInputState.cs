@@ -28,6 +28,11 @@ internal sealed class PageInputState
 
     public static PageInputState For(IPage page) => States.GetValue(page, static value => new PageInputState(value));
 
+    internal int EffectiveDefaultTimeoutMilliseconds => Volatile.Read(ref _defaultTimeout);
+
+    internal static int NormalizeObservedTimeout(float milliseconds) =>
+        Math.Max(0, checked((int)Math.Ceiling(milliseconds)));
+
     // Direct effective-timeout setter retained for focused internal tests.
     public void SetDefaultTimeout(int milliseconds) => Volatile.Write(ref _defaultTimeout, Math.Max(0, milliseconds));
 

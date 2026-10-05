@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Playwright;
 using SpyBrowser.Core;
 using SpyBrowser.Playwright;
@@ -35,7 +36,23 @@ public sealed class DefaultTimeoutPrecedenceTests
         Assert.NotNull(failure);
         Assert.Contains("Timeout", failure!.Message, StringComparison.OrdinalIgnoreCase);
         Assert.InRange(timer.ElapsedMilliseconds, 50, 2_000);
-        Assert.False(PlaywrightHumanizer.Unwrap(page).IsClosed);
+        var rawPage = PlaywrightHumanizer.Unwrap(page);
+        Assert.False(rawPage.IsClosed);
+        Assert.Equal(100, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
+
+        // Native Fill above already respects the raw context default even without SDK tracking.
+        // Capture an SDK-owned stage's real timeout to distinguish the tracking regression.
+        var locator = DispatchProxy.Create<ILocator, TypeBudgetRecorder>();
+        var recorder = (TypeBudgetRecorder)(object)locator;
+        recorder.Page = rawPage;
+        var actions = new HumanActions(new HumanInteractionOptions
+        {
+            CompatibilityMode = HumanizationCompatibilityMode.PlaywrightCompatible,
+            TypingDeadlineMilliseconds = 15_000
+        });
+        await actions.TypeAsync(locator, "", replaceExisting: false);
+        Assert.Equal(1, recorder.TypeCalls);
+        Assert.InRange(recorder.Timeout!.Value, 1, 100);
     }
 
     [BrowserFact]
@@ -60,6 +77,7 @@ public sealed class DefaultTimeoutPrecedenceTests
         var pageAgain = humanizer.Wrap(rawPage);
         Assert.Same(wrappedContext, contextAgain);
         Assert.Same(wrappedPage, pageAgain);
+        Assert.Equal(750, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
 
         var timer = System.Diagnostics.Stopwatch.StartNew();
         var pageFailure = await Record.ExceptionAsync(() => wrappedPage.Locator("#hidden").FillAsync("x"));
@@ -69,6 +87,7 @@ public sealed class DefaultTimeoutPrecedenceTests
 
         timer.Restart();
         wrappedContext.SetDefaultTimeout(100);
+        Assert.Equal(750, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
         var contextFailure = await Record.ExceptionAsync(() => wrappedPage.Locator("#hidden").FillAsync("x"));
         timer.Stop();
         Assert.NotNull(contextFailure);
@@ -76,7 +95,7 @@ public sealed class DefaultTimeoutPrecedenceTests
         Assert.False(rawPage.IsClosed);
     }
 
-    [Fact]
+    [BrowserFact]
     public async Task Page_timeout_zero_remains_native_unlimited_after_context_updates()
     {
         using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
@@ -92,9 +111,42 @@ public sealed class DefaultTimeoutPrecedenceTests
         var wrappedPage = humanizer.Wrap(rawPage);
         wrappedPage.SetDefaultTimeout(0);
         wrappedContext.SetDefaultTimeout(100);
+        Assert.Equal(0, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
 
         await rawPage.SetContentAsync("<input id='field'>");
         await wrappedPage.Locator("#field").FillAsync("unlimited");
         Assert.Equal("unlimited", await rawPage.Locator("#field").InputValueAsync());
+    }
+
+    [Fact]
+    public void Positive_fractional_timeout_is_never_tracked_as_native_unlimited()
+    {
+        SharedInputBudgetTests.StubProxy.ContextValue = DispatchProxy.Create<IBrowserContext, SharedInputBudgetTests.StubProxy>();
+        var rawPage = DispatchProxy.Create<IPage, SharedInputBudgetTests.StubProxy>();
+        var page = new PlaywrightHumanizer().Wrap(rawPage);
+        page.SetDefaultTimeout(0.25f);
+        Assert.Equal(1, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
+        page.SetDefaultTimeout(100.25f);
+        Assert.Equal(101, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
+        page.SetDefaultTimeout(0);
+        Assert.Equal(0, PageInputState.For(rawPage).EffectiveDefaultTimeoutMilliseconds);
+    }
+
+    public class TypeBudgetRecorder : DispatchProxy
+    {
+        internal IPage Page = null!;
+        internal float? Timeout;
+        internal int TypeCalls;
+        protected override object? Invoke(MethodInfo? method, object?[]? arguments)
+        {
+            if (method?.Name == "get_Page") return Page;
+            if (method?.Name == nameof(ILocator.PressSequentiallyAsync))
+            {
+                TypeCalls++;
+                Timeout = ((LocatorPressSequentiallyOptions)arguments![1]!).Timeout;
+                return Task.CompletedTask;
+            }
+            throw new NotSupportedException(method?.Name);
+        }
     }
 }

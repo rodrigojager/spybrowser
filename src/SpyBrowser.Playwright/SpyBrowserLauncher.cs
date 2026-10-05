@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using SpyBrowser.Core;
+using SpyBrowser.Playwright.Humanization;
 
 namespace SpyBrowser.Playwright;
 
@@ -464,7 +465,7 @@ public static class SpyBrowserLauncher
         SpyBrowserLaunchOptions options)
     {
         context.SetDefaultTimeout(options.DefaultTimeoutMilliseconds);
-        state.Humanizer?.Scope.TrackContextDefaultTimeout(context, Math.Max(0, (int)options.DefaultTimeoutMilliseconds));
+        state.Humanizer?.Scope.TrackContextDefaultTimeout(context, PageInputState.NormalizeObservedTimeout(options.DefaultTimeoutMilliseconds));
         context.SetDefaultNavigationTimeout(options.DefaultNavigationTimeoutMilliseconds);
         var initScript = IdentityInitScriptBuilder.Build(state.Identity, state.GpuPolicy);
         if (!string.IsNullOrWhiteSpace(initScript))

@@ -722,11 +722,11 @@ internal class HumanizingDispatchProxy<T> : DispatchProxy, IHumanizedPlaywrightO
         };
         if (page is not null && targetMethod.Name == "SetDefaultTimeout" && arguments.ElementAtOrDefault(0) is float timeout)
         {
-            _scope.TrackDefaultTimeout(page, Math.Max(0, (int)timeout));
+            _scope.TrackDefaultTimeout(page, PageInputState.NormalizeObservedTimeout(timeout));
         }
         if (_target is IBrowserContext context && targetMethod.Name == "SetDefaultTimeout" && arguments.ElementAtOrDefault(0) is float contextTimeout)
         {
-            _scope.TrackContextDefaultTimeout(context, Math.Max(0, (int)contextTimeout));
+            _scope.TrackContextDefaultTimeout(context, PageInputState.NormalizeObservedTimeout(contextTimeout));
         }
 
         if (page is not null && IsInputMethod(targetMethod.Name) && typeof(Task).IsAssignableFrom(targetMethod.ReturnType))
