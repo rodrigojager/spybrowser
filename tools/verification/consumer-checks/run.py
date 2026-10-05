@@ -11,6 +11,7 @@ DEFAULT_CONSUMER = pathlib.Path(r"C:\Users\Rodrigo\AppData\Local\Temp\spybrowser
 PROJECTS = ("SpyBrowser.Core", "SpyBrowser.Cursory", "SpyBrowser.Playwright")
 REQUIRED_CHECKS = {
     "Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
+    "RpaBlockly Browser.Context adapter and SDK context Page events each fire once with prepared object identity across unsubscribe/resubscribe",
     "StorageStatePath write on local loopback origin",
     "Screenshot, navigation and local loopback served page",
     "RpaBlockly popup plus nested-frame wrapper propagation and working loopback page",

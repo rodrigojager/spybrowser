@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "consumerCommit": "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca",
+  "spyBrowserSourceCommit": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+  "packageIds": [
+    "SpyBrowser.Core",
+    "SpyBrowser.Cursory",
+    "SpyBrowser.Playwright"
+  ],
+  "packageVersion": "0.2.0-beta.2.review.5fa99de",
+  "packages": [
+    {
+      "path": "C:\\Temp\\spybrowser-feed-review-5fa99de\\SpyBrowser.Core.0.2.0-beta.2.review.5fa99de.nupkg",
+      "sha256": "539d16ce985a7c618859baf44732698beb9513ebfcc2e75fb6eeb98009d2507e"
+    },
+    {
+      "path": "C:\\Temp\\spybrowser-feed-review-5fa99de\\SpyBrowser.Cursory.0.2.0-beta.2.review.5fa99de.nupkg",
+      "sha256": "44555bb6c5517f45bb8285875d1a50fbf9df7b214e75b21d7bce62d87acb20ac"
+    },
+    {
+      "path": "C:\\Temp\\spybrowser-feed-review-5fa99de\\SpyBrowser.Playwright.0.2.0-beta.2.review.5fa99de.nupkg",
+      "sha256": "6273df49863a2e5f25d63c4668419ec1a4ca9044e6b4f07612db4e4ac0b84f82"
+    }
+  ],
+  "sdkRequested": "10.0.302 (rollForward latestFeature)",
+  "sdkResolved": "10.0.401",
+  "consumerTargetFramework": "net9.0",
+  "isolationEnvironment": {
+    "NUGET_PACKAGES": "D:\\Temp\\recovery-consumer-events-run2\\nuget-packages",
+    "DOTNET_CLI_HOME": "D:\\Temp\\recovery-consumer-events-run2\\dotnet-cli-home",
+    "DOTNET_MULTILEVEL_LOOKUP": "0"
+  },
+  "playwright": "1.61.0 pinned by RpaBlockly",
+  "browser": "Chromium (explicitly requested by harness)",
+  "executedAtUtc": "2026-10-05T17:31:56.435588+00:00",
+  "driverCommand": [
+    "C:\\Program Files\\Python313\\python.exe",
+    "D:\\SpyBrowser-work\\recovery-consumer-events\\tools\\verification\\consumer-checks\\run.py",
+    "--feed",
+    "C:/Temp/spybrowser-feed-review-5fa99de",
+    "--version",
+    "0.2.0-beta.2.review.5fa99de",
+    "--consumer-checkout",
+    "D:/RpaBlockly",
+    "--output",
+    "D:/Temp/recovery-consumer-events-run2",
+    "--mouse-algorithm",
+    "cursory",
+    "--compatibility-mode",
+    "playwright-compatible",
+    "--humanize",
+    "on"
+  ],
+  "packageBuildCommands": [],
+  "consumerCommand": [
+    "dotnet",
+    "run",
+    "--project",
+    "D:\\Temp\\recovery-consumer-events-run2\\consumer-checkout\\tests\\ConsumerContract\\ConsumerContract.csproj",
+    "-c",
+    "Release",
+    "--",
+    "--output",
+    "D:\\Temp\\recovery-consumer-events-run2",
+    "--humanize",
+    "on",
+    "--mouse-algorithm",
+    "cursory",
+    "--compatibility-mode",
+    "playwright-compatible"
+  ],
+  "exitCode": 0,
+  "artifactDirectory": "D:\\Temp\\recovery-consumer-events-run2",
+  "harnessEvidence": "D:\\Temp\\recovery-consumer-events-run2\\harness-evidence.json",
+  "result": "passed",
+  "candidateFinalParity": false,
+  "expectedFinalSourceCommit": null,
+  "declaredFinalCommit": null,
+  "packageSourceCommits": {
+    "SpyBrowser.Core.0.2.0-beta.2.review.5fa99de.nupkg": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+    "SpyBrowser.Cursory.0.2.0-beta.2.review.5fa99de.nupkg": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+    "SpyBrowser.Playwright.0.2.0-beta.2.review.5fa99de.nupkg": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a"
+  },
+  "humanize": "on",
+  "mouseAlgorithm": "cursory",
+  "compatibilityMode": "playwright-compatible",
+  "requiredLocalChecksPassed": 14,
+  "requiredLocalChecksExpected": 14,
+  "requiredLocalCheckNames": [
+    "Actual RpaBlockly cancellation helper cleans a controlled late BrowserSession (native IsConnected=false)",
+    "Actual RpaRunner FillWhenReadyAsync -> FillWithRuntimeAsync cancellation closes context and settles native Fill",
+    "Actual RpaRunner local flow restores StorageStatePath cookies",
+    "Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
+    "Context close removes collection entry",
+    "Humanize off remains raw",
+    "Loopback download and saved artifact",
+    "Pinned RpaBlockly V1 flow: parsed definition, FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+    "Pinned RpaBlockly V2 package flow: parsed snapshot, V2FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+    "RpaBlockly Browser.Context adapter and SDK context Page events each fire once with prepared object identity across unsubscribe/resubscribe",
+    "RpaBlockly popup plus nested-frame wrapper propagation and working loopback page",
+    "Screenshot, navigation and local loopback served page",
+    "StorageStatePath write on local loopback origin",
+    "Two concurrent actual RpaRunner jobs retain independent inputs and deterministic Cursory RNG trajectories without profile leases"
+  ],
+  "missingRequiredLocalCheckNames": [],
+  "unexpectedPassedLocalCheckNames": [],
+  "excludedCoverage": [
+    {
+      "name": "Full mixed CAPTCHA/provider/end-to-end suite",
+      "status": "not-run",
+      "reason": "Explicitly excluded; not part of the mandatory local subset."
+    }
+  ],
+  "sourceIsolationChanges": [
+    "SpyBrowser.Playwright package version",
+    "isolated BrowserLauncher HumanInteraction configuration only",
+    "Directory.Build.props modified to disable external CPM",
+    "Directory.Packages.props added to shadow parent CPM",
+    "NuGet.Config local feed and package source mapping",
+    "test-only ConsumerContract project referencing the pinned existing RpaFlow.Legacy.Playwright project for the excluded V1 route"
+  ],
+  "limitations": [
+    "Existing CAPTCHA/provider/end-to-end suite not run by this local subset.",
+    "Final package parity is false unless expected commit, manifest declaredFinalCommit, source SHA, and all package repository commits match."
+  ]
+}

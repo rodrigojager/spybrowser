@@ -29,14 +29,39 @@ try
         SpyBrowserHumanize: humanize);
     await using var session = await BrowserLauncher.LaunchAsync(options);
     IBrowserContext? observed = null;
-    session.Browser.Context += (_, context) => observed = context;
+    var contextCallbacks = 0;
+    IBrowserContext? callbackContext = null;
+    EventHandler<IBrowserContext> contextHandler = (_, created) =>
+    {
+        contextCallbacks++;
+        callbackContext = created;
+        observed = created;
+    };
+    session.Browser.Context += contextHandler;
+    var firstEventContext = await session.NewContextAsync(new BrowserNewContextOptions());
+    Require(contextCallbacks == 1 && ReferenceEquals(callbackContext, firstEventContext),
+        "RpaBlockly Browser.Context adapter callback fires once with the SDK-prepared returned context");
+    session.Browser.Context -= contextHandler;
+    session.Browser.Context += contextHandler;
     var context = await session.NewContextAsync(new BrowserNewContextOptions
     {
         ViewportSize = new() { Width = 1173, Height = 777 },
         Locale = "pt-BR",
         TimezoneId = BrowserTimeZone()
     });
+    Require(contextCallbacks == 2 && ReferenceEquals(callbackContext, context) && !ReferenceEquals(firstEventContext, context),
+        "RpaBlockly Browser.Context unsubscribe/resubscribe delivers exactly one callback for the next SDK-prepared context");
+    var pageCallbacks = 0;
+    IPage? callbackPage = null;
+    context.Page += (_, created) =>
+    {
+        pageCallbacks++;
+        callbackPage = created;
+    };
     var wrappedPage = await context.NewPageAsync();
+    Require(pageCallbacks == 1 && ReferenceEquals(callbackPage, wrappedPage) &&
+        ReferenceEquals(context.Pages.Single(), callbackPage),
+        "SDK context Page event fires once with the same prepared page returned by RpaBlockly and its collection");
     var page = wrappedPage;
     Require(ReferenceEquals(context.Pages.Single(), wrappedPage), "context.Pages returns the same wrapped page reference");
     Require(ReferenceEquals(observed, context), "Context event reference equals returned context");
@@ -50,6 +75,7 @@ try
     Require(environment[1].StartsWith("pt-BR", StringComparison.OrdinalIgnoreCase), $"Locale preserved as {environment[1]}");
     Require(environment[2] == "1173" && environment[3] == "777", "Explicit viewport preserved");
     checks.Add(Pass("Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection"));
+    checks.Add(Pass("RpaBlockly Browser.Context adapter and SDK context Page events each fire once with prepared object identity across unsubscribe/resubscribe"));
 
     var statePath = Path.Combine(output, "storage-state.json");
     await page.GotoAsync(origin);

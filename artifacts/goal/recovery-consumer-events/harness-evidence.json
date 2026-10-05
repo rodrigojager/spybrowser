@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "name": "Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
+      "status": "passed"
+    },
+    {
+      "name": "RpaBlockly Browser.Context adapter and SDK context Page events each fire once with prepared object identity across unsubscribe/resubscribe",
+      "status": "passed"
+    },
+    {
+      "name": "StorageStatePath write on local loopback origin",
+      "status": "passed"
+    },
+    {
+      "name": "Screenshot, navigation and local loopback served page",
+      "status": "passed"
+    },
+    {
+      "name": "RpaBlockly popup plus nested-frame wrapper propagation and working loopback page",
+      "status": "passed"
+    },
+    {
+      "name": "Pinned RpaBlockly V1 flow: parsed definition, FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+      "status": "passed"
+    },
+    {
+      "name": "Pinned RpaBlockly V2 package flow: parsed snapshot, V2FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+      "status": "passed"
+    },
+    {
+      "name": "Loopback download and saved artifact",
+      "status": "passed"
+    },
+    {
+      "name": "Actual RpaRunner local flow restores StorageStatePath cookies",
+      "status": "passed"
+    },
+    {
+      "name": "Actual RpaRunner FillWhenReadyAsync -\u003E FillWithRuntimeAsync cancellation closes context and settles native Fill",
+      "status": "passed"
+    },
+    {
+      "name": "Two concurrent actual RpaRunner jobs retain independent inputs and deterministic Cursory RNG trajectories without profile leases",
+      "status": "passed"
+    },
+    {
+      "name": "Actual RpaBlockly cancellation helper cleans a controlled late BrowserSession (native IsConnected=false)",
+      "status": "passed"
+    },
+    {
+      "name": "Context close removes collection entry",
+      "status": "passed"
+    },
+    {
+      "name": "Humanize off remains raw",
+      "status": "passed"
+    }
+  ],
+  "excludedCoverage": [
+    {
+      "name": "Full mixed CAPTCHA/provider/end-to-end suite",
+      "status": "not-run",
+      "reason": "Explicitly excluded by ticket; local required regressions do not depend on external providers."
+    }
+  ],
+  "completedAtUtc": "2026-10-05T17:31:56.2557777+00:00"
+}

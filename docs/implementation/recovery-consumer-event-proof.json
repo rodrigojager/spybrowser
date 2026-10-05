@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "title": "RpaBlockly adapter event duplicate acceptance proof and semantic API subset",
+  "worktree": "D:/SpyBrowser-work/recovery-consumer-events",
+  "baseCommit": "d574f6b6eedc026ebaaa7ed0528d0c20cc988dea",
+  "consumerCommit": "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca",
+  "result": {
+    "criterion": "13.11",
+    "status": "PASS_FOR_TESTED_CONTEXT_AND_PAGE_EVENT_ROUTES",
+    "assertion": "The actual installed-package consumer subscribes through RpaBlockly Browser.Context and SDK IBrowserContext.Page; each actual event is observed exactly once, event args match returned/collection objects, and adapter unsubscribe/resubscribe does not accumulate callbacks.",
+    "eventAssertions": [
+      {
+        "route": "RpaBlockly BrowserLauncher.LaunchAsync -> BrowserSession.Browser (SpyBrowserSessionBrowser.Context) -> BrowserSession.NewContextAsync -> SDK wrapped context",
+        "source": "D:/RpaBlockly/src/RpaFlow.Playwright/Core/BrowserLauncher.cs at pinned c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca: SpyBrowserSessionBrowser.NewContextAsync awaits handle.NewContextAsync then Track; Track guards duplicate context entries, captures _context under lock, and invokes handler once when context is not closed.",
+        "consumerAssertion": "Program.cs: contextCallbacks == 1 and ReferenceEquals(callbackContext, firstEventContext); after removing/re-adding the same handler, contextCallbacks == 2 for the next distinct context, with callbackContext reference-identical to the returned context.",
+        "status": "passed"
+      },
+      {
+        "route": "returned SDK-prepared IBrowserContext.Page event -> RpaBlockly context.NewPageAsync -> context.Pages",
+        "source": "SpyBrowser PlaywrightHumanizer event proxy adapts supported event add/remove handlers, wraps event arguments and caches wrappers; pinned RpaBlockly BrowserSession returns the same context passed to the consumer.",
+        "consumerAssertion": "Program.cs: subscribe before context.NewPageAsync; pageCallbacks == 1 and callbackPage is reference-identical to wrappedPage and context.Pages.Single().",
+        "status": "passed"
+      }
+    ],
+    "scope": "Concrete actual Chromium consumer assertion for these two event routes only; not a claim about every Playwright event, every adapter/version, or arbitrary re-entrant/concurrent subscription schedule.",
+    "baseline": "Prior recovery-input-closure.json literal 13.11 explicitly remained partial because aggregate 13/13 and SDK-only context identity were not an isolated RpaBlockly adapter duplicate-callback assertion. This proof adds that missing actual-consumer counter case."
+  },
+  "semanticApiSubset": {
+    "count": 17,
+    "method": "Each row names a concrete semantic operation and harness assertion/result. The separate 14/14 aggregate check count is not used as API coverage; multiple operations may be exercised by one consumer flow.",
+    "items": [
+      {"operation":"BrowserLauncher.LaunchAsync (SpyBrowser engine, Humanize on)","assertion":"Configured launch check plus asserted Humanize wrapper setting and launch options","status":"passed"},
+      {"operation":"BrowserSession.NewContextAsync / IBrowser.NewContextAsync","assertion":"RpaBlockly Browser.Context exact-once callback and ReferenceEquals(callbackContext, returned context), including unsubscribe/resubscribe","status":"passed"},
+      {"operation":"IBrowser.Context event subscription/removal","assertion":"One callback before removal; re-add same delegate and total increases by exactly one on next distinct context","status":"passed"},
+      {"operation":"IBrowserContext.Pages","assertion":"ReferenceEquals(context.Pages.Single(), wrappedPage); page event arg also equals collection entry","status":"passed"},
+      {"operation":"IBrowserContext.NewPageAsync","assertion":"Actual page creation produces one SDK context.Page event with returned page identity","status":"passed"},
+      {"operation":"IBrowserContext.Page event","assertion":"pageCallbacks == 1 and ReferenceEquals(callbackPage, wrappedPage)","status":"passed"},
+      {"operation":"IPage.GotoAsync","assertion":"Local loopback navigation followed by page URL/page-content checks","status":"passed"},
+      {"operation":"IPage.ScreenshotAsync","assertion":"Screenshot file exists and has non-zero length","status":"passed"},
+      {"operation":"ILocator.ClickAsync","assertion":"Click navigation link and popup trigger on real Chromium page","status":"passed"},
+      {"operation":"IPage.WaitForURLAsync","assertion":"Wait completes and page.Url ends with /next","status":"passed"},
+      {"operation":"IPage.WaitForPopupAsync","assertion":"Actual popup title and popup/context.Pages object identity asserted","status":"passed"},
+      {"operation":"IFrameLocator.Locator / ILocator.InnerTextAsync","assertion":"Nested frame locator resolves frame-ok and checks wrapper propagation per Humanize mode","status":"passed"},
+      {"operation":"IPage.WaitForDownloadAsync / IDownload.SaveAsAsync","assertion":"Downloaded loopback file saved and body equals download-ok","status":"passed"},
+      {"operation":"IBrowserContext.StorageStateAsync","assertion":"StorageStatePath file created; subsequent actual RpaRunner restores contract=loaded cookie","status":"passed"},
+      {"operation":"RpaRunner.RunAsync","assertion":"Actual local restore-cookie flow returns execution id/output/timing; actual concurrent jobs preserve separate inputs","status":"passed"},
+      {"operation":"ILocator.FillWhenReadyAsync -> FillWithRuntimeAsync (cancellation)","assertion":"Actual cancellation closes context and settles native Fill","status":"passed"},
+      {"operation":"IBrowserContext.CloseAsync / IBrowser.Contexts","assertion":"Closed context is removed from browser context collection","status":"passed"}
+    ],
+    "knownAbsencesAndLimits": [
+      "No exhaustive method-by-method Playwright API audit is claimed.",
+      "No external CAPTCHA/provider or full mixed end-to-end suite was run.",
+      "No Linux permissions or rights clearance is claimed.",
+      "No final package parity is claimed: supplied feed manifest declaredFinalCommit is null and consumer evidence candidateFinalParity is false."
+    ]
+  },
+  "execution": {
+    "command": "cd D:/SpyBrowser-work/recovery-consumer-events && python tools/verification/consumer-checks/run.py --feed C:/Temp/spybrowser-feed-review-5fa99de --version 0.2.0-beta.2.review.5fa99de --consumer-checkout D:/RpaBlockly --output D:/Temp/recovery-consumer-events-run2 --mouse-algorithm cursory --compatibility-mode playwright-compatible --humanize on",
+    "consumerSourceCommit": "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca",
+    "feedSourceCommit": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+    "feedVersion": "0.2.0-beta.2.review.5fa99de",
+    "sdkRequested": "10.0.302 with latestFeature roll-forward",
+    "sdkResolved": "10.0.401",
+    "consumerTargetFramework": "net9.0",
+    "browser": "Chromium",
+    "humanize": "on",
+    "mouseAlgorithm": "cursory",
+    "compatibilityMode": "playwright-compatible",
+    "requiredCheckCount": 14,
+    "requiredChecksPassed": 14,
+    "result": "passed",
+    "mixedExternalSuite": "not run (excluded)",
+    "firstAttempt": "A retained preliminary successful run invoked the main-checkout driver rather than this worktree (13 existing checks). It was not accepted as this change's proof; rerun explicitly from the new worktree produced 14/14. Output retained at D:/Temp/recovery-consumer-events-run/evidence.json and harness-evidence.json."
+  },
+  "packageEvidence": {
+    "feed": "C:/Temp/spybrowser-feed-review-5fa99de",
+    "sourcePackageHashManifest": "C:/Temp/spybrowser-feed-review-5fa99de/manifest.json",
+    "packageHashes": {
+      "SpyBrowser.Core.0.2.0-beta.2.review.5fa99de.nupkg": "539d16ce985a7c618859baf44732698beb9513ebfcc2e75fb6eeb98009d2507e",
+      "SpyBrowser.Cursory.0.2.0-beta.2.review.5fa99de.nupkg": "44555bb6c5517f45bb8285875d1a50fbf9df7b214e75b21d7bce62d87acb20ac",
+      "SpyBrowser.Playwright.0.2.0-beta.2.review.5fa99de.nupkg": "6273df49863a2e5f25d63c4668419ec1a4ca9044e6b4f07612db4e4ac0b84f82"
+    },
+    "repacked": false,
+    "published": false,
+    "finalParity": false
+  },
+  "artifactHashes": {
+    "artifacts/goal/recovery-consumer-events/consumer-evidence.json": "faab47ceb2da6c9dc6d26b59525686f4bc87d712d110e5d3b0c23345a05926f7",
+    "artifacts/goal/recovery-consumer-events/harness-evidence.json": "4bb4a911b157297c8250aaadd27249977f7ced6cb586291fd0879728c3cba2e3",
+    "tools/verification/consumer-checks/Program.cs": "73c7efcdd7f35d6dc8adf639178c9866fb308ab3ac39d139a66e94955c67e110",
+    "tools/verification/consumer-checks/run.py": "5dd979b521c750c0437140d7b62afbd574d8747a119ffe915c050713c32fc173"
+  },
+  "ownership": "Only tools/verification/consumer-checks/Program.cs, tools/verification/consumer-checks/run.py, docs/implementation/recovery-consumer-event-proof.{json,md}, and artifacts/goal/recovery-consumer-events/ were changed in the owned worktree; no runtime or product test source changes.",
+  "validation": {
+    "runCommandExitCode": 0,
+    "runOutput": "Required local regressions: 14 passed; aggregate result: passed.",
+    "actualConsumerResult": "artifacts/goal/recovery-consumer-events/consumer-evidence.json result=passed, requiredLocalChecksPassed=14, requiredLocalChecksExpected=14, missingRequiredLocalCheckNames=[], unexpectedPassedLocalCheckNames=[]",
+    "checkoutIntegrity": "RpaBlockly remained at pinned c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca; read-only source inspection only."
+  }
+}
