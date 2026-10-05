@@ -1,0 +1,87 @@
+{
+  "title": "Bounded direct-evidence closure of audit disagreements",
+  "workspace": "D:/SpyBrowser",
+  "scope": "Only direct-evidence closure of listed criteria; no ledger, runtime, or test changes.",
+  "sourceCut": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+  "evidence": [
+    {
+      "criterionId": "01.01",
+      "criterion": "Uma automação local percorre movimento, hover e clique antes/depois da extração, sem mudança intencional de comportamento.",
+      "status": "VERIFIED",
+      "testOrAssertion": "Historical package consumer: 4 pinned package variants x 7 real-DOM tasks; stable-hover-click included in every variant. Assertions record actual DOM task observations, chronology, endpoint error <= 1 CSS px, hoverCompleted, clickCompleted, activationOrderValid, and taskCompleted.",
+      "artifact": "artifacts/goal/historical-5fa99de-windows/README.md; acceptance-summary.json; baseline-bezier.result.json; candidate-bezier.result.json; candidate-cursory.result.json; candidate-off.result.json",
+      "result": "28/28 observations complete, chronological and within endpoint tolerance. Baseline is e217359; candidate variants are source-bound to 5fa99de.",
+      "reason": "The artifact contains an actual matched before/after consumer comparison, including stable hover/click, not merely artifact existence. Historical RNG is not seedable and timing/rhythm remain descriptive; no bit-identical trajectory or universal timing promise is made."
+    },
+    {
+      "criterionId": "01.04",
+      "criterion": "Assinaturas públicas, opções atuais, seleção padrão e comportamento de Humanize=false permanecem compatíveis.",
+      "status": "VERIFIED",
+      "testOrAssertion": "Historical installed-assembly reflection compares 37 preexisting exported types and public declared members, signatures, parameter names/defaults, constants, constraints and type shapes; compares HumanInteractionOptions defaults. candidate-off is an actual isolated NuGet consumer run.",
+      "artifact": "artifacts/goal/historical-5fa99de-windows/README.md; historical-api.json; candidate-api.json; acceptance-summary.json",
+      "result": "0 removals/signature/default/shape differences; 13 additive exported types and 74 additive members; historical options defaults retained; candidate-off 7/7 DOM tasks passed.",
+      "reason": "This is exact compatibility reflection plus runtime option/off behavior, not selected unit cases or a file-exists proxy."
+    },
+    {
+      "criterionId": "05.10",
+      "criterion": "Benchmark registra carga fria, geração aquecida, alocações e ritmo recebido pelo DOM; máquina, versões e limitações são registradas.",
+      "status": "VERIFIED",
+      "testOrAssertion": "Historical consumer's actual DOM observations capture planned/observed and DOM durations, event count, intervals p50/p95/max, velocity/acceleration method/units, pauses, endpoint error and task completion for matched variants. Package-only benchmark protocol is 1 cold + 20 warmups + 500 samples per fresh process.",
+      "artifact": "artifacts/goal/historical-5fa99de-windows/candidate-cursory.result.json; acceptance-summary.json; artifacts/goal/native-package-demo-5fa99de/README.md; evidence.json; benchmark-run-1.stdout.txt through benchmark-run-3.stdout.txt",
+      "result": "Historical DOM comparison 28/28; machine Windows 10.0.19045, .NET 8.0.22, SDK 8.0.319, Playwright 1.61, Chromium 149. Package benchmark 3 runs, 500 samples/run; p50 5.825 ms, p95 11.160 ms, allocations 2,160,439 B in run 3. No 10 ms assertion.",
+      "reason": "Read as combined, correctly scoped evidence: DOM rhythm and machine/limits from the historical actual-DOM report, cold/warm/allocation from the exact package generation benchmark. Benchmark explicitly disclaims browser/per-page attribution and a performance verdict; this satisfies the literal record-and-measure criterion without asserting that the package-only generator itself measures DOM rhythm."
+    },
+    {
+      "criterionId": "20.11",
+      "criterion": "Checks executados, skips e dependências externas não exercitadas são relatados honestamente, sem marcar o suite inteiro como validado.",
+      "status": "VERIFIED",
+      "testOrAssertion": "Three exact-package consumer summaries state requiredLocalChecksPassed=13 and requiredLocalChecksExpected=13, list all checks, list excluded mixed CAPTCHA/provider suite as not-run, and explicitly say the separate 14-item semantic API audit was not independently run.",
+      "artifact": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/summary.json; artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/summary.json; artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/summary.json; matching evidence.json files",
+      "result": "Each consumer lane reports 13/13 required local checks; excluded suite and semantic audit are disclosed as not run.",
+      "reason": "Criterion requires honest executed/skipped/unexercised reporting, not execution of an additional 14th semantic audit. No extra run is required to satisfy this bullet."
+    },
+    {
+      "criterionId": "21.07",
+      "criterion": "O orçamento inicial de geração é avaliado em máquina de referência; runner compartilhado não produz falha flaky por um limiar rígido sem contexto.",
+      "status": "VERIFIED",
+      "testOrAssertion": "Exact 5fa99de package benchmark records reference-machine environment, three fresh-process runs, each with 1 cold, 20 warmups and 500 timed samples; README explicitly says no 10 ms assertion. Current-source package optimization evidence includes bounded top-five-commit investigation and 37 Cursory test assertions, not a CI timing threshold.",
+      "artifact": "artifacts/goal/native-package-demo-5fa99de/README.md; evidence.json; benchmark-run-1.stdout.txt through benchmark-run-3.stdout.txt; artifacts/goal/5fa99de-cursory-results/cursory-final-cut.trx; docs/implementation/recovery-audit-native.json",
+      "result": "Reference: Windows 10, .NET 8.0.22, SDK 8.0.319, 16 logical CPUs. Run-3 p95 11.160 ms, assessed as investigation evidence; no flaky hard threshold or CI gate.",
+      "reason": "The literal requires contextual reference-machine evaluation and forbids contextless shared-runner hard failures; it does not guarantee a universal <=10 ms result. 11.160 ms is not a failing criterion."
+    },
+    {
+      "criterionId": "19.06",
+      "criterion": "Sessões concorrentes com mesmo IdentityId em modo descartável não disputam um único arquivo global nem sobrescrevem resultados.",
+      "status": "VERIFIED",
+      "testOrAssertion": "DiagnosticSnapshotStore.SaveAsync generates each per-session target as timestamp plus Guid and has no IdentityId/global target parameter. Concurrent_saves_use_distinct_paths_and_retention_is_bounded saves the same snapshot through two store instances and asserts all paths are distinct and exist. Installed-package proof confirms concurrent saves from two consumer processes and baseline retained.",
+      "artifact": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs: SaveAsync target naming; tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs: Concurrent_saves_use_distinct_paths_and_retention_is_bounded; artifacts/goal/5fa99de-required-results/required-final-cut.trx; artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+      "result": "Current required TRX marks the task-concurrency test Passed. Installed Windows package reports two-process concurrent snapshot saves and retained baseline.",
+      "reason": "The store's identity-independent GUID session filename structurally prevents a shared per-IdentityId output path; task-level same-snapshot assertion and installed two-process proof cover concurrent sessions. The literal does not require an IdentityId-aware API or a standalone cross-process test harness."
+    },
+    {
+      "criterionId": "19.05",
+      "criterion": "Escrita é atômica; permissões e retenção têm comportamento documentado e testes nas plataformas suportadas.",
+      "status": "PARTIAL",
+      "testOrAssertion": "Source writes same-directory unique temporary files, flushes, then moves under retention lock. Current required Windows TRX passes interruption/cancellation cleanup, retention, and baseline-protection tests. Installed Windows candidate evidence reports actual NTFS ACL denial, baseline preserved, and ACL restored. The named Unix permission test is present in the required Windows TRX, but Windows execution does not establish Unix chmod behavior.",
+      "artifact": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs; tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs; artifacts/goal/5fa99de-required-results/required-final-cut.trx; artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+      "result": "Windows atomic-write/retention/ACL proof: PASS. Current Unix non-root permission proof: not claimed; lane is in progress (job 40).",
+      "reason": "Do not convert a platform-conditional Windows test pass into current Unix evidence. Only the supported-platform permission leg remains unclosed; no new Unix run is inferred."
+    },
+    {
+      "criterionId": "19.11",
+      "criterion": "Testes incluem falta de permissão, interrupção de escrita, concorrência e ausência de valores secretos-sentinela.",
+      "status": "PARTIAL",
+      "testOrAssertion": "Current required TRX passes Saves_unique_private_snapshots_without_secret_sentinels_and_compares_fields; Every_serialized_string_field_is_projected_to_bounded_safe_values; Interrupted_midstream_and_cancelled_serialization_remove_partial_temp_and_preserve_baseline; Concurrent_saves_use_distinct_paths_and_retention_is_bounded; Unix_directory_permission_denial_does_not_publish_snapshot. Installed Windows package proof separately exercises actual NTFS ACL denial and OS-terminated SaveAsync during a temporary-file write, and reports two-process concurrent saves.",
+      "artifact": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs; artifacts/goal/5fa99de-required-results/required-final-cut.trx; artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+      "result": "Windows permission/interruption/concurrency/sentinel assertions and installed crash proof: PASS. Unix non-root permission proof remains in progress (job 40), not asserted here.",
+      "reason": "The Windows actual crash and ACL evidence closes the prior overstatement that only graceful cancellation was proved. Keep PARTIAL only for the explicitly platform-dependent Unix permission execution; do not claim current Unix proof."
+    }
+  ],
+  "validation": {
+    "method": "Read-only inspection of authoritative issue literals, implementation/tests, exact current TRX records, and retained source/package-bound artifacts.",
+    "testsRunByThisAudit": false,
+    "changesOutsideOwnedReports": false,
+    "publicationOrReleaseClaim": false,
+    "rights": "Unresolved rights remain blocked; no publication, finalization, or repack is authorized by this closure."
+  }
+}

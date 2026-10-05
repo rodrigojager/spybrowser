@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "reviewKind": "independent-source-candidate-readiness",
+  "disposition": "ACCEPT_SOURCE_FOR_LOCAL_FINAL_VERIFICATION",
+  "reviewedHead": "35b6656caa1b272c074f32b16da67387cb1374df",
+  "productionSourceCommit": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+  "productionSourceArchiveSha256": "85fcc57493d1b490ad5ce2bda137971a6a12daf276d9a29aee4c8e9da6e0d242",
+  "plan": "docs/plans/qualidade-humanizacao-cursory-nativo.md",
+  "canonicalLedger": "docs/implementation/ticket-evidence.json",
+  "ticketDirectory": ".scratch/spybrowser-cursory-nativo/issues/",
+  "scope": "All 24 literal issues reviewed for technical source-candidate readiness; not final-feed, release, external-publication, legal-clearance, or default-promotion approval.",
+  "sourceReview": {
+    "productSourceDiffFrom5fa": "empty",
+    "laterChanges": "test/harness only",
+    "result": "No concrete missing runtime deliverable or source defect found that blocks freezing this source for local final-feed verification.",
+    "testsRunByReview": false,
+    "buildRunByReview": false
+  },
+  "currentEvidence": {
+    "linuxMatrix": {
+      "path": "artifacts/goal/linux-5fa99de-zero-skip/run-status.json",
+      "source": "5fa99de source archive",
+      "platform": "Linux non-root uid 1001",
+      "lanes": ["Playwright 1.61.0", "Playwright 1.63.0", "Chrome with Playwright 1.61.0"],
+      "perLane": "177/177 product and 37/37 Cursory passed, zero skips"
+    },
+    "rpaBlockly": {
+      "path": "artifacts/goal/recovery-consumer-events/consumer-evidence.json",
+      "source": "5fa99de installed local-feed packages",
+      "checks": "14/14 actual local RpaBlockly checks passed",
+      "finalFeedParity": false,
+      "declaredFinalCommit": null
+    },
+    "linuxAndDistributionReview": "docs/implementation/recovery-final-gates.md",
+    "rights": "Unresolved dataset redistribution rights; external publication remains blocked; this is not legal clearance."
+  },
+  "tickets": [
+    {"id": 1, "issue": "01-movimento-substituivel.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready; historical real-DOM/API checks are scoped, not final-package proof"},
+    {"id": 2, "issue": "02-gerador-gravacoes-nativo.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; rights remain an external-distribution blocker; rerun package inspection on final feed"},
+    {"id": 3, "issue": "03-cursory-paridade-completa.md", "ledgerVerified": 12, "ledgerPending": 0, "review": "source-ready; pinned dataset/RNG/fixture parity evidenced; final pure-package proof remains required"},
+    {"id": 4, "issue": "04-cursory-mouse-move.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; opt-in remains the safe default"},
+    {"id": 5, "issue": "05-movimento-sob-atraso-e-escala.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; benchmark target is investigation evidence, not a hard shared-runner gate"},
+    {"id": 6, "issue": "06-fill-clear-compativeis.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready within documented native semantics"},
+    {"id": 7, "issue": "07-insert-text-e-atalhos.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready; action/event contracts have direct assertions"},
+    {"id": 8, "issue": "08-clique-hover-nativos.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready within tested action-specific contract; no blanket event identity claim"},
+    {"id": 9, "issue": "09-digitacao-unicode.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready within documented Unicode/IME boundaries and fallback"},
+    {"id": 10, "issue": "10-lifecycle-entrada.md", "ledgerVerified": 12, "ledgerPending": 0, "review": "source-ready; cancellation/lifetime claims remain bounded to actual awaited-task evidence"},
+    {"id": 11, "issue": "11-fabricas-configuradas.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready; configured factory and options ownership covered"},
+    {"id": 12, "issue": "12-frames-e-locators.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; wrapper propagation and reference identity covered"},
+    {"id": 13, "issue": "13-eventos-contextos.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; exact-once event/reference proof also appears in fresh 14-check RpaBlockly artifact"},
+    {"id": 14, "issue": "14-popups-humanizados.md", "ledgerVerified": 10, "ledgerPending": 0, "review": "source-ready; popup and nested-frame consumer paths covered"},
+    {"id": 15, "issue": "15-diagnosticos-humanizacao.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; privacy-safe diagnostics and fallback boundaries"},
+    {"id": 16, "issue": "16-probes-isolados.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; isolated probe and GPU-off consumer configuration retained"},
+    {"id": 17, "issue": "17-coerencia-regional-geometria.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; regional normalization and unavailable/conflict handling covered"},
+    {"id": 18, "issue": "18-coerencia-browser-gpu.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready within available capability; no stealth/fingerprint equivalence conclusion"},
+    {"id": 19, "issue": "19-snapshots-opcionais.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "source-ready; current-source non-root Linux and installed platform checks address prior permission/concurrency gaps; final package linkage remains open"},
+    {"id": 20, "issue": "20-consumidor-rpablockly.md", "ledgerVerified": 12, "ledgerPending": 0, "review": "source/integration ready; actual pinned RpaBlockly local-feed run is 14/14, but explicitly preliminary and must be rerun against final feed"},
+    {"id": 21, "issue": "21-relatorio-qualidade-movimento.md", "ledgerVerified": 11, "ledgerPending": 0, "review": "existing DOM/benchmark evidence meets mapped criteria at stated scope; create fresh final-feed/pure-package proof"},
+    {"id": 22, "issue": "22-ci-upgrades-playwright.md", "ledgerVerified": 0, "ledgerPending": 11, "review": "open verification/matrix lane; fresh exact-source Linux zero-skip runs exist but do not themselves close all workflow/API audit evidence; rerun/retain full matrix against final candidate"},
+    {"id": 23, "issue": "23-prerelease-e-rollback.md", "ledgerVerified": 1, "ledgerPending": 11, "review": "final installed package, rollback, docs and authorization evidence remain open; 23.05 verifies explicit rights blocker only"},
+    {"id": 24, "issue": "24-snapshots-distribuicao-final.md", "ledgerVerified": 0, "ledgerPending": 10, "review": "preliminary installed snapshot evidence is not final-feed/release evidence; final package/manual/checklist/approval remain open"}
+  ],
+  "ledgerReconciliation": {
+    "criteria": 260,
+    "actualCanonicalVerified": 227,
+    "actualCanonicalPending": 33,
+    "handoffExpectedVerified": 226,
+    "handoffExpectedPending": 34,
+    "finding": "One-criterion count discrepancy. Read-only review found no basis to alter a ledger status here; ledger owner must reconcile. No runtime gap is inferred from the count alone."
+  },
+  "releaseEvidenceRequiredAfterFreeze": [
+    "Build a new local --final feed; manifest, declared commit, source archive and every package hash must agree.",
+    "Run isolated installed RpaBlockly checks, including event exact-once/reference semantics, against those exact packages.",
+    "Run and retain the complete required/latest/platform matrix, reporting skips without substitution.",
+    "Inspect actual nupkg/nuspec/source/symbol/data/license contents and prove rollback to the exact e217 baseline.",
+    "Run fresh source/package-bound pure BCL Cursory parity and benchmark evidence."
+  ],
+  "publication": {
+    "externalPublicationAllowed": false,
+    "reason": "Independent dataset redistribution clearance unresolved; separate operational approval also required.",
+    "localTechnicalFinalFeedAllowed": true
+  },
+  "ownedOutputs": [
+    "docs/implementation/final-source-candidate-review.md",
+    "docs/implementation/final-source-candidate-review.json"
+  ]
+}

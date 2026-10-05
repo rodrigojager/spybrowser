@@ -1,0 +1,2314 @@
+{
+  "schemaVersion": 1,
+  "audit": {
+    "title": "Bounded criterion-specific audit: tickets 15–24",
+    "workspace": "D:/SpyBrowser",
+    "head": "d574f6b6eedc026ebaaa7ed0528d0c20cc988dea",
+    "productionSource": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+    "scope": "Exact issue criteria from issues 15–24 and canonical ticket-evidence.json. Parent executions are valid; subsequent differences are test-only.",
+    "disposition": "PARTIAL; criterion mapping, not final distribution acceptance.",
+    "rights": "Clearance absent. Local-only block truthful; no publish/repack/finalize/promote.",
+    "statusVocabulary": "verified=criterion scoped; partial=some direct evidence but full condition open; pending=no adequate evidence; blocked=external prerequisite.",
+    "entries": [
+      {
+        "ticketId": 15,
+        "criterionId": 1,
+        "criterion": "Uma única superfície leve de observação é escolhida e documentada, sem dependência obrigatória de um backend de telemetria.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "docs/humanization-diagnostics.md documents the opt-in bounded in-memory PlaywrightHumanizer snapshot/recorder; no telemetry service or persistence is required."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 2,
+        "criterion": "Um fluxo local demonstra registros de ação humanizada, comando nativo por semântica, options não suportadas, cancelamento e erro.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "HumanizationDiagnosticsTests exercise humanized/native-compatible operations, unsupported-options raw fallback, canceled/timeout/error outcomes; browser-gated cases ran with SPYBROWSER_RUN_BROWSER_TESTS=1 in the 36-test run."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 3,
+        "criterion": "Eventos incluem método, modo, algoritmo, resultado e motivos estáveis; medidas de duração/pontos são incluídas onde disponíveis.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "docs/humanization-diagnostics.md and HumanizationDiagnosticRecord implementation document allowlisted method, mode/reason/outcome, generated correlations, elapsed duration, optional planned/dispatched/coalesced metrics only when movement exposes them."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 4,
+        "criterion": "Versões de SpyBrowser, Playwright, navegador, algoritmo e dataset são obtidas e associáveis ao relatório.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "Diagnostic docs identify runtime versions and selected strategy/dataset; live CLI run reported actual Chromium family/version source, Playwright assembly version and algorithm/dataset none for non-humanized run. Humanization report is associated with generated"
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 5,
+        "criterion": "Não são registrados texto digitado, senha, cookies, tokens, storage state, URLs completas ou seletores potencialmente pessoais por padrão.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "docs/humanization-diagnostics.md specifies no action arguments, text, selector, URL, storage, cookie, headers, proxy, coordinates, seed or exception text; snapshots use current field projection and omit profile/page content."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 6,
+        "criterion": "Testes com valores-sentinela comprovam ausência de informações proibidas, inclusive em caminhos de erro.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "HumanizationDiagnosticsTests and DiagnosticSnapshotStoreTests contain secret/text/URL/error sentinels; current focused run passed. Recorder sanitizes method/reason and does not retain exception messages."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 7,
+        "criterion": "Coordenadas/seed detalhadas são opt-in explícito se oferecidas; não existe coleta de novas gravações de mouse do usuário por padrão.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "The diagnostic record schema contains aggregate timing/point counts only; docs explicitly exclude coordinates/seeds and no recording collector exists."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 8,
+        "criterion": "Um observer com falha não derruba nem repete a automação.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "Recorder completion is best-effort/caught and no user observer callback is invoked, so it cannot repeat the operation."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 9,
+        "criterion": "Sem observer, o hot path não aloca evento por ponto nem carrega dados adicionais desnecessários.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "Disabled mode has no recorder/invocation allocation and diagnostics do not load Cursory data; movement metrics are attached only where exposed."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsResourceContractTests.cs",
+            "assertion": "Same-thread warmed TitleAsync allocation comparison; disabled recorder has no storage; bounded capacity 32 and exact dropped count asserted."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 10,
+        "criterion": "Fallback raw por options permanece comportamento aceito; o relatório não o apresenta como erro a corrigir obrigatoriamente no consumidor.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "Stable unsupported-options reason and docs explicitly characterize raw Playwright delegation as conservative behavior; current unit/browser-gated tests passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 15,
+        "criterionId": 11,
+        "criterion": "Fill nativo por política não é anunciado como digitação humanizada e métricas não viram um stealth score.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+            "assertion": "Native-compatible Fill/Clear reporting labels semantic-preservation decisions; docs specify no stealth score or activation count."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 1,
+        "criterion": "O probe usa página temporária dedicada e não reutiliza/navega a primeira página disponível do usuário.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "docs/diagnostics.md Probe isolation section and ProbeIsolationBrowserTests assert fresh page creation and preserved caller page; browser-enabled current suite passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 2,
+        "criterion": "A página interna não aparece nos eventos/listagens públicas de trabalho segundo uma política explícita, preservando o acesso raw intencional.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Context handle and humanized public Pages/Page/Popup surfaces filter the marked probe; docs explicitly explain RawContext/raw events bypass the filter."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 3,
+        "criterion": "Preparação, registro, filtragem e fechamento da página interna são testados contra corridas com novas páginas do usuário.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "ProbeIsolationBrowserTests exercise event races, popup publication, filtering and cleanup; current browser-enabled focused run passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 4,
+        "criterion": "O resultado pode ser solicitado nos modos persistent, context e browser-only previstos, sem precisar alterar o fluxo de automação.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Effective callback browser test covers persistent, disposable-context and browser-only page/context factories; docs describe all modes; it passed in current 36-test run."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 5,
+        "criterion": "Há timeout próprio e cleanup em finally; falha de GPU, JS, criação ou fechamento não vaza página/contexto.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Probe tests exercise cancellation/deadline/late creation/creation or close failures; implementation closes owned temporary page in finally. Browser-enabled focused suite passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 6,
+        "criterion": "O probe considera a configuração efetiva do contexto após defaults, overrides e callbacks.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Effective_callbacks_are_reported_for_persistent_context_and_browser_page_modes tests callback-final effective values across launch modes; current run passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 7,
+        "criterion": "Não é ligado automaticamente onde o consumidor optou por RunGpuProbe=false; não roda por clique.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Launch defaults RunGpuProbe false; docs distinguish opt-in launch/API/CLI probe from action path; unit/default checks included in focused suite."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 8,
+        "criterion": "Testes locais verificam URL, estado e referências de abas de usuário antes/depois do diagnóstico.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Probe isolation browser tests check user URL/page state and references; docs/diagnostics.md reports exact headed Windows focus/activeElement browser test as 1 passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 9,
+        "criterion": "APIs indisponíveis pela origem/contexto do probe são reportadas como indisponíveis, não como prova de fingerprint incoerente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Diagnostics docs state unavailable APIs/WebGL/WebGPU are reported as unavailable/unverified, not contradiction; current live CLI observed unavailable WebGPU and Client Hints."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 10,
+        "criterion": "Caso uma origem segura ou headers sejam necessários, utiliza fixture local controlada, sem consultas públicas automáticas.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "No public origin/service is used. Probe is local page evaluation; unavailable secure-context-only APIs are represented as unavailable, so no remote-origin requirement is introduced."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 16,
+        "criterionId": 11,
+        "criterion": "A superfície de diagnóstico distingue resultado incompleto, timeout e findings reais, com mensagens acionáveis.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/ProbeIsolationBrowserTests.cs",
+            "assertion": "Probe operational failures/timeouts are separate from consistency findings; stable codes/severities and CLI messages are documented and exercised by focused probe tests/live CLI."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 1,
+        "criterion": "Fuso configurado e observado são comparados com normalização documentada; UTC/Etc/UTC e conversões Windows/IANA têm testes.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Consistency timezone tests and docs cover UTC/Etc/UTC aliases, explicit platform conversion, and actual timezone callback runtime; focused tests passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 2,
+        "criterion": "Comparação não considera fusos equivalentes apenas porque têm o mesmo offset num instante; regras/aliases são tratados conservadoramente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Tests reject distinct IANA regions despite same offset; docs state mappings are accepted only when explicit converted IANA identifier matches."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 3,
+        "criterion": "Locale principal e navigator.languages usam normalização BCP-47, preservando diferenças de preferência legítimas.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Consistency tests cover CultureInfo/BCP-47 normalization and primary navigator.languages entry; secondary preferences may differ."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 4,
+        "criterion": "Viewport, screen e escala são comparados em unidades consistentes, com casos de DPR/zoom e NoViewport documentados.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "CSS screen/viewport comparisons and existing absolute 0.01 DPR tolerance documented; mismatch warns, unknown zoom does not erase it, absent/NoViewport remains indeterminate."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 5,
+        "criterion": "O esperado deriva das opções efetivas do contexto, não somente do manifesto base que callbacks podem ter alterado.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Current effective-callback browser test covers post-callback expectation/report values across persistent/context/browser-only; passed in this audit."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 6,
+        "criterion": "Findings possuem códigos/severidade e aparecem tanto no resultado de API quanto na apresentação CLI pertinente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "ConsistencyReport exposes stable coded severities; current CLI build plus two real probe invocations emitted the current report; callback browser tests passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 7,
+        "criterion": "Ausência de dado gera resultado indeterminado/aviso adequado; não vira contradição automaticamente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Validators guard absent geometry/locale/timezone; WebGL unavailable is unverified warning; missing WebGPU/Client Hints are indeterminate. Current CLI confirmed unavailable hints/WebGPU do not become contradiction."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 8,
+        "criterion": "FailOnConsistencyErrors continua funcionando para erros inequívocos; warnings não bloqueiam lançamentos arbitrariamente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Effective callback browser test deliberately supplies a UA warning with FailOnConsistencyErrors=true and confirms it is non-blocking; error gating is by HasErrors. Test passed current run."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 9,
+        "criterion": "Fixtures locais demonstram ao menos um caso coerente, um alias legítimo e um conflito por categoria.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Consistency tests provide coherent callback/UTC cases, accepted aliases and explicit locale/timezone/geometry/browser conflicts; focused suite passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 10,
+        "criterion": "Não há GeoIP automático nem inferência obrigatória de idioma/fuso pelo proxy.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Current docs/source use explicit context expectations and local probe only; no remote GeoIP path. No proxy inference is part of validator."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 17,
+        "criterionId": 11,
+        "criterion": "Um cenário equivalente ao timezone local usado pelo RpaBlockly passa sem exigir habilitar probes por padrão no consumidor.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticsConsistencyTests.cs",
+            "assertion": "Effective callback browser test resolves actual local timezone and checks callback-final values; GPU probe remains disabled on callback paths/default. Docs record local timezone behavior."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 1,
+        "criterion": "Família/versão real do navegador e versão Playwright aparecem no diagnóstico com origem explícita.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Current live CLI reported family chromium from playwright.launch-configuration, browser version from playwright.browser.version, and Playwright version from loaded assembly; none inferred from UA."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 2,
+        "criterion": "Conflitos claros entre família de browser, UA e plataforma são identificados sem exigir igualdade literal de strings.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Consistency tests cover family-level UA and platform conflicts; effective callback browser test exercises intentionally conflicting configured UA while preserving selected launch-family provenance."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 3,
+        "criterion": "Client Hints ausentes ou reduzidos por privacidade são diferenciados de valores comprovadamente contraditórios.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Docs/validator mark absent or reduced hints indeterminate and compare only when explicitly available; live Chromium CLI had Client Hints unavailable without a contradiction."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 4,
+        "criterion": "Políticas GPU existentes continuam detectando software/hardware conforme sua capacidade real, com testes para renderer indisponível.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "GpuPolicyTests cover SwiftShader/software versus hardware-required and missing-WebGL is implemented as unverified warning; current CLI observed SwiftShader."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 5,
+        "criterion": "Dados de WebGL/WebGPU passam por comparação conservadora; ausência de WebGPU não prova inconsistência.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Consistency/GPU tests cover capability differences and unavailable WebGPU; current CLI observed unavailable WebGPU without treating it as contradiction."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 6,
+        "criterion": "Overrides experimentais exibem aviso sobre strings, pixels, timing e contextos não abrangidos, sem promessa de invisibilidade.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Stable experimental-mask finding and docs explicitly state uncovered pixels, timing, WebGPU and native introspection; tests cover warning."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 7,
+        "criterion": "O hash gráfico existente não é descrito como certificação de equivalência de GPU.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Docs call canvas hash a sample observation, not certification; snapshot strips hash and comparison does not treat it as verdict."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 8,
+        "criterion": "API/CLI apresentam findings com severidade/códigos e testes locais de caso coerente, conflito e informação indisponível.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Current focused report tests and real CLI probe exercise coded findings; live CLI evidenced unavailable WebGPU/Client Hints and recorded software-renderer observation."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 9,
+        "criterion": "Atualização legítima de Chrome, GPU ou driver não bloqueia operação automaticamente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "DiagnosticSnapshotStore.Compare assigns information severity to version/renderer changes; a separate current consistency finding can independently indicate real conflict. Store tests passed."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 10,
+        "criterion": "Nenhum dado é enviado a terceiros para avaliação e nenhum argumento/script stealth novo é adicionado para esconder findings.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Probe operates locally; docs explicitly exclude third-party services and additional stealth scripts; no remote evaluation in current CLI flow."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 18,
+        "criterionId": 11,
+        "criterion": "Defaults e callbacks efetivos são considerados para evitar acusar como erro um override intencional documentado.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "tests/SpyBrowser.Tests/MissingWebGLBrowserTests.cs",
+            "assertion": "Current callback browser test reports final effective options across launch modes and verifies configured UA warning behavior; docs expose EffectiveExpectations. Test passed."
+          },
+          {
+            "path": "docs/implementation/diagnostic-gap-proof.md",
+            "assertion": "Real disabled-WebGL browser test and Windows/Linux successful focused runs are documented."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 1,
+        "criterion": "A capacidade é opt-in e produz snapshot JSON com schema próprio, independente do manifesto de identidade e dos dados de perfil.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "DiagnosticSnapshot.CurrentSchemaVersion is separate; CLI creates store only with --snapshot-dir; schema/corruption tests passed."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 2,
+        "criterion": "Inclui versões, algoritmo/dataset, características normalizadas e findings, sem conteúdo de páginas, cookies ou textos digitados.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "DiagnosticSnapshotStore.Sanitize projects runtime tokens, language/timezone, platform, finding codes, and GPU label into safe categories; GPU projection preserves coarse vendor/family/generation/backend but not exact model/raw driver/hardware hash. Snapshot sc"
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 3,
+        "criterion": "API/CLI permitem salvar, escolher baseline e comparar, com demonstração completa em duas execuções locais.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "Current real CLI identity+probe execution saved a first snapshot, selected it explicitly as second-run --baseline, and produced a second unique snapshot/comparison. Store API is also tested."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          },
+          {
+            "path": "artifacts/goal/diagnostic-criterion-audit-current/probe-compare.json",
+            "assertion": "Current CLI compare output from two local probe runs; first snapshot selected explicitly as second-run baseline."
+          }
+        ],
+        "reason": "Local CLI save/select/compare is demonstrated; this does not claim installed-package/final-feed acceptance."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 4,
+        "criterion": "A baseline aceita não é substituída automaticamente pelo snapshot mais recente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "CLI accepts explicit read-only --baseline and saves current snapshot separately; retention protects selected baseline; current two-run flow used distinct paths."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 5,
+        "criterion": "Escrita é atômica; permissões e retenção têm comportamento documentado e testes nas plataformas suportadas.",
+        "status": "pending",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "Implementation writes unique same-directory temp, flushes then renames under retention lock; tests cover partial-write cleanup and Unix 0600/permission denial; docs specify Windows destination ACL inheritance."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Specific evidence gap, not an established product defect; see the cited mapping and criterion-level assertion needed."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 6,
+        "criterion": "Sessões concorrentes com mesmo IdentityId em modo descartável não disputam um único arquivo global nem sobrescrevem resultados.",
+        "status": "pending",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "GUID-based per-session snapshot names and exclusive per-directory file lock coordinate cross-process retention; current tests cover concurrent tasks and unique files."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Specific evidence gap, not an established product defect; see the cited mapping and criterion-level assertion needed."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 7,
+        "criterion": "Schema desconhecido/corrompido gera erro útil e não altera o perfil ou a baseline existente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "ReadAsync validates required schema/data and throws clear InvalidDataException for corrupt/unknown schema; tests verify prior baseline survives invalid/canceled writes."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 8,
+        "criterion": "Comparação apresenta mudanças de campos e severidade contextual, não apenas um hash ou stealth score.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "Compare reports named runtime, locale/timezone, platform, screen and GPU-category changes with severity; no aggregate stealth score."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 9,
+        "criterion": "Atualizações legítimas do browser/GPU/driver são informativas salvo contradição real demonstrada por regras existentes.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "Compare classifies browser/Playwright/version/renderer changes informationally; current consistency rules remain separate and can report an actual contradiction."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 10,
+        "criterion": "Desativar snapshots elimina persistência adicional; excluir snapshots não afeta login/perfil/identidade.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "CLI constructs persistence store only when --snapshot-dir supplied; snapshots are separate files/directory and no profile/identity mutation is part of store API. Documented in diagnostics docs."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Criterion-specific assertion/source mapping confirmed from the native diagnostics report. Parent execution evidence is valid; no personal rerun is required. Criterion-scoped only, not a whole-goal verdict."
+      },
+      {
+        "ticketId": 19,
+        "criterionId": 11,
+        "criterion": "Testes incluem falta de permissão, interrupção de escrita, concorrência e ausência de valores secretos-sentinela.",
+        "status": "pending",
+        "evidence": [
+          {
+            "path": "src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+            "assertion": "Implementation/documentation evidence linked in the native diagnostics audit."
+          },
+          {
+            "path": "tests/SpyBrowser.Tests/DiagnosticSnapshotStoreTests.cs",
+            "assertion": "Focused current tests passed store sentinel, injected write failure/cancellation, cleanup and task-concurrency tests; prior docs record Unix permission denial/private-mode validation."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "assertion": "Successful parent execution tied to production source 5fa99de; subsequent corrections are test-only."
+          }
+        ],
+        "reason": "Specific evidence gap, not an established product defect; see the cited mapping and criterion-level assertion needed."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 1,
+        "criterion": "Commit do consumidor e versões de SDK/Playwright/pacotes são fixados e registrados; checkout de integração fica isolado do trabalho normal do usuário.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Pinned consumer commit and resolved SDK/Playwright/package metadata; isolated consumer"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Pinned consumer commit and resolved SDK/Playwright/package metadata; isolated consumer"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Pinned consumer commit and resolved SDK/Playwright/package metadata; isolated consumer"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Pinned consumer commit and resolved SDK/Playwright/package metadata; isolated consumer. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 2,
+        "criterion": "Um feed NuGet local fornece o candidato; o teste não exige publicar pacote externo.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Local feed/package-only consumer harness"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Local feed/package-only consumer harness"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Local feed/package-only consumer harness"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Local feed/package-only consumer harness. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 3,
+        "criterion": "Um consumer check .NET 9 verifica o contrato público mínimo e um subconjunto local do RpaBlockly real exercita os fluxos relevantes.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Consumer checks and actual RpaBlockly subset"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Consumer checks and actual RpaBlockly subset"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Consumer checks and actual RpaBlockly subset"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Consumer checks and actual RpaBlockly subset. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 4,
+        "criterion": "Humanize on/off, fuso local inclusive UTC, viewport, Chromium selecionado e identidade em memória continuam corretos.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Humanize, timezone, viewport, Chromium and in-memory identity"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Humanize, timezone, viewport, Chromium and in-memory identity"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Humanize, timezone, viewport, Chromium and in-memory identity"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Humanize, timezone, viewport, Chromium and in-memory identity. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 5,
+        "criterion": "Evento de contexto, referência retornada e Browser.Contexts coincidem; fechar contexto remove-o da coleção.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Context event/reference/collection consistency and close removal"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Context event/reference/collection consistency and close removal"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Context event/reference/collection consistency and close removal"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Context event/reference/collection consistency and close removal. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 6,
+        "criterion": "StorageStatePath, download local, screenshot, navegação e fluxo com frame/popup preservam comportamento.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "StorageStatePath, local download, screenshot/navigation, frame/popup flows"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "StorageStatePath, local download, screenshot/navigation, frame/popup flows"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "StorageStatePath, local download, screenshot/navigation, frame/popup flows"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. StorageStatePath, local download, screenshot/navigation, frame/popup flows. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 7,
+        "criterion": "Cancelamento de Fill fecha o contexto e interrompe a tarefa real; cancelamento do launch limpa um browser que concluiu abertura tardiamente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Fill cancellation and late-launch cleanup"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Fill cancellation and late-launch cleanup"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Fill cancellation and late-launch cleanup"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Fill cancellation and late-launch cleanup. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 8,
+        "criterion": "Dois jobs com identidade em memória não bloqueiam por lease de perfil nem compartilham estado de entrada.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Two concurrent jobs and independent input state"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Two concurrent jobs and independent input state"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Two concurrent jobs and independent input state"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Two concurrent jobs and independent input state. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 9,
+        "criterion": "Options explícitas podem continuar raw: humanizar o fill atual do RpaBlockly não é critério de aceite.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Humanize-off raw behavior is permitted"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Humanize-off raw behavior is permitted"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Humanize-off raw behavior is permitted"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Humanize-off raw behavior is permitted. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 10,
+        "criterion": "Mantém-se o adaptador atual do consumidor e os outros providers; não se adiciona a fachada que conflita com CloakBrowser.dll.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Pinned checkout is exercised without changing consumer adapter"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Pinned checkout is exercised without changing consumer adapter"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Pinned checkout is exercised without changing consumer adapter"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Pinned checkout is exercised without changing consumer adapter. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 11,
+        "criterion": "Checks executados, skips e dependências externas não exercitadas são relatados honestamente, sem marcar o suite inteiro como validado.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Harness reports 13/13 checks; separate 14-item semantic audit was not performed"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Harness reports 13/13 checks; separate 14-item semantic audit was not performed"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Harness reports 13/13 checks; separate 14-item semantic audit was not performed"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Harness reports 13/13 checks; separate 14-item semantic audit was not performed. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 20,
+        "criterionId": 12,
+        "criterion": "Nenhum bloco, DSL ou componente de CAPTCHA é alterado para fazer os testes passarem.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "assertion": "Consumer source isolation; no block/DSL/CAPTCHA edits"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "assertion": "Consumer source isolation; no block/DSL/CAPTCHA edits"
+          },
+          {
+            "path": "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json",
+            "assertion": "Consumer source isolation; no block/DSL/CAPTCHA edits"
+          }
+        ],
+        "reason": "Three package-consumer configurations against source 5fa99de report 13/13 checks. Consumer source isolation; no block/DSL/CAPTCHA edits. Separate 14-item semantic audit is absent; candidate is preliminary, not final-feed proof."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 1,
+        "criterion": "Mesmas tarefas locais, distâncias, contexto e configuração de browser são usadas para comparar os dois algoritmos.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 2,
+        "criterion": "Relatório registra duração planejada/observada, comprimento/deslocamento, intervalos, velocidade/aceleração com método e unidades, pausas e conclusão das tarefas.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 3,
+        "criterion": "Custo de carga fria, geração aquecida, alocações e memória por processo/página é separado do custo de despacho Playwright.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 4,
+        "criterion": "Condições do ambiente, hardware, OS, browser, Playwright, algoritmo e dataset são registradas.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 5,
+        "criterion": "Casos incluem movimentos curtos/longos, alvo estável, transporte lento e múltiplas páginas independentes.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 6,
+        "criterion": "Seeds controladas permitem repetir a geração; timestamps reais usam tolerâncias e não são prometidos como reprodutíveis bit a bit.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 7,
+        "criterion": "O orçamento inicial de geração é avaliado em máquina de referência; runner compartilhado não produz falha flaky por um limiar rígido sem contexto.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 8,
+        "criterion": "Relatório diferencia regressão de correção funcional, custo adicional e diferença esperada de ritmo.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 9,
+        "criterion": "Não se usa percentual de CAPTCHA, indetectabilidade ou stealth score como conclusão sem experimento específico autorizado.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 10,
+        "criterion": "Não são coletados movimentos reais de pessoas sem consentimento; amostras humanas adicionais não são requisito para concluir o ticket.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 21,
+        "criterionId": 11,
+        "criterion": "O procedimento tem um comando/fluxo documentado e resultado legível sem necessidade de serviço externo.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/evidence.json",
+            "assertion": "Exact BCL-only Cursory package consumer and package/source hashes."
+          },
+          {
+            "path": "artifacts/goal/native-package-demo-5fa99de/benchmark-run-1.stdout.txt",
+            "assertion": "Run 1; two additional retained runs in same directory."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "28/28 DOM checks; old API 37 types unchanged; 13 types and 74 members additive."
+          }
+        ],
+        "reason": "Three benchmark runs: p50 5.825 ms, p95 11.160 ms. The 10 ms value is an investigation target, not a universal guarantee. Measurement/DOM scope is limited to cited source-bound reports."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 1,
+        "criterion": "A lane obrigatória usa a versão-base 1.61.0 e instala explicitamente Chromium/dependências nas plataformas suportadas.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 1; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 1; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 1; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 1; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 1; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 2,
+        "criterion": "A lane de versão estável mais recente resolve a versão uma vez por workflow, registra o valor e o reutiliza nos jobs relacionados.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 2; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 2; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 2; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 2; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 2; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 3,
+        "criterion": "Matriz cobre build, testes de contratos, navegador local e empacotamento; testes não executados são skipped/job não executado, nunca sucesso por return silencioso.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 3; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 3; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 3; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 3; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 3; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 4,
+        "criterion": "Headless é exercitado regularmente; headed/Xvfb, Chrome e Edge Windows têm lanes adicionais proporcionais ao custo, com disponibilidade explícita.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 4; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 4; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 4; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 4; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 4; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 5,
+        "criterion": "Relatórios registram versões reais do browser, SDK e Playwright, evitando atribuir resultados a uma versão não instalada.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 5; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 5; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 5; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 5; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 5; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 6,
+        "criterion": "Auditoria da superfície identifica métodos/options novos e retornos Playwright ainda sem adaptação; desconhecidos continuam delegados, não parcialmente interceptados.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 6; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 6; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 6; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 6; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 6; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 7,
+        "criterion": "Testes incluem frames, eventos, popups, identidade de referências, semântica de ações e lifecycle já implementados.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 7; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 7; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 7; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 7; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 7; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 8,
+        "criterion": "Nenhum browser test depende de sites externos ou resultados de CAPTCHA.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 8; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 8; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 8; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 8; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 8; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 9,
+        "criterion": "Falhas intermitentes não são escondidas por retries que transformem regressões persistentes em sucesso; evidências de falha permanecem acessíveis.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 9; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 9; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 9; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 9; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 9; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 10,
+        "criterion": "Atualizar a versão mínima do pacote é decisão posterior, não consequência automática de uma lane latest verde.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 10; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 10; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 10; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 10; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 10; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 22,
+        "criterionId": 11,
+        "criterion": "A documentação permite reproduzir localmente cada lane e entende que Xvfb não fornece GPU hardware.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/5fa99de-required.log",
+            "assertion": "Lane result relevant to criterion 11; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-latest.log",
+            "assertion": "Lane result relevant to criterion 11; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/5fa99de-chrome.log",
+            "assertion": "Lane result relevant to criterion 11; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/d574f6b-edge.log",
+            "assertion": "Lane result relevant to criterion 11; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          },
+          {
+            "path": "artifacts/goal/latest-current-linux.log",
+            "assertion": "Lane result relevant to criterion 11; Windows required/latest 177, Cursory 37, Chrome 177, current Edge 177; latest current Linux absent."
+          }
+        ],
+        "reason": "Current Windows evidence exists, including d574 Edge fixture changes. Current Linux proof is absent: SpyBrowser-Ubuntu24 executor killed after 15 h and CLI list+echo timed out. Older 776 Linux is not substituted. Environment evidence gap, not a proven implementation gap."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 1,
+        "criterion": "Pacotes são construídos e instalados via feed local em consumidor limpo, não apenas por project reference dentro da solution.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 2,
+        "criterion": "O grafo contém a DLL Cursory separada, dados embarcados e nenhuma dependência adicional de servidor/processo de geração.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 3,
+        "criterion": "O teste reconhece a instalação e o driver normal do Playwright; não exige erroneamente a ausência de todo Node no processo de automação.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 4,
+        "criterion": "Conteúdo real de nupkg/nuspec, fontes correspondentes, símbolos, licenças e avisos de código/dados/helpers são verificados.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 5,
+        "criterion": "Checklist LGPL/proveniência está concluído ou aponta bloqueio explícito de distribuição; separação em DLL não é apresentada como parecer jurídico suficiente.",
+        "status": "verified",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 6,
+        "criterion": "Ativar Cursory, selecionar Bézier e Humanize=false funcionam pelos mesmos comandos Playwright, sem fallback silencioso durante uma ação.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 7,
+        "criterion": "Pin da versão anterior é demonstrado sem migração destrutiva de identidade/perfil; recursos continuam descartados corretamente.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 8,
+        "criterion": "Releases documentam semântica do modo compatível, diferenças do legado, matriz homologada, limites do produto e rollback.",
+        "status": "pending",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 9,
+        "criterion": "Evidências RpaBlockly, browser contracts, paridade e benchmark são associadas ao candidato instalado.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 10,
+        "criterion": "Nenhum default global é promovido silenciosamente; Cursory permanece opt-in até decisão explícita.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 11,
+        "criterion": "Snapshots históricos não são dependência obrigatória desta pré-release; se já incluídos no pacote, só são anunciados como homologados após o ticket 24.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 23,
+        "criterionId": 12,
+        "criterion": "Publicação em NuGet/GitHub externo exige aprovação operacional separada; este ticket não autoriza esse efeito por si só.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed package result technicalAllPassed=true; exact source 5fa99de and package payload/nuspec/symbol/source/license provenance inventory; rights blocked."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed consumer check summary, package hashes and source linkage."
+          },
+          {
+            "path": "artifacts/goal/historical-5fa99de-windows/README.md",
+            "assertion": "e217 baseline versus 5fa99de package DOM and API compatibility."
+          }
+        ],
+        "reason": "Criterion 23.05 is satisfied by the explicit distribution-rights block, not legal clearance. Other technical package checks are source-bound to 5fa99de and preliminary; they do not establish final-feed acceptance. No publication/promotion."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 1,
+        "criterion": "Consumidor instalado a partir de pacote executa salvar, selecionar baseline, comparar e descartar snapshots, sem acesso ao workspace de desenvolvimento.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 2,
+        "criterion": "Schema de snapshot é independente do schema de identidade e da versão dos dados do algoritmo.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 3,
+        "criterion": "Rollback do pacote não altera/corrompe perfil ou manifesto de identidade; snapshots de versão mais nova são ignorados ou rejeitados de forma clara conforme contrato.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 4,
+        "criterion": "Desligar persistência de snapshots e excluir arquivos do recurso não remove storage state, cookies, perfis ou identidades.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 5,
+        "criterion": "Falta de permissão, interrupção de escrita e sessões concorrentes são exercitadas no formato distribuído, preservando baseline anterior válida.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 6,
+        "criterion": "Testes confirmam ausência de secrets e isolamento dos dados do recurso, inclusive após erros e rollback.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 7,
+        "criterion": "Mudanças legítimas de versões e GPU aparecem como informação contextual, sem alterar automaticamente a baseline nem bloquear a execução.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 8,
+        "criterion": "Manual operacional cobre ativação, comparação, retenção, exportação quando disponível e descarte seguro.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 9,
+        "criterion": "Release checklist da entrega completa associa snapshots às evidências de compatibilidade, licenciamento e desempenho do núcleo.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      },
+      {
+        "ticketId": 24,
+        "criterionId": 10,
+        "criterion": "Não se publica externamente ou altera defaults globais sem aprovação específica, mesmo com todos os testes concluídos.",
+        "status": "partial",
+        "evidence": [
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Installed technical snapshot/package evidence; technicalAllPassed=true, source 5fa99de; preliminary, not a final-feed gate."
+          },
+          {
+            "path": "artifacts/goal/installed-5fa99de-windows-proof/distribution-evidence.json",
+            "assertion": "Retained Windows installed package-only checks and package/hash provenance."
+          }
+        ],
+        "reason": "Relevant installed snapshot checks are retained and technicalAllPassed=true, but source is the preliminary 5fa99de package, no final feed exists, Linux current-source proof is absent, and rights remain blocked. This is a distribution-evidence gap, not proof of implementation failure."
+      }
+    ]
+  }
+}

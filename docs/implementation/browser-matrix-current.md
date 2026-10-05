@@ -1,28 +1,31 @@
-# Current browser matrix integration evidence
+# Browser/platform matrix — source candidate at `35b6656`
 
-Runtime product source is `1e9c3e9`; the following working-tree test mechanics changes are separately identified and must be committed before the final source/package audit. This report does not declare final release acceptance.
+**Disposition:** suitable as the documentation cut for a *new local final-source-candidate feed*, not a final-feed, release, or publication approval. Current HEAD is `35b6656caa1b272c074f32b16da67387cb1374df`. `git diff 5fa99de..HEAD -- src` is empty: production `src/` is unchanged since `5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a`. These source-era results therefore describe the same production source; test/harness revisions and package identity still matter. No existing preliminary feed is final-parity evidence.
 
-## Actual executions
+## Evidence matrix
 
-| Scope | Environment | Result | Retained TRX directory |
-|---|---|---|---|
-| Required 1.61, complete suites, foreground focus enabled | Windows, .NET SDK 8.0.319 | 15 Cursory + 130 Playwright passed, 0 skipped | `artifacts/goal/required-headed-current-results/` |
-| Required 1.61, complete suites, foreground focus enabled | WSL Ubuntu 20.04, .NET SDK 8.0.319, Xvfb | 15 + 130 passed, 0 skipped | `artifacts/goal/linux-required161-clean-results/` |
-| Reviewed 1.63, complete suites, foreground focus enabled | Windows, .NET SDK 8.0.319 | 15 + 130 passed, 0 skipped | `artifacts/goal/latest-current-windows-results/` |
-| Reviewed 1.63, complete suites, foreground focus enabled | WSL Ubuntu 24.04, Microsoft .NET SDK 8.0.319, Xvfb, non-root `spyreview` | 15 + 130 passed, 0 skipped | `artifacts/goal/ubuntu24-clock-fixed-latest-results/` |
-| Required 1.61, selected native movement/input/diagnostic/integration contracts, headed stable Edge | Windows, Edge 154.0.4258.53 | 16 passed | `artifacts/goal/channel-msedge-controlled-results/` |
-| Same selected scope, headed stable Chrome | Windows, Chrome 154.0.8037.93 | 16 passed | `artifacts/goal/channel-chrome-controlled-results/` |
+| Platform/lane | Playwright/browser | Playwright tests | Cursory tests | Evidence / scope |
+|---|---|---:|---:|---|
+| Linux required | 1.61.0, Ubuntu 24 / Xvfb, non-root | 177 passed, 0 skipped | 37 passed, 0 skipped | `artifacts/goal/linux-5fa99de-zero-skip/required161/`; exact source archive 5fa99de |
+| Linux reviewed | 1.63.0, Ubuntu 24 / Xvfb | 177 passed, 0 skipped | 37 passed, 0 skipped | `artifacts/goal/linux-5fa99de-zero-skip/reviewed163/`; reviewed lane, not a minimum-version promotion |
+| Linux Chrome | 1.61.0, Chrome 154.0.8037.97 / Xvfb | 177 passed, 0 skipped | 37 passed, 0 skipped | `artifacts/goal/linux-5fa99de-zero-skip/chrome161/` |
+| Windows required | 1.61.0 | 177 passed | 37 passed | `artifacts/goal/5fa99de-required-results/`, `5fa99de-cursory-results/` |
+| Windows reviewed | 1.63.0 | 177 passed | 37 passed | `artifacts/goal/5fa99de-latest-results/` |
+| Windows Chrome | stable Chrome | 177 passed | Cursory separately 37 passed | `artifacts/goal/5fa99de-chrome-results/` |
+| Windows Edge | Edge, source-compatible test cut `d574f6b` | 177 passed | — | `artifacts/goal/d574f6b-edge-results/`; production source unchanged from 5fa99de |
 
-The channel rows are selected contracts, not a claim that every test honors the channel setting. These are current-source executions, not final installed-package executions.
+Linux zero-skip run-status and six TRX counters establish 531/531 Playwright and 111/111 Cursory passed across the three lanes. The lane flags enable browser/headed behavior, but do **not** force every fixture to use channel Chrome or headed mode. The Windows Edge result is the separate `d574f6b` fixture/test cut; describe it as source-compatible, not as a run at current HEAD. Older `776362f` and `b1777b3` matrices are historical and are not being promoted as this cut's acceptance.
 
-## Failures retained and concrete corrections
+## Consumer and package evidence (preliminary, source-bound)
 
-1. The optional foreground-focus test previously returned early while xUnit counted it passed. It now has an explicit `HeadedProbeFact` skip when not enabled. Earlier no-skip totals do **not** prove that headed test executed. The runs above enabled its flag; standalone actual Windows and Xvfb runs also passed in `artifacts/goal/headed-focus-current-{windows,linux}/`.
-2. Page independence compared two `performance.now()` values despite different page creation/time origins. On Ubuntu 24 the difference was 1684.8 ms, with the page created earlier already having completed a typing phase. Event timestamps now use `performance.timeOrigin + performance.now()`. The existing 1500 ms assertion was retained, not widened. Original failure: `artifacts/goal/ubuntu24-complete-latest-results/`.
-3. Headed Chrome/Edge introduced OS-DPI rounding even for **raw Playwright with no SpyBrowser references**: configured 1 yielded 1.0000000149011612; configured 1.5 yielded 1.5000000596046448; configured 2 yielded 2.0000000298023224. A raw control demonstrated exact 1/1.25/1.5/2 with `--force-device-scale-factor=1` normalizing the host window base DPI while each context still used its configured emulation scale. Only the geometry test fixture opts into that host normalization; its exact equality, endpoint assertions, and all four scales remain. Original failures and the sixteen raw observations: `artifacts/goal/channel-{msedge,chrome}-current-results/`, `artifacts/goal/dpr-channel-raw-control.log`. Production DPR comparison remains 0.01 and still warns for configured 1.25 versus observed 1.5.
-4. Reviewed Playwright 1.63 does not support Ubuntu 20.04 downloads. No host-platform override was used to pretend support. A separate Ubuntu 24.04 distro was imported from the official Canonical WSL rootfs, SHA-256 `8251e27ffff381a4af5f41dcb94d867de3e0d9774a9241908ab34555d99315ea` verified against HTTPS `SHA256SUMS`. Stored under `D:/Temp/spybrowser-ubuntu24-provision/`, distro `SpyBrowser-Ubuntu24`, leaving the original/default distro unchanged. The native latest driver/browser and stable Chrome were provisioned there. Initial missing headless shell/Chrome and unsupported-OS failures remain in the corresponding logs/TRX.
-5. Switching Playwright versions in a reused Linux output directory left newer driver files beside the older .NET assembly because copy-preserve-newest did not overwrite them. Required 1.61 was rerun with a fresh, explicit `--artifacts-path`, not accepted from that mixed output. The wrong-driver failure is retained in `artifacts/goal/linux-required-clock-fixed-results/`. Version lanes must use distinct output directories.
+- Actual RpaBlockly adapter/event harness consumed `C:/Temp/spybrowser-feed-review-5fa99de` (version `0.2.0-beta.2.review.5fa99de`): **14/14** named required checks for Cursory + PlaywrightCompatible + Humanize on. Its separate semantic map records **17** individually asserted operations; 14 is not a claim of 17 or exhaustive API coverage. See [recovery-consumer-event-proof](recovery-consumer-event-proof.md). Historical Bézier/Legacy-on and Humanize-off runs each passed **13** checks on that older harness; they are not the new 14-check event proof.
+- Linux installed-package run: 13 technical checks passed, `technicalAllPassed=true`, while rights remain BLOCKED, `allPassed=false`, and `externalPublicationAllowed=false`. Windows installed evidence is under `artifacts/goal/installed-5fa99de-windows-proof/`. Both are preliminary feed evidence, not final-feed parity or signoff.
+- Preliminary package inspection checked package contents, license/source/PDB material and source rebuild. A separate-DLL arrangement is not legal clearance.
 
-Fresh-process default/off/Cursory controls also passed the tightened 1,000,000-byte constructor allocation ceiling on Windows and Linux, with isolated positive Cursory loading. Evidence: `artifacts/goal/default-resource-1e9c3e9-{windows,linux}/`. Their explicit dirty/source metadata remains preliminary.
+## Reproduction and interpretation
 
-Distribution rights remain unverified, external publication remains prohibited, and criterion acceptance/final-feed consumer evidence remains pending. No default promotion or publication occurred.
+Use exact commands, SDK/environment, TRX, and source-archive hash in [Linux zero-skip proof](linux-zero-skip-proof.md) and [recovered Linux proof](recovered-linux-proof.md). For Windows, use logs/results under the evidence paths above. Test results are source-era results; they do not attest to an as-yet-unbuilt package tied to current HEAD. Required Playwright remains 1.61.0; 1.63.0 is a reviewed lane only. The original earlier Linux skipped-probe runs remain historical records and were not relabeled; the zero-skip rerun explicitly enabled the probe.
+
+## Gate before calling the installed candidate final
+
+After the documentation/source cut is frozen, build a **new** local feed from the complete source candidate, bind its full SHA and package/source hashes, inspect package contents, and rerun Windows/Linux installed-package and consumer checks against those exact packages. Then reconcile the remaining ticket/ledger criteria individually. Until those steps, do not claim a final feed, package parity, all 260 criteria complete, publication permission, rights clearance, or default promotion. External publication remains blocked by dataset redistribution rights; no current-final-feed parity is established.

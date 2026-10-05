@@ -1,0 +1,70 @@
+{
+  "candidateVersion": "0.2.0-beta.2.review.5fa99de",
+  "previousVersion": "0.1.0-baseline.e217359",
+  "statuses": [
+    {
+      "check": "previous-package-provenance",
+      "status": "PASS",
+      "baseline": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+      "version": "0.1.0-baseline.e217359",
+      "sourceArchiveSha256": "91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f"
+    },
+    {
+      "check": "installed-cli-package-offline-version",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate-cursory",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate-bezier",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate-off",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-os-crash-during-sdk-write-baseline-preserved",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-real-permission-denial",
+      "status": "PASS"
+    },
+    {
+      "check": "snapshot-gpu-context-information",
+      "status": "PASS"
+    },
+    {
+      "check": "previous-bezier-rollback",
+      "status": "PASS"
+    },
+    {
+      "check": "previous-package-ignores-newer-snapshot",
+      "status": "PASS",
+      "reason": "The real pre-snapshot package opened the unchanged identity/profile/storage state while leaving a schema-999 optional snapshot byte-exact; no nonexistent reader compatibility is claimed."
+    },
+    {
+      "check": "previous-humanize-off",
+      "status": "PASS"
+    },
+    {
+      "check": "browser-executable-and-official-driver",
+      "status": "PASS",
+      "reason": "The installed-package launch completed through standard Microsoft.Playwright discovery."
+    },
+    {
+      "check": "external-dataset-distribution-license",
+      "status": "BLOCKED",
+      "reason": "Dataset license/redistribution clearance is not accepted; no external distribution is authorized."
+    }
+  ],
+  "allPassed": false
+}
+Evidence: /mnt/d/SpyBrowser/installed-5fa99de-linux-proof/distribution-evidence.json

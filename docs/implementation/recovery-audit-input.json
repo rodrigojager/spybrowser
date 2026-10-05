@@ -1,0 +1,2089 @@
+{
+  "schemaVersion": 1,
+  "title": "Bounded acceptance audit — input tickets 06–14",
+  "workspace": "D:/SpyBrowser",
+  "auditedHead": "d574f6b6eedc026ebaaa7ed0528d0c20cc988dea",
+  "productionPackageSourceCut": "5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a",
+  "contract": "Literal tickets 06–14; canonical ledger is discovery aid, not status authority.",
+  "ownership": "Only this JSON and companion Markdown are outputs.",
+  "parentRuns": [
+    {
+      "path": "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+      "total": 177,
+      "executed": 177,
+      "passed": 177,
+      "failed": 0,
+      "notExecuted": 0
+    },
+    {
+      "path": "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+      "total": 177,
+      "executed": 177,
+      "passed": 177,
+      "failed": 0,
+      "notExecuted": 0
+    },
+    {
+      "path": "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx",
+      "total": 177,
+      "executed": 177,
+      "passed": 177,
+      "failed": 0,
+      "notExecuted": 0
+    },
+    {
+      "path": "artifacts/goal/5fa99de-cursory-results/cursory-final-cut.trx",
+      "total": 37,
+      "executed": 37,
+      "passed": 37,
+      "failed": 0,
+      "notExecuted": 0
+    }
+  ],
+  "consumerLanes": {
+    "cursory-compatible-on": "13/13",
+    "bezier-legacy-on": "13/13",
+    "cursory-compatible-off": "13/13",
+    "semanticApiAudit": "GAP: minimum 14 checks not run; 13/13 is not a substitute."
+  },
+  "entries": [
+    {
+      "ticketId": 6,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input",
+          "assertion": "Line 14. Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "source/document",
+          "path": "docs/humanization.md",
+          "assertion": "Documented compatibility, raw bypass, support boundary and/or legacy contract"
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The option defaults to Legacy (ActionsCompatibilityTests.Compatibility_mode_is_opt_in_and_validated); humanization.md names PlaywrightCompatible as opt-in and documents supported Fill/Clear only. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input",
+          "assertion": "Line 14. Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The matrix fills and clears raw and wrapped inputs, compares values and input traces; for Fill it asserts wrapped keydown/keyup absent. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input",
+          "assertion": "Line 14. Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_routes_options_actionability_and_frame_routes_match_native_contract",
+          "assertion": "Line 71. Fill_routes_options_actionability_and_frame_routes_match_native_contract; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_routes_options_actionability_and_frame_routes_match_native_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The options matrix asserts both raw and wrapped errors for hidden/disabled/multiple matches and strictness category for multiple matches. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input",
+          "assertion": "Line 14. Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 6,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_routes_options_actionability_and_frame_routes_match_native_contract",
+          "assertion": "Line 71. Fill_routes_options_actionability_and_frame_routes_match_native_contract; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_routes_options_actionability_and_frame_routes_match_native_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The options test exercises Timeout=0 on page/locator Fill, empty Clear options, explicit options unchanged, hidden/disabled/strict errors. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 7,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_routes_options_actionability_and_frame_routes_match_native_contract",
+          "assertion": "Line 71. Fill_routes_options_actionability_and_frame_routes_match_native_contract; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_routes_options_actionability_and_frame_routes_match_native_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Fill_routes_options_actionability_and_frame_routes_match_native_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input",
+          "assertion": "Line 14. Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "source/document",
+          "path": "docs/humanization.md",
+          "assertion": "Documented compatibility, raw bypass, support boundary and/or legacy contract"
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Fill_and_clear_match_raw_for_native_controls_and_javascript_controlled_input` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters",
+          "assertion": "Line 278. Typing_deadline_is_bounded_and_closing_page_stops_later_characters; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Actual Fill wait-close test awaits the original Fill task; the typing-timeout test is not substituted."
+    },
+    {
+      "ticketId": 6,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "consumer-flow",
+          "assertion": "Pinned existing RpaBlockly V1/V2 flows ran; all three package lanes 13/13. Not the separate minimum-14 semantic audit.",
+          "artifacts": [
+            "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/summary.json",
+            "artifacts/goal/consumer-5fa99de-cursory-compatible-on-proof/evidence.json",
+            "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/summary.json",
+            "artifacts/goal/consumer-5fa99de-bezier-legacy-on-proof/evidence.json",
+            "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/summary.json",
+            "artifacts/goal/consumer-5fa99de-cursory-compatible-off-proof/evidence.json"
+          ]
+        }
+      ],
+      "reason": "Unchanged consumer blocks is evidenced by the existing pinned V1/V2 consumer flows in the three lanes; it is not a timeout or pointer observation test. The independent minimum-14 semantic API audit remains unrun and is not claimed."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionsCompatibilityTests.cs",
+          "test": "SpyBrowser.Tests.ActionsCompatibilityTests.Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type",
+          "assertion": "Line 29. Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type; current parent result: SpyBrowser.Tests.ActionsCompatibilityTests.Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts compatible routing distinguishes native Fill/InsertText/Press from paced Type. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order",
+          "assertion": "Line 120. Insert_press_and_type_keep_distinct_event_traces_and_unicode_order; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts distinct InsertText/Press/Type traces and Unicode order. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order",
+          "assertion": "Line 120. Insert_press_and_type_keep_distinct_event_traces_and_unicode_order; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Insert_press_and_type_keep_distinct_event_traces_and_unicode_order` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order",
+          "assertion": "Line 120. Insert_press_and_type_keep_distinct_event_traces_and_unicode_order; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Insert_press_and_type_keep_distinct_event_traces_and_unicode_order` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 5,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/InputContractMergeRegressionTests.cs",
+          "test": "SpyBrowser.Tests.InputContractMergeRegressionTests.Serialized_native_select_options_preserves_typed_result_and_explicit_options",
+          "assertion": "Line 9. Serialized_native_select_options_preserves_typed_result_and_explicit_options; current parent result: SpyBrowser.Tests.InputContractMergeRegressionTests.Serialized_native_select_options_preserves_typed_result_and_explicit_options.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts typed result and explicit options on select; not every route or Delay."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 6,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/PlaywrightApiAuditTests.cs",
+          "test": "SpyBrowser.Tests.PlaywrightApiAuditTests.Reviewed_new_locator_surfaces_delegate_and_preserve_wrapping",
+          "assertion": "Line 46. Reviewed_new_locator_surfaces_delegate_and_preserve_wrapping; current parent result: SpyBrowser.Tests.PlaywrightApiAuditTests.Reviewed_new_locator_surfaces_delegate_and_preserve_wrapping.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts reviewed locator surfaces delegate/preserve wrapping, not all mappings."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 7,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/HumanizationDiagnosticsTests.cs",
+          "test": "SpyBrowser.Tests.HumanizationDiagnosticsTests.Generic_task_result_and_exception_instance_are_preserved",
+          "assertion": "Line 77. Generic_task_result_and_exception_instance_are_preserved; current parent result: SpyBrowser.Tests.HumanizationDiagnosticsTests.Generic_task_result_and_exception_instance_are_preserved.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts task result and exception instance on covered helper path."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 8,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/CleanupCauseAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.CleanupCauseAcceptanceTests.Failed_down_is_not_blindly_released",
+          "assertion": "Line 79. Failed_down_is_not_blindly_released; current parent result: SpyBrowser.Tests.CleanupCauseAcceptanceTests.Failed_down_is_not_blindly_released.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/CleanupCauseAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.CleanupCauseAcceptanceTests.Cancellation_remains_primary_when_owned_button_cleanup_faults_and_action_is_not_repeated",
+          "assertion": "Line 11. Cancellation_remains_primary_when_owned_button_cleanup_faults_and_action_is_not_repeated; current parent result: SpyBrowser.Tests.CleanupCauseAcceptanceTests.Cancellation_remains_primary_when_owned_button_cleanup_faults_and_action_is_not_repeated.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts no blind release after failed Down and primary cancellation survives cleanup fault; not complete chord ownership matrix."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order",
+          "assertion": "Line 120. Insert_press_and_type_keep_distinct_event_traces_and_unicode_order; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Insert_press_and_type_keep_distinct_event_traces_and_unicode_order` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 7,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order",
+          "assertion": "Line 120. Insert_press_and_type_keep_distinct_event_traces_and_unicode_order; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Insert_press_and_type_keep_distinct_event_traces_and_unicode_order.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Insert_press_and_type_keep_distinct_event_traces_and_unicode_order` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 1,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/EffectFaultAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.EffectFaultAcceptanceTests.Compatible_final_native_action_is_not_repeated_when_it_faults_after_effect",
+          "assertion": "Line 18. Compatible_final_native_action_is_not_repeated_when_it_faults_after_effect; current parent result: SpyBrowser.Tests.EffectFaultAcceptanceTests.Compatible_final_native_action_is_not_repeated_when_it_faults_after_effect(action: \"dblclick\", unsafeBox: True, faultAfterEffect: True).",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Injected effect-fault asserts one final native action; does not exhaust every preparatory path."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once",
+          "assertion": "Line 153. Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/RemainingInputContractTests.cs",
+          "test": "SpyBrowser.Tests.RemainingInputContractTests.Compatible_double_click_preserves_native_detail_and_dblclick_event",
+          "assertion": "Line 10. Compatible_double_click_preserves_native_detail_and_dblclick_event; current parent result: SpyBrowser.Tests.RemainingInputContractTests.Compatible_double_click_preserves_native_detail_and_dblclick_event.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts native detail and dblclick event. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once",
+          "assertion": "Line 153. Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once",
+          "assertion": "Line 153. Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 6,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/EffectFaultAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.EffectFaultAcceptanceTests.Compatible_final_native_action_is_not_repeated_when_it_faults_after_effect",
+          "assertion": "Line 18. Compatible_final_native_action_is_not_repeated_when_it_faults_after_effect; current parent result: SpyBrowser.Tests.EffectFaultAcceptanceTests.Compatible_final_native_action_is_not_repeated_when_it_faults_after_effect(action: \"dblclick\", unsafeBox: True, faultAfterEffect: True).",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Injected after-effect tests assert one final native action for covered click/dblclick variants."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 7,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once",
+          "assertion": "Line 153. Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/EffectFaultAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.EffectFaultAcceptanceTests.Explicit_native_options_are_forwarded_by_identity_without_mutation",
+          "assertion": "Line 56. Explicit_native_options_are_forwarded_by_identity_without_mutation; current parent result: SpyBrowser.Tests.EffectFaultAcceptanceTests.Explicit_native_options_are_forwarded_by_identity_without_mutation.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts Trial skips preparation and explicit option identity; not exhaustive Force/Position/Modifiers/Button."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 8,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/SharedInputBudgetTests.cs",
+          "test": "SpyBrowser.Tests.SharedInputBudgetTests.Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts",
+          "assertion": "Line 78. Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts; current parent result: SpyBrowser.Tests.SharedInputBudgetTests.Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Readiness_deadline_expires_before_late_target_appears",
+          "assertion": "Line 251. Readiness_deadline_expires_before_late_target_appears; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Readiness_deadline_expires_before_late_target_appears.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts shared budget cap and readiness expiry; not every stage boundary."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 9,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/SDKDatasetAdmissionFaultTests.cs",
+          "test": "SpyBrowser.Tests.SDKDatasetAdmissionFaultTests.Bad_dataset_precedes_locator_wait_trial_and_scroll",
+          "assertion": "Line 31. Bad_dataset_precedes_locator_wait_trial_and_scroll; current parent result: SpyBrowser.Tests.SDKDatasetAdmissionFaultTests.Bad_dataset_precedes_locator_wait_trial_and_scroll(playwrightCompatible: True).",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ClickFillAcceptanceProofTests.cs",
+          "test": "SpyBrowser.Tests.ClickFillAcceptanceProofTests.Compatible_click_re_resolves_a_target_that_moves_during_pointer_preparation",
+          "assertion": "Line 10. Compatible_click_re_resolves_a_target_that_moves_during_pointer_preparation; current parent result: SpyBrowser.Tests.ClickFillAcceptanceProofTests.Compatible_click_re_resolves_a_target_that_moves_during_pointer_preparation.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts failed admission before effects and re-resolution of moved target; unsafe fallback not exhaustive."
+    },
+    {
+      "ticketId": 8,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once",
+          "assertion": "Line 153. Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "source/document",
+          "path": "docs/humanization.md",
+          "assertion": "Documented compatibility, raw bypass, support boundary and/or legacy contract"
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Trial_click_options_do_not_prepare_pointer_and_default_click_runs_once` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionsCompatibilityTests.cs",
+          "test": "SpyBrowser.Tests.ActionsCompatibilityTests.Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type",
+          "assertion": "Line 29. Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type; current parent result: SpyBrowser.Tests.ActionsCompatibilityTests.Compatible_actions_preserve_native_fill_insert_press_click_and_unicode_type.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts compatible command routing, keeping Fill/InsertText native and Type paced. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/RemainingInputContractTests.cs",
+          "test": "SpyBrowser.Tests.RemainingInputContractTests.Compatible_typing_delegates_multirune_grapheme_to_native_before_any_paced_prefix",
+          "assertion": "Line 31. Compatible_typing_delegates_multirune_grapheme_to_native_before_any_paced_prefix; current parent result: SpyBrowser.Tests.RemainingInputContractTests.Compatible_typing_delegates_multirune_grapheme_to_native_before_any_paced_prefix.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters",
+          "assertion": "Line 278. Typing_deadline_is_bounded_and_closing_page_stops_later_characters; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Multilingual final content/order and native delegation before paced multirune prefix cover tested cases, not universal IME."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters",
+          "assertion": "Line 278. Typing_deadline_is_bounded_and_closing_page_stops_later_characters; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Typing_deadline_is_bounded_and_closing_page_stops_later_characters` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 4,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/RemainingInputContractTests.cs",
+          "test": "SpyBrowser.Tests.RemainingInputContractTests.Compatible_typing_delegates_multirune_grapheme_to_native_before_any_paced_prefix",
+          "assertion": "Line 31. Compatible_typing_delegates_multirune_grapheme_to_native_before_any_paced_prefix; current parent result: SpyBrowser.Tests.RemainingInputContractTests.Compatible_typing_delegates_multirune_grapheme_to_native_before_any_paced_prefix.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts native fallback before prefix for tested multi-rune grapheme; documentation/IME scope incomplete."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters",
+          "assertion": "Line 278. Typing_deadline_is_bounded_and_closing_page_stops_later_characters; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Typing_deadline_is_bounded_and_closing_page_stops_later_characters` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 6,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/SharedInputBudgetTests.cs",
+          "test": "SpyBrowser.Tests.SharedInputBudgetTests.Compatible_typing_focus_receives_the_shared_default_budget_not_a_fresh_typing_budget",
+          "assertion": "Line 96. Compatible_typing_focus_receives_the_shared_default_budget_not_a_fresh_typing_budget; current parent result: SpyBrowser.Tests.SharedInputBudgetTests.Compatible_typing_focus_receives_the_shared_default_budget_not_a_fresh_typing_budget.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/SharedInputBudgetTests.cs",
+          "test": "SpyBrowser.Tests.SharedInputBudgetTests.Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts",
+          "assertion": "Line 78. Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts; current parent result: SpyBrowser.Tests.SharedInputBudgetTests.Sdk_total_budget_caps_a_larger_tracked_default_before_any_stage_starts.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts shared default/cap before stage; long-text policy not fully covered."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 7,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task",
+          "assertion": "Line 39. Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Closing_page_during_humanized_typing_stops_the_inflight_input",
+          "assertion": "Line 63. Closing_page_during_humanized_typing_stops_the_inflight_input; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Closing_page_during_humanized_typing_stops_the_inflight_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Real page-close test awaits the original typing task and asserts it does not complete successfully."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Focus_loss_during_type_does_not_replay_or_reinsert_the_prefix",
+          "assertion": "Line 264. Focus_loss_during_type_does_not_replay_or_reinsert_the_prefix; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Focus_loss_during_type_does_not_replay_or_reinsert_the_prefix.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Focus-loss-after-first-input asserts one prefix and no replay."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters",
+          "assertion": "Line 278. Typing_deadline_is_bounded_and_closing_page_stops_later_characters; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Typing_deadline_is_bounded_and_closing_page_stops_later_characters` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 9,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters",
+          "assertion": "Line 278. Typing_deadline_is_bounded_and_closing_page_stops_later_characters; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Typing_deadline_is_bounded_and_closing_page_stops_later_characters.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Typing_deadline_is_bounded_and_closing_page_stops_later_characters` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel",
+          "assertion": "Line 317. Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Concurrent_raw_and_decorated_clicks_are_serialized_without_duplicates",
+          "assertion": "Line 10. Concurrent_raw_and_decorated_clicks_are_serialized_without_duplicates; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Concurrent_raw_and_decorated_clicks_are_serialized_without_duplicates.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Raw/decorated click serialization and helper-vs-wrapped input gate tests support the covered surfaces."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 2,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Independent_pages_can_accept_input_in_parallel",
+          "assertion": "Line 23. Independent_pages_can_accept_input_in_parallel; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Independent_pages_can_accept_input_in_parallel.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel",
+          "assertion": "Line 317. Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Public_helpers_share_the_page_gate_with_wrapped_input_and_keep_other_pages_parallel.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Parallel-page assertions disprove a global lock; not every cursor/RNG/key/queue state has independent concurrent assertion."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 3,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/SharedInputBudgetTests.cs",
+          "test": "SpyBrowser.Tests.SharedInputBudgetTests.Queued_native_default_is_reduced_in_raw_options_and_public_cancellation_prevents_operation",
+          "assertion": "Line 13. Queued_native_default_is_reduced_in_raw_options_and_public_cancellation_prevents_operation; current parent result: SpyBrowser.Tests.SharedInputBudgetTests.Queued_native_default_is_reduced_in_raw_options_and_public_cancellation_prevents_operation.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/DefaultTimeoutPrecedenceTests.cs",
+          "test": "SpyBrowser.Tests.DefaultTimeoutPrecedenceTests.Configured_launch_default_is_used_by_compatible_stages",
+          "assertion": "Line 13. Configured_launch_default_is_used_by_compatible_stages; current parent result: SpyBrowser.Tests.DefaultTimeoutPrecedenceTests.Configured_launch_default_is_used_by_compatible_stages.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "The passed assertion covers only a subset of the literal criterion; remaining coverage is stated below. Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts queue consumes remaining native timeout, queued cancellation prevents invocation, launch default tracked."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Independent_pages_can_accept_input_in_parallel",
+          "assertion": "Line 23. Independent_pages_can_accept_input_in_parallel; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Independent_pages_can_accept_input_in_parallel.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Independent_pages_can_accept_input_in_parallel` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 5,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task",
+          "assertion": "Line 39. Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Typing_deadline_closes_the_page_instead_of_abandoning_an_input_task.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ProbeCleanupTests.cs",
+          "test": "SpyBrowser.Tests.ProbeCleanupTests.Evaluation_cancellation_closes_probe_and_observes_late_protocol_fault_without_more_sends",
+          "assertion": "Line 10. Evaluation_cancellation_closes_probe_and_observes_late_protocol_fault_without_more_sends; current parent result: SpyBrowser.Tests.ProbeCleanupTests.Evaluation_cancellation_closes_probe_and_observes_late_protocol_fault_without_more_sends.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Close and late-fault tests support selected lifetimes; not all initiated task/fault combinations."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 6,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ProbeCleanupTests.cs",
+          "test": "SpyBrowser.Tests.ProbeCleanupTests.Evaluation_cancellation_closes_probe_and_observes_late_protocol_fault_without_more_sends",
+          "assertion": "Line 10. Evaluation_cancellation_closes_probe_and_observes_late_protocol_fault_without_more_sends; current parent result: SpyBrowser.Tests.ProbeCleanupTests.Evaluation_cancellation_closes_probe_and_observes_late_protocol_fault_without_more_sends.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/MonotonicMovementSchedulerTests.cs",
+          "test": "SpyBrowser.Tests.MonotonicMovementSchedulerTests.Cancellation_during_wait_prevents_a_send",
+          "assertion": "Line 61. Cancellation_during_wait_prevents_a_send; current parent result: SpyBrowser.Tests.MonotonicMovementSchedulerTests.Cancellation_during_wait_prevents_a_send.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Fake cancellation and close tests assert no sends on tested boundaries; WaitAsync alone is not treated as cancellation."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 7,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/MonotonicMovementSchedulerTests.cs",
+          "test": "SpyBrowser.Tests.MonotonicMovementSchedulerTests.Cancellation_during_wait_prevents_a_send",
+          "assertion": "Line 61. Cancellation_during_wait_prevents_a_send; current parent result: SpyBrowser.Tests.MonotonicMovementSchedulerTests.Cancellation_during_wait_prevents_a_send.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Owned helper token behavior is tested; no-token Playwright interface limitations are not documented exhaustively."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/newPointerObservationTests.cs",
+          "test": "SpyBrowser.Tests.PointerObservationTests.Compatible_locator_hover_during_drag_uses_one_native_hover_without_releasing_owner_button",
+          "assertion": "Current source path correction: Compatible_locator_hover_during_drag_uses_one_native_hover_without_releasing_owner_button; current parent result: SpyBrowser.Tests.PointerObservationTests.Compatible_locator_hover_during_drag_uses_one_native_hover_without_releasing_owner_button.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/CleanupCauseAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.CleanupCauseAcceptanceTests.Caller_owned_button_uses_confirmed_coordinate_native_action_without_sdk_down_or_up_cleanup",
+          "assertion": "Line 46. Caller_owned_button_uses_confirmed_coordinate_native_action_without_sdk_down_or_up_cleanup; current parent result: SpyBrowser.Tests.CleanupCauseAcceptanceTests.Caller_owned_button_uses_confirmed_coordinate_native_action_without_sdk_down_or_up_cleanup.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "PointerObservation/Cleanup tests assert caller-owned drag is not released and native Up is observed."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/CleanupCauseAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.CleanupCauseAcceptanceTests.Cancellation_remains_primary_when_owned_button_cleanup_faults_and_action_is_not_repeated",
+          "assertion": "Line 11. Cancellation_remains_primary_when_owned_button_cleanup_faults_and_action_is_not_repeated; current parent result: SpyBrowser.Tests.CleanupCauseAcceptanceTests.Cancellation_remains_primary_when_owned_button_cleanup_faults_and_action_is_not_repeated.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/CleanupCauseAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.CleanupCauseAcceptanceTests.Failed_down_is_not_blindly_released",
+          "assertion": "Line 79. Failed_down_is_not_blindly_released; current parent result: SpyBrowser.Tests.CleanupCauseAcceptanceTests.Failed_down_is_not_blindly_released.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Injected faults preserve primary cause and avoid blind cleanup/repeat for covered paths."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ActionContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.ActionContractMatrixTests.Closing_context_while_fill_waits_observes_the_original_task",
+          "assertion": "Line 396. Closing_context_while_fill_waits_observes_the_original_task; current parent result: SpyBrowser.Tests.ActionContractMatrixTests.Closing_context_while_fill_waits_observes_the_original_task.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/LifecycleBrowserTests.cs",
+          "test": "SpyBrowser.Tests.LifecycleBrowserTests.Closing_page_during_humanized_typing_stops_the_inflight_input",
+          "assertion": "Line 63. Closing_page_during_humanized_typing_stops_the_inflight_input; current parent result: SpyBrowser.Tests.LifecycleBrowserTests.Closing_page_during_humanized_typing_stops_the_inflight_input.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/MonotonicMovementSchedulerTests.cs",
+          "test": "SpyBrowser.Tests.MonotonicMovementSchedulerTests.Page_close_during_wait_prevents_a_send",
+          "assertion": "Line 78. Page_close_during_wait_prevents_a_send; current parent result: SpyBrowser.Tests.MonotonicMovementSchedulerTests.Page_close_during_wait_prevents_a_send.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Queue/readiness/movement/click/type boundaries are tested; setup is outside measured action budget."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 11,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/InputAcceptanceClosureTests.cs",
+          "test": "SpyBrowser.Tests.InputAcceptanceClosureTests.Repeated_wrapped_input_and_helper_lifecycles_close_idempotently_and_release_handles",
+          "assertion": "Real test performs 32 awaited page/context cycles, wrapped sequential input, HumanActions click, two awaited closes, then fresh-stack bounded GC and asserts weak references dead.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "InputAcceptanceClosure runs 32 real awaited context/page cycles, wrapped type/helper click, repeated close and fresh-stack weak-reference checks. No matching named test found passed in current parent TRXs."
+    },
+    {
+      "ticketId": 10,
+      "criterionId": 12,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/FactoryStressAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.FactoryStressAcceptanceTests.Concurrent_humanized_popups_keep_identity_and_other_pages_alive_when_one_closes_immediately",
+          "assertion": "Real popup stress runs Cursory movement and concurrent wrapped type/click actions; closes one popup immediately and asserts identity/lifetime of others.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "FactoryStress runs real popup Cursory movement with concurrent wrapped typing/clicks and immediate close. No matching named test found passed in current parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "source/document",
+          "path": "docs/humanization.md",
+          "assertion": "Documented compatibility, raw bypass, support boundary and/or legacy contract"
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 6,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 7,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/FactoryStressAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.FactoryStressAcceptanceTests.Concurrent_disposable_contexts_do_not_lease_the_persistent_identity_profile",
+          "assertion": "Line 13. Concurrent_disposable_contexts_do_not_lease_the_persistent_identity_profile; current parent result: SpyBrowser.Tests.FactoryStressAcceptanceTests.Concurrent_disposable_contexts_do_not_lease_the_persistent_identity_profile.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "FactoryStress proves disposable contexts do not hold the persistent same-identity profile lease."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Failed_context_preparation_preserves_callback_exception_and_publishes_nothing",
+          "assertion": "Injected Configure callback exception is same instance and failed context is not published.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Failed preparation assertion checks the original callback exception and no publication."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 11,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency",
+          "assertion": "Line 12. Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Configured_factories_apply_identity_precedence_without_mutating_options_and_allow_concurrency` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 6,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 7,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract",
+          "assertion": "Line 87. Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Frame_collections_payloads_diagnostics_and_weak_lifetimes_follow_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Current direct weak-lifetime assertions passed, superseding the older expected-failure note. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 12,
+      "criterionId": 11,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Wrapped_known_playwright_locator_argument_inside_options_is_unwrapped",
+          "assertion": "Line 222. Wrapped_known_playwright_locator_argument_inside_options_is_unwrapped; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Wrapped_known_playwright_locator_argument_inside_options_is_unwrapped.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/PlaywrightApiAuditTests.cs",
+          "test": "SpyBrowser.Tests.PlaywrightApiAuditTests.Reviewed_new_locator_surfaces_delegate_and_preserve_wrapping",
+          "assertion": "Line 46. Reviewed_new_locator_surfaces_delegate_and_preserve_wrapping; current parent result: SpyBrowser.Tests.PlaywrightApiAuditTests.Reviewed_new_locator_surfaces_delegate_and_preserve_wrapping.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Some support boundary is documented; not all handle methods have explicit non-support boundaries."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_close_race_never_announces_an_already_closed_context",
+          "assertion": "Line 59. Context_close_race_never_announces_an_already_closed_context; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_close_race_never_announces_an_already_closed_context.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.New_page_factory_announces_once_and_subscription_duplicates_remove_last_occurrence",
+          "assertion": "Line 35. New_page_factory_announces_once_and_subscription_duplicates_remove_last_occurrence; current parent result: SpyBrowser.Tests.ContextEventContractsTests.New_page_factory_announces_once_and_subscription_duplicates_remove_last_occurrence.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts close race does not announce closed context and new-page announcement once. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 6,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 7,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "source/document",
+          "path": "docs/humanization.md",
+          "assertion": "Documented compatibility, raw bypass, support boundary and/or legacy contract"
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_events_follow_preparation_and_match_factory_and_collection_objects` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 13,
+      "criterionId": 11,
+      "status": "partial",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/ContextEventContractsTests.cs",
+          "test": "SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects",
+          "assertion": "Line 10. Context_events_follow_preparation_and_match_factory_and_collection_objects; current parent result: SpyBrowser.Tests.ContextEventContractsTests.Context_events_follow_preparation_and_match_factory_and_collection_objects.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Consumer flows show adapter routes still run; no isolated assertion proves absence of duplicate adapter events."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 1,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 2,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 3,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 4,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/FactoryStressAcceptanceTests.cs",
+          "test": "SpyBrowser.Tests.FactoryStressAcceptanceTests.Concurrent_humanized_popups_keep_identity_and_other_pages_alive_when_one_closes_immediately",
+          "assertion": "Line 61. Concurrent_humanized_popups_keep_identity_and_other_pages_alive_when_one_closes_immediately; current parent result: SpyBrowser.Tests.FactoryStressAcceptanceTests.Concurrent_humanized_popups_keep_identity_and_other_pages_alive_when_one_closes_immediately.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperCoverageBrowserTests.cs",
+          "test": "SpyBrowser.Tests.WrapperCoverageBrowserTests.Popup_events_waits_concurrent_closes_and_disabled_mode_preserve_contract",
+          "assertion": "Line 58. Popup_events_waits_concurrent_closes_and_disabled_mode_preserve_contract; current parent result: SpyBrowser.Tests.WrapperCoverageBrowserTests.Popup_events_waits_concurrent_closes_and_disabled_mode_preserve_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Asserts concurrent popup identities and immediate-close survival in current parent run; supersedes unintegrated-worktree note. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 5,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 6,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 7,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    },
+    {
+      "ticketId": 14,
+      "criterionId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "kind": "test/assertion",
+          "path": "tests/SpyBrowser.Tests/WrapperContractMatrixTests.cs",
+          "test": "SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract",
+          "assertion": "Line 147. Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract; current parent result: SpyBrowser.Tests.WrapperContractMatrixTests.Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract.",
+          "passedTrx": [
+            "artifacts/goal/5fa99de-required-results/required-final-cut.trx",
+            "artifacts/goal/5fa99de-latest-results/latest-final-cut.trx",
+            "artifacts/goal/d574f6b-edge-results/edge-controlled-boundaries.trx"
+          ]
+        },
+        {
+          "kind": "source/document",
+          "path": "docs/humanization.md",
+          "assertion": "Documented compatibility, raw bypass, support boundary and/or legacy contract"
+        }
+      ],
+      "reason": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. The cited test `Context_and_popup_events_are_snapshots_reentrant_and_preserve_wait_contract` is the direct assertion basis; its executed assertion proves only the observable route named by that test. The two matching parent TRX results corroborate that exact test passed, not broader API behavior. Current 5fa99de required run includes the named acceptance test; prior 776362f run is not relied upon. No named test confirmed in parent TRXs."
+    }
+  ],
+  "timingBoundary": "Controlled fake cancellation is reported as fake-clock evidence. Browser setup/SetContent occurs outside measured action intervals. The native Playwright action default remains 100 ms; this is distinct from HumanInteractionOptions.ActionDeadlineMilliseconds (30 s default), neither changed here."
+}
