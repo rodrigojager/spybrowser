@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "IMPLEMENTED_AND_VERIFIED_ON_FROZEN_SOURCE_ONLY",
+  "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+  "sdk": "8.0.319",
+  "sourceLink": {
+    "cdiGuid": "cc110556-a091-4d38-9fec-25ab9a351a6a",
+    "mapping": {
+      "documents": {
+        "/_*": "https://github.com/rodrigojager/spybrowser/4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b/*"
+      }
+    },
+    "compilerPathMap": "<temporary Git archive root>=/_/"
+  },
+  "portablePdbAudit": {
+    "result": "PASS",
+    "productionPdbCount": 4,
+    "sourceLinkRecords": "4/4 exact expected JSON mappings",
+    "documents": 71,
+    "sourceControlledChecksumsMatchedArchive": "58/58",
+    "generatedObjDocumentsExcluded": 13,
+    "cliSymbolPackageContainsPdbs": 4,
+    "documentPaths": "normalized /_/ source-root paths"
+  },
+  "candidateFeed": {
+    "path": "artifacts/goal/sourcelink-build-fix/candidate-4d8a18c",
+    "version": "0.2.0-beta.2.sourcelink-candidate",
+    "isFinal": false,
+    "declaredFinalCommit": null,
+    "externalPublicationAllowed": false,
+    "datasetRights": "UNVERIFIED",
+    "packages": 4,
+    "symbolPackages": 4
+  },
+  "validation": {
+    "pythonUnitTests": "8 passed",
+    "buildAndRealPackagePdbAudit": "PASS",
+    "nuspecMetadataAudit": "PASS: four package IDs, expected version, full repository commit and URL",
+    "oldFinalFeedModified": false,
+    "sourceOrRuntimeModified": false,
+    "peerOwnedCursoryProjectOrDocsModified": false
+  },
+  "limits": [
+    "This source commit predates integration of the pending peer-owned changes; the local feed is deliberately non-final and must not be accepted as the final feed.",
+    "The parent must pack and audit a new feed from the integrated full source commit after independent acceptance.",
+    "No publication, remote URL fetch, rights determination, or claim of final candidate acceptance was made."
+  ]
+}

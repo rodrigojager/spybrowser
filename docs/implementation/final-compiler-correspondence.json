@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "decision": "CORRESPONDENCE_PROVEN_WITH_PINNED_SDK_TOOLCHAIN",
+  "rootCause": {
+    "summary": "The extracted source has no global.json; its standalone project cwd selects SDK 10.0.401 rather than producer-era SDK 8.0.319, changing compiler/toolchain lowering for CreateRandomSeed.",
+    "actualExtractedSourceCwd": "D:/Temp/spybrowser-final-correspondence/source/SpyBrowser.Cursory",
+    "actualExtractedCwdDotnetVersion": "10.0.401",
+    "sdk8CompilerVersion": "4.10.0-3.25064.8+85262f5f51be12867c1c2776d7a2be55251c04be",
+    "sdk10CompilerVersion": "5.9.0-1.26423.113+e34a38d2ae1fc26406a317517196e55c68ff83ab",
+    "sdk8PdbLanguageVersion": "12.0",
+    "sdk10DefaultPdbLanguageVersion": "14.0",
+    "sdk10ExplicitLanguage12IlStillDiffers": true,
+    "sdk8ReferencePack": "Microsoft.NETCore.App.Ref 8.0.22",
+    "sdk10ReferencePack": "Microsoft.NETCore.App.Ref 8.0.31",
+    "causalityLimit": "This experiment attributes the discrepancy to unpinned SDK/toolchain provenance; it does not isolate the compiler from the SDK-selected reference pack."
+  },
+  "package": {
+    "path": "D:/Temp/spybrowser-feed-final-4d8a18c/SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg",
+    "sha256": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+    "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+    "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+    "packagedDllSha256": "3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978"
+  },
+  "sourceAudit": {
+    "packagedCSharpFiles": 11,
+    "contentMatchesAfterCrlfLfNormalization": 11,
+    "report": "artifacts/goal/final-compiler-correspondence/source-byte-comparison.txt"
+  },
+  "comparison": {
+    "checker": "artifacts/goal/final-compiler-correspondence/IlCompare.cs",
+    "typesEach": 23,
+    "entriesEach": 432,
+    "compared": [
+      "type/member signatures and attributes",
+      "field constants",
+      "generic parameters and constraints",
+      "method parameter metadata",
+      "all method IL, locals, max stack, init-locals and exception regions",
+      "embedded resource names, lengths and SHA-256 hashes"
+    ],
+    "pinnedSdk8DifferingEntries": 0,
+    "sdk10DifferingEntries": 1,
+    "sdk10Difference": {
+      "method": "SpyBrowser.Cursory.Internal.Pcg64.CreateRandomSeed",
+      "packagedIlBytes": 72,
+      "packagedIlSha256": "c4c5fc4624d9c5848659c1b4d84be53b3d6f5a3066503272a1dcb7a7a041edb9",
+      "sdk10IlBytes": 62,
+      "sdk10IlSha256": "be4adf4a639c2bf977e59bb7ce5ebc34eac0069c80f6d51ce0bf6425ea8d0a2a"
+    },
+    "wholeDllByteIdentical": false,
+    "wholeDllDifferenceReason": "MVIDs differ and whole-file byte identity was not established; no claim is made that MVID is the only differing PE data. The established result is metadata/method-body/resource correspondence."
+  },
+  "pdbEvidence": {
+    "sdk8": {
+      "sha256": "70501fa773c017719ff25751f7272ebb0f82b1322f8b63c90089f0d7bbd5d036",
+      "compilerVersion": "4.10.0-3.25064.8+85262f5f51be12867c1c2776d7a2be55251c04be",
+      "languageVersion": "12.0",
+      "runtimeVersion": "8.0.22+a2266c728f63a494ccb6786d794da2df135030be"
+    },
+    "sdk10Default": {
+      "sha256": "dd728b53a7f458489183f0fb9b6081c4c0feb9286b40602f9cd365cb4efbb52c",
+      "compilerVersion": "5.9.0-1.26423.113+e34a38d2ae1fc26406a317517196e55c68ff83ab",
+      "languageVersion": "14.0",
+      "runtimeVersion": "10.0.12-servicing.26422.108+95017c711e6afc1085133d440e42b4bd78155701"
+    },
+    "sdk10ExplicitLang12": {
+      "sha256": "941af9f6d628afaaca4bc462e47e334f9fd12cc3b8ea5ea84fdcaa08a96bd167",
+      "compilerVersion": "5.9.0-1.26423.113+e34a38d2ae1fc26406a317517196e55c68ff83ab",
+      "languageVersion": "12.0",
+      "runtimeVersion": "10.0.12-servicing.26422.108+95017c711e6afc1085133d440e42b4bd78155701"
+    }
+  },
+  "artifacts": {
+    "directory": "artifacts/goal/final-compiler-correspondence/",
+    "sdk8BuildLog": "artifacts/goal/final-compiler-correspondence/sdk8-rebuild.log",
+    "sdk10BuildLog": "artifacts/goal/final-compiler-correspondence/sdk10-rebuild.log",
+    "sdk8FullComparison": "artifacts/goal/final-compiler-correspondence/sdk8-il-comparison-full.txt",
+    "sdk10FullComparison": "artifacts/goal/final-compiler-correspondence/sdk10-il-comparison-full.txt",
+    "sdk10Lang12Comparison": "artifacts/goal/final-compiler-correspondence/sdk10-lang12-il-comparison-full.txt",
+    "toolchainEvidence": "artifacts/goal/final-compiler-correspondence/toolchain-evidence.txt",
+    "sourceAudit": "artifacts/goal/final-compiler-correspondence/source-byte-comparison.txt",
+    "priorRejectedReportPreserved": "docs/implementation/final-source-rebuild-correspondence.md"
+  },
+  "producerFeedTouched": false,
+  "sourceArchiveTouched": false,
+  "productOrTestSourceChanged": false,
+  "original37ParityTestsRerun": false,
+  "externalPublicationAllowed": false,
+  "upstreamRightsStatus": "UNVERIFIED",
+  "sourceLinkMappingAuditedHere": false,
+  "noCommit": true
+}

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "decision": "PACKAGED_CORRESPONDING_SOURCE_COMPLETE_AND_REPRODUCIBLE",
+  "baseCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "workingCandidate": true,
+  "sourceFilesChanged": false,
+  "runtimeAlgorithmOrDefaultsChanged": false,
+  "compileItemProjection": {
+    "beforeAfter": "unchanged",
+    "sourceFiles": 11,
+    "explicitCompileIncludeOrRemoveAdded": false,
+    "embeddedResource": "Data/trajectories.json.gz; LogicalName=SpyBrowser.Cursory.trajectories.json.gz (unchanged)",
+    "datasetSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203"
+  },
+  "build": {
+    "sdk": "8.0.319",
+    "runtime": "Microsoft.NETCore.App 8.0.22",
+    "languageVersion": "12.0",
+    "runtimeFrameworkVersion": "8.0.22",
+    "packageVersion": "0.2.0-beta.2.final.4d8a18c",
+    "revision": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+    "pathMap": "<project directory>=/_/src/SpyBrowser.Cursory",
+    "sourceLink": {
+      "sourceRevisionIdForwarded": true,
+      "packagePrivateBuildDependency": "Microsoft.SourceLink.GitHub 8.0.0 (PrivateAssets=All; CI only)",
+      "pdbCdiRecords": 1,
+      "mapping": {
+        "/_*": "https://raw.githubusercontent.com/rodrigojager/spybrowser/4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b/*"
+      }
+    }
+  },
+  "candidateArtifacts": {
+    "package": "artifacts/goal/corresponding-source-packaging-fix/feed/SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg",
+    "packageSha256": "e1e06b5e5469e21eb7798e70290bb9b407a201aab9a869e246bbf003f1d976ab",
+    "symbolsPackage": "artifacts/goal/corresponding-source-packaging-fix/feed/SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.snupkg",
+    "symbolsSha256": "21c80aedb7187a298cc79a29802154bef6c2350261dec8dbc7b4393851b91dd4",
+    "runtimeAssemblySha256": "3c1e6548fc0cb6f6bce8f0e86e66ba0dd0dd4897b6b69da87a3ea1c3af1f71c5",
+    "portablePdbSha256": "03d4e80df7aefd807b42f187847a8198fdcba06a07217405efdf5bb9e73f120b",
+    "nuspecRuntimeDependencies": [],
+    "packageEntries": 41,
+    "sourceEntries": 25,
+    "licenseAndNoticeFilesInSourceTree": true,
+    "standaloneExtractedBuild": "PASS with SDK 8.0.319; zero errors; SourceLink correctly warns that an extracted, non-Git tree has no Git mapping",
+    "standaloneExtractedRepack": "PASS; produced nupkg and snupkg without repository project references",
+    "cursoryUnitTests": "PASS; 37 passed, 0 failed, 0 skipped"
+  },
+  "correspondence": {
+    "comparison": "artifacts/goal/final-source-rebuild-correspondence/IlCompare.csproj",
+    "typesEach": 23,
+    "inventoryEntriesEach": 249,
+    "differingMethodsMembersOrResources": 0,
+    "embeddedResourceMatches": true,
+    "methodIlMatches": true,
+    "priorCreateRandomSeedDifference": "resolved by compiling the extracted corresponding source under pinned SDK 8.0.319; no RNG or method changes",
+    "pdbSourceDocuments": 14,
+    "pdbSourceDocumentSha256Matches": 14,
+    "pdbSourceDocumentMismatches": 0,
+    "audit": "artifacts/goal/corresponding-source-packaging-fix/Program.cs"
+  },
+  "preservedBoundaries": {
+    "oldFinalFeedTouched": false,
+    "thisTaskModifiedBuildCandidateFeedTool": false,
+    "concurrentPeerChangesPresentInWorkspace": true,
+    "DirectoryBuildPropsTouched": false,
+    "externalPublicationAllowed": false,
+    "upstreamRecordingRights": "UNVERIFIED",
+    "noCommit": true
+  }
+}

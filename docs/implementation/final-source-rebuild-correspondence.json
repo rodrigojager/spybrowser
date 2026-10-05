@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "decision": "REJECT_CORRESPONDENCE_UNPROVEN",
+  "package": "D:/Temp/spybrowser-feed-final-4d8a18c/SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg",
+  "packageSha256": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+  "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+  "sdk": "8.0.319",
+  "producerFeedTouched": false,
+  "sourceArchiveTouched": false,
+  "packagedDllSha256": "3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978",
+  "preservedInitialRebuildSha256": "7aaa9e8bfb5dba1303cbec6d30a0286b6e9e1c1ea23910f93cfa0976c967cff9",
+  "isolatedSourceRevisionIdBuildSha256": "9fae4b859fbf4f4c1f03728edf2ef12956f44595691089024c430df2a0fb9fb9",
+  "isolatedInformationalVersion": "0.2.0-beta.2.final.4d8a18c+4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "packagedInformationalVersion": "0.2.0-beta.2.final.4d8a18c",
+  "packAttempt": "Compilation PASS; package stage failed NU5019 because extracted package source omitted project-relative LICENSE file",
+  "comparison": {
+    "checker": "artifacts/goal/final-source-rebuild-correspondence/Program.cs",
+    "inventoryEntriesEach": 249,
+    "typesEach": 23,
+    "typeAndMemberInventoriesMatch": true,
+    "embeddedResourceHashesMatch": true,
+    "differingIlMethods": 1,
+    "difference": {
+      "method": "SpyBrowser.Cursory.Internal.Pcg64.CreateRandomSeed",
+      "sourceMethodTextMatchesCommit": true,
+      "packagedIlBytes": 72,
+      "packagedIlSha256": "c4c5fc4624d9c5848659c1b4d84be53b3d6f5a3066503272a1dcb7a7a041edb9",
+      "rebuildIlBytes": 62,
+      "rebuildIlSha256": "be4adf4a639c2bf977e59bb7ce5ebc34eac0069c80f6d51ce0bf6425ea8d0a2a",
+      "resolution": "unexplained; not classified as metadata-only or behaviorally equivalent"
+    }
+  },
+  "evidence": {
+    "directory": "artifacts/goal/final-source-rebuild-correspondence/",
+    "comparison": "il-comparison.txt",
+    "successfulBuildLog": "build-no-sourcerevision.log",
+    "failedPackLog": "pack-attempt.log"
+  },
+  "externalPublicationAllowed": false,
+  "upstreamRightsStatus": "UNVERIFIED",
+  "noCommit": true
+}

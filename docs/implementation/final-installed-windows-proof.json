@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "candidateVersion": "0.2.0-beta.2.final.4d8a18c",
+  "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "declaredFinalCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "isFinal": true,
+  "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+  "sourceArchiveSettings": "git archive with core.autocrlf=true/core.eol=crlf; matched manifest",
+  "feedManifest": "D:/Temp/spybrowser-feed-final-4d8a18c/feed-manifest.json",
+  "feedManifestSha256BeforeAndAfter": "8144b157fe26a7f000cd4728fbe19a94773fd0d203badfec9be856e0d5833727",
+  "candidatePackagesBeforeAndAfter": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.nupkg": "c50ad2a3381fded27fb7113bba52ee4e77f3b1e575e645cca4aed4d48cd840b5",
+    "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.nupkg": "78a5ccedbe322f023fbef9a326a31cdfb95a14a93edfe4ed58b84ec70a1270d2",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.nupkg": "d5eb6a7a1098660a380675dec3a357f0070cc764457abf72723805dd76a7cb76",
+    "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.snupkg": "a36c62e8ffcb7817c3517e2b6d1288fc523844fd03a0fc053c985cf5e99fb8e3",
+    "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.snupkg": "1d3f6bcd02a283f42c28806c661be5855116847b63302de42167022feff523cf",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.snupkg": "2e76a9bf4fa5f48ccbfd8678d5cc4cec2cc083b17c5c4291dc8e4282e072159d",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.snupkg": "ededa03871d588a85065c66e421f4fce0ab6da1781c72835999b28da5eceb559"
+  },
+  "baseline": {
+    "version": "0.1.0-baseline.e217359",
+    "sourceCommit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+    "provenance": "PASS: supplied baseline manifest, package hashes, nuspec repository commits, and fresh source archive verified"
+  },
+  "actualInstalledConsumer": {
+    "os": "Microsoft Windows 10.0.19045 x64",
+    "cwd": "D:/Temp/spybrowser-installed-final-4d8a18c-windows/spybrowser-distribution-check-xuv34bz1/consumer",
+    "cwdOutsideRepository": true,
+    "projectReference": false,
+    "temporaryConsumerAndProfileRemovedAfterRun": true,
+    "nugetCache": "isolated temporary cache; pre-existing global cache preserved",
+    "cliVersion": "0.2.0-beta.2.final.4d8a18c",
+    "playwrightVersion": "1.61.0.0",
+    "profileManifestSha256": "8e9223778d13f3fd41f629b11100393303812ccbd2cacc9bb7e85373e9c8779e",
+    "storageStateSha256": "59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008",
+    "privacy": "Evidence records hashes and safe fixtures only; no cookie values or real user data recorded."
+  },
+  "packageSourceAndSymbols": {
+    "nuspecSha256": {
+      "SpyBrowser.Cli.nuspec": "dd36ef53bdf6d37dc189c1edb3b65ecbb11fde71f726c9a2c27f2645484155c4",
+      "SpyBrowser.Core.nuspec": "1881e230b1f3ff4498d7c3c405ea3f4017d3a364da932b3ee3c9ae5295be7aa5",
+      "SpyBrowser.Cursory.nuspec": "be5fee2dae08d96a6bc86a2d81f01a76902cd91799673738947f435758305afa",
+      "SpyBrowser.Playwright.nuspec": "6d8e04ff4f1325ee5dfb39898dff60ce64320c9e476665be34c0179abe0cec71"
+    },
+    "sourceEntries": "SHA256 for all packaged source/license/notice entries is in artifacts/goal/installed-final-4d8a18c-windows-proof/distribution-evidence.json",
+    "portablePdbSha256": {
+      "SpyBrowser.Cli.pdb": "65f47da56af04524ba69cfcd31bbca13b105677d83a124acaecdd52660a3a98b",
+      "SpyBrowser.Core.pdb": "786d039a8b4274264ec6b5b58196bd42e49880f9647bb8808363cea4b030a96c",
+      "SpyBrowser.Cursory.pdb": "68d5da35788bef58b73a24da3a5b83a726fc1516ce3f824cc00f07ba3d36fccf",
+      "SpyBrowser.Playwright.pdb": "e3eca06fa0a05e6ef2e792d1c94da92e45b9edb78227a01db3946eb023e96eef"
+    },
+    "sourceLink": "Repository commit and source archive are hash-proven above; no SourceLink CDI mapping hash was established in this check, so SourceLink mapping is not claimed."
+  },
+  "technicalChecks": [
+    {"check": "previous-package-provenance", "status": "PASS"},
+    {"check": "installed-cli-package-offline-version", "status": "PASS"},
+    {"check": "candidate-cursory", "status": "PASS"},
+    {"check": "candidate-bezier", "status": "PASS"},
+    {"check": "candidate-off", "status": "PASS"},
+    {"check": "snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard", "status": "PASS"},
+    {"check": "snapshot-os-crash-during-sdk-write-baseline-preserved", "status": "PASS"},
+    {"check": "snapshot-real-permission-denial", "status": "PASS"},
+    {"check": "snapshot-gpu-context-information", "status": "PASS"},
+    {"check": "previous-bezier-rollback", "status": "PASS"},
+    {"check": "previous-package-ignores-newer-snapshot", "status": "PASS"},
+    {"check": "previous-humanize-off", "status": "PASS"},
+    {"check": "browser-executable-and-official-driver", "status": "PASS"}
+  ],
+  "technicalPassCount": 13,
+  "technicalPendingCount": 0,
+  "technicalFailureCount": 0,
+  "technicalAllPassed": true,
+  "rightsGate": {"status": "BLOCKED", "blockedCount": 1, "check": "external-dataset-distribution-license", "externalPublicationAllowed": false},
+  "allPassed": false,
+  "runnerExitCode": 2,
+  "evidence": "artifacts/goal/installed-final-4d8a18c-windows-proof/distribution-evidence.json",
+  "evidenceSha256": "31e53bf0c4c32c21da48f5de07749c65ec14f6364b18279da9984e151d07e0fa",
+  "publicationOrPromotion": false
+}

@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "candidateVersion": "0.2.0-beta.2.final.4d8a18c",
+  "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "declaredFinalCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "sourceTreeSha": "35b9c66c382be2bd2534c7e024ab98ed281aea09",
+  "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+  "sdk": "8.0.319",
+  "playwrightVersion": "1.61.0",
+  "producerManifest": "D:\\Temp\\spybrowser-feed-final-4d8a18c\\feed-manifest.json",
+  "producerManifestSha256": "8144b157fe26a7f000cd4728fbe19a94773fd0d203badfec9be856e0d5833727",
+  "isFinal": true,
+  "externalPublicationAllowed": false,
+  "upstreamRightsStatus": "UNVERIFIED",
+  "upstreamRedistributionAllowed": false,
+  "legalClearance": "NOT GRANTED; technical final candidate is not legal clearance",
+  "packageInspectorCli": "tools/package-demo/verify_package.py supports only --feed and --project; --expected-source-commit was rejected by its actual CLI; source commit independently checked against producer, every package nuspec, and Cursory package manifest",
+  "validation": {
+    "builder": "PASS: four NuGet packages and four symbols built from exact Git archive",
+    "packageInspector": "PASS: Cursory package/nuspec/source/data/third-party license/notice/symbol checks",
+    "packageNuspecSourceCommit": "PASS: all four actual nuspec repository commits equal expected source commit",
+    "symbols": "PASS: all four symbol packages contain portable PDBs (BSJB)",
+    "cursoryRuntime": "PASS: only SpyBrowser.Cursory.dll, no runtime dependency IDs",
+    "cursorySourceRebuild": "NOT REPRODUCIBLE byte-for-byte: packaged 3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978; rebuild 7aaa9e8bfb5dba1303cbec6d30a0286b6e9e1c1ea23910f93cfa0976c967cff9; source project builds but binary correspondence remains unproven"
+  },
+  "cursorySourceRebuildSha256": "7aaa9e8bfb5dba1303cbec6d30a0286b6e9e1c1ea23910f93cfa0976c967cff9",
+  "cursoryPackagedAssemblySha256": "3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978",
+  "cursorySourceRebuildExactMatch": false,
+  "cursoryPackageInspection": {
+    "schemaVersion": 1,
+    "package": "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg",
+    "packageSha256": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+    "symbolsPackage": "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.snupkg",
+    "symbolsSha256": "2e76a9bf4fa5f48ccbfd8678d5cc4cec2cc083b17c5c4291dc8e4282e072159d",
+    "portablePdbSha256": "68d5da35788bef58b73a24da3a5b83a726fc1516ce3f824cc00f07ba3d36fccf",
+    "portablePdbFormat": "Portable PDB (BSJB metadata signature)",
+    "assemblySha256": "3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978",
+    "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+    "datasetSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+    "nuspecLicense": "LGPL-3.0-or-later",
+    "runtimeDependencies": [],
+    "packageContentsVerified": true
+  },
+  "packages": [
+    {
+      "id": "SpyBrowser.Cli",
+      "file": "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.nupkg",
+      "sha256": "c50ad2a3381fded27fb7113bba52ee4e77f3b1e575e645cca4aed4d48cd840b5",
+      "runtimeAssemblies": [],
+      "runtimeDependencyIds": [],
+      "nuspec": "SpyBrowser.Cli.nuspec",
+      "nuspecRepositoryCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b"
+    },
+    {
+      "id": "SpyBrowser.Core",
+      "file": "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.nupkg",
+      "sha256": "78a5ccedbe322f023fbef9a326a31cdfb95a14a93edfe4ed58b84ec70a1270d2",
+      "runtimeAssemblies": [
+        "lib/net8.0/SpyBrowser.Core.dll"
+      ],
+      "runtimeDependencyIds": [],
+      "nuspec": "SpyBrowser.Core.nuspec",
+      "nuspecRepositoryCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b"
+    },
+    {
+      "id": "SpyBrowser.Cursory",
+      "file": "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg",
+      "sha256": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+      "runtimeAssemblies": [
+        "lib/net8.0/SpyBrowser.Cursory.dll"
+      ],
+      "runtimeDependencyIds": [],
+      "nuspec": "SpyBrowser.Cursory.nuspec",
+      "nuspecRepositoryCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b"
+    },
+    {
+      "id": "SpyBrowser.Playwright",
+      "file": "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.nupkg",
+      "sha256": "d5eb6a7a1098660a380675dec3a357f0070cc764457abf72723805dd76a7cb76",
+      "runtimeAssemblies": [
+        "lib/net8.0/SpyBrowser.Playwright.dll"
+      ],
+      "runtimeDependencyIds": [
+        "SpyBrowser.Core",
+        "SpyBrowser.Cursory",
+        "Microsoft.Playwright"
+      ],
+      "nuspec": "SpyBrowser.Playwright.nuspec",
+      "nuspecRepositoryCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b"
+    }
+  ],
+  "symbols": [
+    {
+      "file": "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.snupkg",
+      "sha256": "a36c62e8ffcb7817c3517e2b6d1288fc523844fd03a0fc053c985cf5e99fb8e3",
+      "portablePdbs": [
+        "tools/net8.0/any/SpyBrowser.Cli.pdb",
+        "tools/net8.0/any/SpyBrowser.Core.pdb",
+        "tools/net8.0/any/SpyBrowser.Playwright.pdb",
+        "tools/net8.0/any/SpyBrowser.Cursory.pdb"
+      ]
+    },
+    {
+      "file": "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.snupkg",
+      "sha256": "1d3f6bcd02a283f42c28806c661be5855116847b63302de42167022feff523cf",
+      "portablePdbs": [
+        "lib/net8.0/SpyBrowser.Core.pdb"
+      ]
+    },
+    {
+      "file": "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.snupkg",
+      "sha256": "2e76a9bf4fa5f48ccbfd8678d5cc4cec2cc083b17c5c4291dc8e4282e072159d",
+      "portablePdbs": [
+        "lib/net8.0/SpyBrowser.Cursory.pdb"
+      ]
+    },
+    {
+      "file": "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.snupkg",
+      "sha256": "ededa03871d588a85065c66e421f4fce0ab6da1781c72835999b28da5eceb559",
+      "portablePdbs": [
+        "lib/net8.0/SpyBrowser.Playwright.pdb"
+      ]
+    }
+  ],
+  "consumerProjection": {
+    "path": "D:\\SpyBrowser\\artifacts\\goal\\final-feed-4d8a18c",
+    "manifest": "D:\\SpyBrowser\\artifacts\\goal\\final-feed-4d8a18c\\manifest.json",
+    "packagesCopiedByteExact": true,
+    "packageIds": [
+      "SpyBrowser.Core",
+      "SpyBrowser.Cursory",
+      "SpyBrowser.Playwright"
+    ]
+  },
+  "rightsBlock": "Dataset redistribution rights unresolved; no external publication or release authorized."
+}

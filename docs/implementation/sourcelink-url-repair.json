@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "task": "sourcelink-url-repair",
+  "candidate": "artifacts/goal/sourcelink-url-repair/candidate-4d8a18c",
+  "candidateVersion": "0.2.0-beta.2.rawmapcheck",
+  "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+  "sdk": "8.0.319",
+  "sourceLink": {
+    "cdiGuid": "cc110556-a091-4d38-9fec-25ab9a351a6a",
+    "mappingKey": "/_*",
+    "urlTemplate": "https://raw.githubusercontent.com/rodrigojager/spybrowser/4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b/*",
+    "exampleDocumentPath": "_/src/Example.cs",
+    "exampleResolvedUrl": "https://raw.githubusercontent.com/rodrigojager/spybrowser/4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b/src/Example.cs",
+    "uriStructuralAudit": "Actual SourceLink CDI mappings extracted from all 4 candidate PDBs equal the exact raw-content template with full commit SHA; no remote requests were made.",
+    "remoteSourceAccessVerified": false
+  },
+  "portablePdbAudit": {
+    "pdbCount": 4,
+    "documentCount": 71,
+    "sourceControlledDocumentsVerified": 58,
+    "generatedDocumentsExcluded": 13,
+    "sourceChecksumAlgorithm": "SHA-256",
+    "sourceChecksumMatches": "58/58"
+  },
+  "packages": {
+    "nupkgCount": 4,
+    "snupkgCount": 4,
+    "nuspecAuditsPassed": true
+  },
+  "externalPublicationAllowed": false,
+  "datasetRights": "UNVERIFIED",
+  "finalDeclaration": null,
+  "validation": {
+    "unitTests": "12 passed",
+    "pyCompile": "passed",
+    "candidateBuildAndPdbAudit": "passed"
+  }
+}

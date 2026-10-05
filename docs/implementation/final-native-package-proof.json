@@ -1,0 +1,721 @@
+{
+  "schemaVersion": 1,
+  "task": "Final pure-package BCL and historical association proof",
+  "status": "PASS",
+  "candidate": {
+    "version": "0.2.0-beta.2.final.4d8a18c",
+    "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+    "declaredFinalCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+    "isFinal": true,
+    "sourceArchiveSha256Declared": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+    "sourceArchiveSha256Recomputed": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+    "producerFeedManifest": "D:\\Temp\\spybrowser-feed-final-4d8a18c\\feed-manifest.json",
+    "producerFeedManifestSha256": "8144b157fe26a7f000cd4728fbe19a94773fd0d203badfec9be856e0d5833727",
+    "packageBuildManifest": "D:\\Temp\\spybrowser-feed-final-4d8a18c\\SpyBrowser.Cursory.package-build-manifest.json",
+    "packageBuildManifestSha256": "cb00fe7598b61f949e7c04695a9608b2b55d75aed2147a817e72a78d8e862259",
+    "declaredAndActualPackageAndSymbolsHashesMatch": true,
+    "actualPackageAndSymbolSha256": {
+      "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.nupkg": "c50ad2a3381fded27fb7113bba52ee4e77f3b1e575e645cca4aed4d48cd840b5",
+      "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.nupkg": "78a5ccedbe322f023fbef9a326a31cdfb95a14a93edfe4ed58b84ec70a1270d2",
+      "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+      "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.nupkg": "d5eb6a7a1098660a380675dec3a357f0070cc764457abf72723805dd76a7cb76",
+      "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.snupkg": "a36c62e8ffcb7817c3517e2b6d1288fc523844fd03a0fc053c985cf5e99fb8e3",
+      "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.snupkg": "1d3f6bcd02a283f42c28806c661be5855116847b63302de42167022feff523cf",
+      "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.snupkg": "2e76a9bf4fa5f48ccbfd8678d5cc4cec2cc083b17c5c4291dc8e4282e072159d",
+      "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.snupkg": "ededa03871d588a85065c66e421f4fce0ab6da1781c72835999b28da5eceb559"
+    },
+    "cursoryNupkgSha256": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+    "cursoryDllSha256": "3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978",
+    "datasetSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+    "sourceFileSha256InCursoryPackage": {
+      "source/SpyBrowser.Cursory/CursoryTrajectoryGenerator.cs": "e27a84de2de504b80c62efc32fd47ab0434d02b6d96bd840b5eddc2a57f7258a",
+      "source/SpyBrowser.Cursory/Trajectory.cs": "303e2cee10b366b9842de4324ad88f6498f60734f5bed4952834ab8094647615",
+      "source/SpyBrowser.Cursory/Internal/Dataset.cs": "6cbbd52d0ac20866d627f7dd71f239f11239fd168ffa09769cab34e70e411b5e",
+      "source/SpyBrowser.Cursory/Internal/NumericCompat.cs": "e4c9ee4a87923f6d1aa291c9f2a6c9b63883da87cc13879de0d1aeb481e37d82",
+      "source/SpyBrowser.Cursory/Internal/Pcg64.cs": "bd3d588972fcebf05ae4fde5fdc1e95c9766acca16347dcf0e2b3cec2d32eb72",
+      "source/SpyBrowser.Cursory/Internal/RandomSampler.cs": "95fbd0917d2aa1db1cfa9808117d3b2fbecb49d9bbdb64dc07395babde595560",
+      "source/SpyBrowser.Cursory/Internal/TrajectorySelection.cs": "1430d2501efa36bff82a25ac8cd5ff014615ae1df53961bfe643668ca61ef82e",
+      "source/SpyBrowser.Cursory/Internal/TrajectoryTiming.cs": "628db5ddd7424f1e95b34886303d0577ddf856b2b22dceb644aefae9fe08b185",
+      "source/SpyBrowser.Cursory/Internal/TrajectoryTransforms.cs": "812fe77dcee9ceefafb3a7c4abd55424f945d0795a1c35dc08e602cf8a9c2883",
+      "source/SpyBrowser.Cursory/Internal/ZigguratTables.cs": "370abb5779abeaec22204f10bc02d6a0368672c43baf56c33b1f2af4b506b8cd",
+      "source/SpyBrowser.Cursory/Properties/AssemblyInfo.cs": "82b3d55322676034050f0d17a940fc84b584e89a533e30b330c7788b46b4bab7"
+    },
+    "nuspecDependencies": [],
+    "runtimeDependencies": []
+  },
+  "bclConsumer": {
+    "project": "D:\\SpyBrowser\\artifacts\\goal\\native-package-demo-final-4d8a18c\\consumer\\Consumer.csproj",
+    "packageReferenceOnly": true,
+    "projectReference": false,
+    "feedOnly": true,
+    "isolatedNugetCache": "D:/Temp/native-package-demo-final-4d8a18c/nuget-cache-clean",
+    "runtimePath": "C:\\Program Files\\dotnet",
+    "sdk": "8.0.319",
+    "runtime": ".NET 8.0.22",
+    "runtimeDependencyGraph": [
+      "Cursory.PackageDemo/0.2.0-beta.1",
+      "SpyBrowser.Cursory/0.2.0-beta.2.final.4d8a18c"
+    ],
+    "processSampling": "Not collected; no no-child-process claim. Exact packaged source tokens verified directly.",
+    "sourceInvariantCounts": {
+      "Process.Start": 0,
+      "ProcessStartInfo": 0,
+      "System.Diagnostics.Process": 0,
+      "NumericCompat.stackalloc": 1,
+      "Pcg64.stackalloc": 1,
+      "boundedTop5SelectorPresent": true
+    },
+    "tests": {
+      "seededRepeatability": true,
+      "requestedEndpoints": true,
+      "finitePointsAndTimings": true,
+      "timingStartsAtZero": true,
+      "timingsMonotonic": true,
+      "positiveElapsedDuration": true,
+      "observedDurationMs": 534.0,
+      "concurrentIndependentGenerations": 8,
+      "datasetHashBeforeAfterUnchanged": true,
+      "invalidInputRejected": true,
+      "embeddedDatasetSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+      "actualNuspecDependencies": [],
+      "actualNupkgRuntimeDlls": [
+        "lib/net8.0/SpyBrowser.Cursory.dll"
+      ],
+      "sourceInvariantTokenCounts": {
+        "Process.Start": 0,
+        "ProcessStartInfo": 0,
+        "System.Diagnostics.Process": 0
+      }
+    }
+  },
+  "benchmark": {
+    "source": "tools/Cursory.Benchmark/Program.cs copied into own package-only project",
+    "method": "3 fresh processes; each 1 cold generation, 20 warmups, 500 timed samples; same package and benchmark fixture; no threshold/pass assertion",
+    "runs": [
+      {
+        "run": 1,
+        "freshProcess": true,
+        "coldFirstGenerationMs": 337.114,
+        "coldPoints": 54,
+        "warmSamples": 500,
+        "p50Ms": 6.25,
+        "p95Ms": 10.227,
+        "meanAllocatedBytesPerGeneration": 2160426,
+        "runtime": ".NET 8.0.22 os=Microsoft Windows 10.0.19045 arch=X64 cpu=16"
+      },
+      {
+        "run": 2,
+        "freshProcess": true,
+        "coldFirstGenerationMs": 329.971,
+        "coldPoints": 54,
+        "warmSamples": 500,
+        "p50Ms": 6.053,
+        "p95Ms": 8.942,
+        "meanAllocatedBytesPerGeneration": 2160426,
+        "runtime": ".NET 8.0.22 os=Microsoft Windows 10.0.19045 arch=X64 cpu=16"
+      },
+      {
+        "run": 3,
+        "freshProcess": true,
+        "coldFirstGenerationMs": 345.798,
+        "coldPoints": 54,
+        "warmSamples": 500,
+        "p50Ms": 8.516,
+        "p95Ms": 13.2,
+        "meanAllocatedBytesPerGeneration": 2160426,
+        "runtime": ".NET 8.0.22 os=Microsoft Windows 10.0.19045 arch=X64 cpu=16"
+      }
+    ],
+    "medianAcrossThreeRuns": {
+      "coldFirstGenerationMs": 337.114,
+      "p50Ms": 6.25,
+      "p95Ms": 10.227,
+      "meanAllocatedBytesPerGeneration": 2160426
+    },
+    "investigationBudgetP95Ms": 10,
+    "interpretation": "p95 is descriptive and not a gate; CPU load/browser jobs may affect timings, no universal latency guarantee."
+  },
+  "historical": {
+    "baseline": {
+      "sourceCommit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+      "sourceArchiveSha256": "91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f",
+      "packageVersion": "0.1.0-baseline.e217359",
+      "seedableRng": false
+    },
+    "candidate": {
+      "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+      "packageVersion": "0.2.0-beta.2.final.4d8a18c",
+      "actualByteExactPackageProjection": true,
+      "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4"
+    },
+    "variants": {
+      "baseline-bezier": {
+        "sourceCommit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+        "sourceVersion": "0.1.0-baseline.e217359",
+        "datasetSha256": null,
+        "sourceTreeSha256": "dd9a3e33d23ddb0003469678ef39fb4ab3945eae",
+        "sourceArchiveSha256": "91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f",
+        "feedManifestSha256": "5ba31fa10f2d99c537e33f8e73f57e5a39f1b2a81ad2fd2c7d2d97af6441afb3",
+        "tasks": 7,
+        "passed": 7,
+        "cases": [
+          "independent-pages",
+          "long",
+          "short-subpixel",
+          "slow-transport-12ms",
+          "stable-hover-click"
+        ],
+        "environment": {
+          "machine": "DESKTOP-KLQV3JP",
+          "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+          "logicalProcessors": 16,
+          "os": "Microsoft Windows 10.0.19045",
+          "processArchitecture": "X64",
+          "framework": ".NET 8.0.22",
+          "sdk": "8.0.319",
+          "playwright": "1.61.0.0",
+          "browser": "149.0.7827.55",
+          "browserMode": "Playwright Chromium headless; browser executable tracked by Playwright",
+          "processId": 135852
+        }
+      },
+      "candidate-bezier": {
+        "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+        "sourceVersion": "0.2.0-beta.2.final.4d8a18c",
+        "datasetSha256": null,
+        "sourceTreeSha256": "35b9c66c382be2bd2534c7e024ab98ed281aea09",
+        "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+        "feedManifestSha256": "0ff900139b38e6f33d5ea040e8c92f011f3374b5055f724eeec95877792e0fc3",
+        "tasks": 7,
+        "passed": 7,
+        "cases": [
+          "independent-pages",
+          "long",
+          "short-subpixel",
+          "slow-transport-12ms",
+          "stable-hover-click"
+        ],
+        "environment": {
+          "machine": "DESKTOP-KLQV3JP",
+          "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+          "logicalProcessors": 16,
+          "os": "Microsoft Windows 10.0.19045",
+          "processArchitecture": "X64",
+          "framework": ".NET 8.0.22",
+          "sdk": "8.0.319",
+          "playwright": "1.61.0.0",
+          "browser": "149.0.7827.55",
+          "browserMode": "Playwright Chromium headless; browser executable tracked by Playwright",
+          "processId": 63464
+        }
+      },
+      "candidate-cursory": {
+        "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+        "sourceVersion": "0.2.0-beta.2.final.4d8a18c",
+        "datasetSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+        "sourceTreeSha256": "35b9c66c382be2bd2534c7e024ab98ed281aea09",
+        "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+        "feedManifestSha256": "0ff900139b38e6f33d5ea040e8c92f011f3374b5055f724eeec95877792e0fc3",
+        "tasks": 7,
+        "passed": 7,
+        "cases": [
+          "independent-pages",
+          "long",
+          "short-subpixel",
+          "slow-transport-12ms",
+          "stable-hover-click"
+        ],
+        "environment": {
+          "machine": "DESKTOP-KLQV3JP",
+          "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+          "logicalProcessors": 16,
+          "os": "Microsoft Windows 10.0.19045",
+          "processArchitecture": "X64",
+          "framework": ".NET 8.0.22",
+          "sdk": "8.0.319",
+          "playwright": "1.61.0.0",
+          "browser": "149.0.7827.55",
+          "browserMode": "Playwright Chromium headless; browser executable tracked by Playwright",
+          "processId": 130152
+        }
+      },
+      "candidate-off": {
+        "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+        "sourceVersion": "0.2.0-beta.2.final.4d8a18c",
+        "datasetSha256": null,
+        "sourceTreeSha256": "35b9c66c382be2bd2534c7e024ab98ed281aea09",
+        "sourceArchiveSha256": "69f2afbeebfb98a0f6e636ae49dafa4895ab3e5d6d46220a1cb840921da96ce4",
+        "feedManifestSha256": "0ff900139b38e6f33d5ea040e8c92f011f3374b5055f724eeec95877792e0fc3",
+        "tasks": 7,
+        "passed": 7,
+        "cases": [
+          "independent-pages",
+          "long",
+          "short-subpixel",
+          "slow-transport-12ms",
+          "stable-hover-click"
+        ],
+        "environment": {
+          "machine": "DESKTOP-KLQV3JP",
+          "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+          "logicalProcessors": 16,
+          "os": "Microsoft Windows 10.0.19045",
+          "processArchitecture": "X64",
+          "framework": ".NET 8.0.22",
+          "sdk": "8.0.319",
+          "playwright": "1.61.0.0",
+          "browser": "149.0.7827.55",
+          "browserMode": "Playwright Chromium headless; browser executable tracked by Playwright",
+          "processId": 95396
+        }
+      }
+    },
+    "domObservationCount": 28,
+    "domPassCount": 28,
+    "expectedObservationCount": 28,
+    "cases": [
+      "short-subpixel",
+      "long",
+      "stable-hover-click",
+      "slow-transport-12ms",
+      "independent-pages"
+    ],
+    "seedLimitation": "Historical baseline RNG is not seedable; no paired trajectory claim. Candidate Cursory records the packaged dataset SHA-256.",
+    "timingInterpretation": "DOM task completion, chronology and endpoint checks are functional results; timings are descriptive and not a universal performance claim.",
+    "feedProjectionManifests": {
+      "candidate": {
+        "path": "D:\\SpyBrowser\\artifacts\\goal\\historical-final-4d8a18c\\candidate-feed-projection\\manifest.json",
+        "sha256": "0ff900139b38e6f33d5ea040e8c92f011f3374b5055f724eeec95877792e0fc3"
+      },
+      "baseline": {
+        "path": "D:\\SpyBrowser\\artifacts\\goal\\historical-final-4d8a18c\\baseline-feed-projection\\manifest.json",
+        "sha256": "5ba31fa10f2d99c537e33f8e73f57e5a39f1b2a81ad2fd2c7d2d97af6441afb3"
+      }
+    }
+  },
+  "apiReflection": {
+    "baselineExportedTypes": 37,
+    "candidateExportedTypes": 50,
+    "sharedTypesCompared": 37,
+    "candidateOnlyTypes": [
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserRuntimeProvenance",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.ConsistencyExpectations",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.ContextConsistencyDiagnostics",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshot",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshotChange",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshotComparison",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.Diagnostics.DiagnosticSnapshotStore",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.Diagnostics.RuntimeVersionRecord",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanizationCompatibilityMode",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanizationDiagnosticRecord",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanizationDiagnosticsProvenance",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanizationDiagnosticsSnapshot",
+      "SpyBrowser.Playwright.SpyBrowser.Playwright.MouseTrajectoryAlgorithm"
+    ],
+    "removedPublicMembers": [],
+    "additivePublicMembers": [
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "ClientHintArchitecture():System.String [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "ClientHintBrands():System.String[] [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "ClientHintModel():System.String [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "ClientHintPlatform():System.String [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "ClientHintsAvailable():System.Boolean [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "get_ClientHintArchitecture`0():System.String "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "get_ClientHintBrands`0():System.String[] "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "get_ClientHintModel`0():System.String "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "get_ClientHintPlatform`0():System.String "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "get_ClientHintsAvailable`0():System.Boolean "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "set_ClientHintArchitecture`0(System.String value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "set_ClientHintBrands`0(System.String[] value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "set_ClientHintModel`0(System.String value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "set_ClientHintPlatform`0(System.String value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.BrowserSurfaceDiagnostics",
+        "signature": "set_ClientHintsAvailable`0(System.Boolean value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ConsistencyReport",
+        "signature": "Runtime():SpyBrowser.Playwright.BrowserRuntimeProvenance [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ConsistencyReport",
+        "signature": "get_Runtime`0():SpyBrowser.Playwright.BrowserRuntimeProvenance "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ConsistencyReport",
+        "signature": "set_Runtime`0(SpyBrowser.Playwright.BrowserRuntimeProvenance value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.GpuProbe",
+        "signature": "RunAsync`0(Microsoft.Playwright.IBrowserContext context required,System.TimeSpan timeout required,System.Threading.CancellationToken cancellationToken optional):System.Threading.Tasks.Task<SpyBrowser.Playwright.BrowserSurfaceDiagnostics> "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "ActionDeadlineMilliseconds():System.Int32 [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "CompatibilityMode():SpyBrowser.Playwright.HumanizationCompatibilityMode [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "CursoryDirectness():System.Double [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "CursoryFrequency():System.Double [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "CursoryFrequencyRandomizer():System.Double [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "CursoryMovementDeadlineMilliseconds():System.Int32 [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "DiagnosticsCapacity():System.Int32 [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "EnableDiagnostics():System.Boolean [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "MouseAlgorithm():SpyBrowser.Playwright.MouseTrajectoryAlgorithm [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "RandomSeed():System.Nullable<System.Int32> [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "TypingDeadlineMilliseconds():System.Int32 [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_ActionDeadlineMilliseconds`0():System.Int32 "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_CompatibilityMode`0():SpyBrowser.Playwright.HumanizationCompatibilityMode "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_CursoryDirectness`0():System.Double "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_CursoryFrequencyRandomizer`0():System.Double "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_CursoryFrequency`0():System.Double "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_CursoryMovementDeadlineMilliseconds`0():System.Int32 "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_DiagnosticsCapacity`0():System.Int32 "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_EnableDiagnostics`0():System.Boolean "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_MouseAlgorithm`0():SpyBrowser.Playwright.MouseTrajectoryAlgorithm "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_RandomSeed`0():System.Nullable<System.Int32> "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "get_TypingDeadlineMilliseconds`0():System.Int32 "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_ActionDeadlineMilliseconds`0(System.Int32 value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_CompatibilityMode`0(SpyBrowser.Playwright.HumanizationCompatibilityMode value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_CursoryDirectness`0(System.Double value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_CursoryFrequencyRandomizer`0(System.Double value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_CursoryFrequency`0(System.Double value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_CursoryMovementDeadlineMilliseconds`0(System.Int32 value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_DiagnosticsCapacity`0(System.Int32 value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_EnableDiagnostics`0(System.Boolean value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_MouseAlgorithm`0(SpyBrowser.Playwright.MouseTrajectoryAlgorithm value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_RandomSeed`0(System.Nullable<System.Int32> value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.HumanInteractionOptions",
+        "signature": "set_TypingDeadlineMilliseconds`0(System.Int32 value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.IdentityConsistencyValidator",
+        "signature": "DeviceScaleTolerance:System.Double static  const=0.01"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.IdentityConsistencyValidator",
+        "signature": "ValidateConfiguration`0(SpyBrowser.Core.BrowserIdentity identity required,SpyBrowser.Core.GpuPolicy effectiveGpuPolicy required,SpyBrowser.Playwright.ConsistencyExpectations expectations required,SpyBrowser.Playwright.BrowserRuntimeProvenance runtime optional):SpyBrowser.Playwright.ConsistencyReport "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.IdentityConsistencyValidator",
+        "signature": "Validate`0(SpyBrowser.Core.BrowserIdentity identity required,SpyBrowser.Core.GpuPolicy effectiveGpuPolicy required,SpyBrowser.Playwright.BrowserSurfaceDiagnostics diagnostics required,SpyBrowser.Playwright.ConsistencyExpectations expectations required,SpyBrowser.Playwright.BrowserRuntimeProvenance runtime optional):SpyBrowser.Playwright.ConsistencyReport "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.PlaywrightHumanizer",
+        "signature": "GetDiagnosticsSnapshot`0():SpyBrowser.Playwright.HumanizationDiagnosticsSnapshot "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.PlaywrightHumanizer",
+        "signature": "InvalidateMousePosition`0(Microsoft.Playwright.IPage page required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ScreenSurfaceDiagnostics",
+        "signature": "ViewportHeight():System.Int32 [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ScreenSurfaceDiagnostics",
+        "signature": "ViewportWidth():System.Int32 [get,set]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ScreenSurfaceDiagnostics",
+        "signature": "get_ViewportHeight`0():System.Int32 "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ScreenSurfaceDiagnostics",
+        "signature": "get_ViewportWidth`0():System.Int32 "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ScreenSurfaceDiagnostics",
+        "signature": "set_ViewportHeight`0(System.Int32 value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.ScreenSurfaceDiagnostics",
+        "signature": "set_ViewportWidth`0(System.Int32 value required):System.Void "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserBrowserHandle",
+        "signature": "GetConsistencyDiagnostics`0(Microsoft.Playwright.IBrowserContext context required):SpyBrowser.Playwright.ContextConsistencyDiagnostics "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserBrowserHandle",
+        "signature": "RuntimeProvenance():SpyBrowser.Playwright.BrowserRuntimeProvenance [get]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserBrowserHandle",
+        "signature": "get_RuntimeProvenance`0():SpyBrowser.Playwright.BrowserRuntimeProvenance "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "EffectiveExpectations():SpyBrowser.Playwright.ConsistencyExpectations [get]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "EffectiveGpuPolicy():SpyBrowser.Core.GpuPolicy [get]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "GetHumanizationDiagnosticsSnapshot`0():SpyBrowser.Playwright.HumanizationDiagnosticsSnapshot "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "RunGpuProbeAsync`0(System.Nullable<System.TimeSpan> timeout optional,System.Threading.CancellationToken cancellationToken optional):System.Threading.Tasks.Task<SpyBrowser.Playwright.BrowserSurfaceDiagnostics> "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "RuntimeProvenance():SpyBrowser.Playwright.BrowserRuntimeProvenance [get]"
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "get_EffectiveExpectations`0():SpyBrowser.Playwright.ConsistencyExpectations "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "get_EffectiveGpuPolicy`0():SpyBrowser.Core.GpuPolicy "
+      },
+      {
+        "type": "SpyBrowser.Playwright.SpyBrowser.Playwright.SpyBrowserContextHandle",
+        "signature": "get_RuntimeProvenance`0():SpyBrowser.Playwright.BrowserRuntimeProvenance "
+      }
+    ],
+    "shapeDifferences": [],
+    "historicalOptionDefaults": {
+      "MouseMinimumDurationMilliseconds": "180",
+      "MouseMaximumDurationMilliseconds": "650",
+      "KeyMinimumDelayMilliseconds": "35",
+      "KeyMaximumDelayMilliseconds": "140",
+      "ScrollMinimumSteps": "4",
+      "ScrollMaximumSteps": "12",
+      "ClickHoldMinimumMilliseconds": "45",
+      "ClickHoldMaximumMilliseconds": "130",
+      "DoubleClickIntervalMinimumMilliseconds": "70",
+      "DoubleClickIntervalMaximumMilliseconds": "170",
+      "ThinkingPauseProbability": "0.035",
+      "ThinkingPauseMinimumMilliseconds": "180",
+      "ThinkingPauseMaximumMilliseconds": "620"
+    },
+    "candidateOptionDefaults": {
+      "EnableDiagnostics": "False",
+      "DiagnosticsCapacity": "256",
+      "MouseAlgorithm": "Bezier",
+      "RandomSeed": "null",
+      "CursoryFrequency": "60",
+      "CursoryFrequencyRandomizer": "1",
+      "CursoryDirectness": "0.65",
+      "CursoryMovementDeadlineMilliseconds": "2000",
+      "CompatibilityMode": "Legacy",
+      "ActionDeadlineMilliseconds": "30000",
+      "TypingDeadlineMilliseconds": "30000",
+      "MouseMinimumDurationMilliseconds": "180",
+      "MouseMaximumDurationMilliseconds": "650",
+      "KeyMinimumDelayMilliseconds": "35",
+      "KeyMaximumDelayMilliseconds": "140",
+      "ScrollMinimumSteps": "4",
+      "ScrollMaximumSteps": "12",
+      "ClickHoldMinimumMilliseconds": "45",
+      "ClickHoldMaximumMilliseconds": "130",
+      "DoubleClickIntervalMinimumMilliseconds": "70",
+      "DoubleClickIntervalMaximumMilliseconds": "170",
+      "ThinkingPauseProbability": "0.035",
+      "ThinkingPauseMinimumMilliseconds": "180",
+      "ThinkingPauseMaximumMilliseconds": "620"
+    },
+    "historicalDefaultsRetained": true,
+    "baselineSnapshotSha256": "f50a31ad30a24b295e2153e6b6d9ed5cbdb4b2e6992b8b57adcb870310ed9bbc",
+    "candidateSnapshotSha256": "f0c602e012f7eff239ba81ff7d3c5bff6312c76700c653ed44ea53106163688c"
+  },
+  "existingFinalSourceRuntimeProof": {
+    "scope": "Existing source-bound final-commit validation, not rerun as part of this package-only task.",
+    "windowsRequired161": {
+      "productPassed": 177,
+      "cursoryPassed": 37,
+      "skipped": 0,
+      "evidence": "artifacts/goal/windows-final-4d8a18c/required161/results/required161.trx and cursory-results/cursory37.trx"
+    },
+    "windowsReviewed163": {
+      "productPassed": 176,
+      "productFailed": 1,
+      "failure": "ProbeIsolationBrowserTests.Probe_preserves_user_pages_and_concurrent_new_pages_in_all_launch_modes timed out",
+      "evidence": "artifacts/goal/windows-final-4d8a18c/reviewed163/results/reviewed163.trx"
+    },
+    "linuxMatrix": {
+      "lanes": [
+        "required161",
+        "reviewed163",
+        "chrome161"
+      ],
+      "productPassed": 531,
+      "cursoryPassed": 111,
+      "skipped": 0,
+      "combinedPassed": 642,
+      "evidence": "artifacts/goal/linux-final-4d8a18c/run-status.json"
+    },
+    "cursoryTests": {
+      "perLane": 37,
+      "selectedChecks": [
+        "MatchesPinnedUpstreamFixtures",
+        "MatchesPinnedIntermediateStageFixtures",
+        "Pcg64RawDrawsMatchPinnedNumpyVector",
+        "MatchesPinnedRngBitstreamAndDistributionVectors",
+        "BoundedNearestSelectionMatchesFullSortIncludingTies"
+      ],
+      "evidence": "artifacts/goal/windows-final-4d8a18c/required161/cursory-results/cursory37.trx"
+    },
+    "stackallocAndTop5PackageSourceHashes": {
+      "NumericCompat.cs": "e4c9ee4a87923f6d1aa291c9f2a6c9b63883da87cc13879de0d1aeb481e37d82",
+      "Pcg64.cs": "bd3d588972fcebf05ae4fde5fdc1e95c9766acca16347dcf0e2b3cec2d32eb72",
+      "TrajectorySelection.cs": "1430d2501efa36bff82a25ac8cd5ff014615ae1df53961bfe643668ca61ef82e"
+    }
+  },
+  "limitations": [
+    "No process-table sampling; process-absence is not claimed.",
+    "No claim of rights clearance, external publication permission, or default promotion.",
+    "Benchmark timing is hardware/runtime/load-specific.",
+    "Historical baseline RNG cannot provide paired trajectories."
+  ],
+  "artifacts": {
+    "nativePackageDemo": "D:\\SpyBrowser\\artifacts\\goal\\native-package-demo-final-4d8a18c",
+    "historical": "D:\\SpyBrowser\\artifacts\\goal\\historical-final-4d8a18c",
+    "validation": [
+      "dotnet restore Consumer.csproj --configfile NuGet.Config",
+      "dotnet build Consumer.csproj -c Release --no-restore",
+      "dotnet restore Benchmark.csproj --configfile NuGet.Config",
+      "dotnet build Benchmark.csproj -c Release --no-restore",
+      "historical-motion-comparison/run.py --candidate-feed <byte-exact projection> --baseline-feed <byte-exact projection> --output artifacts/goal/historical-final-4d8a18c",
+      "dotnet --version (8.0.319)"
+    ]
+  }
+}

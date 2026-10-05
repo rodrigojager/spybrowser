@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "review": "integrated-packaging-source-review",
+  "decision": "ACCEPT_SOURCE_FOR_NEW_LOCAL_FINAL_VERIFICATION",
+  "reviewedHead": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "scope": {
+    "integratedSourceFiles": [
+      "src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj",
+      "docs/cursory-package.md",
+      "tools/verification/build_candidate_feed.py",
+      "tools/verification/tests/test_candidate_feed.py"
+    ],
+    "ownedOutputs": [
+      "docs/implementation/integrated-packaging-source-review.json",
+      "docs/implementation/integrated-packaging-source-review.md"
+    ],
+    "csharpAlgorithmOrFixtureChanges": false,
+    "commitCreated": false
+  },
+  "sourceReview": {
+    "correspondingSourcePayloadAndSdkPin": "accepted for next source-bound build; project payload, package pin generation and extracted-tree instructions reviewed",
+    "centralSourceLinkDependency": "accepted; CI-only, PrivateAssets=All; standalone explicit version conditional on central package management being disabled",
+    "sourceLinkMapping": "canonical raw-content URL with exact full SHA and /_* mapping independently enforced",
+    "sourceChecksums": "builder validates source-controlled PDB document SHA-256 against the exact archived source",
+    "provenanceAndOutput": "archives resolved Git commit, checks package/symbol identities and metadata, hashes outputs, refuses existing package files",
+    "processTimeoutOwnership": "bounded command execution and owned process-group/tree termination implemented",
+    "distributionPolicy": {
+      "externalPublicationAllowed": false,
+      "datasetRights": "UNVERIFIED",
+      "remoteSourceAccessVerified": false
+    }
+  },
+  "sourceProjection": {
+    "csharpNumericalImplementationChanged": false,
+    "testFixturesChanged": false,
+    "compileProjectionEvidence": "11 source files; no explicit Compile Include/Remove change; embedded resource declaration and hash unchanged in corresponding-source-packaging-fix.json",
+    "priorPinnedSdkReplay": "432 compared entries across 23 types matched; prior-source evidence only"
+  },
+  "validation": {
+    "command": "python -m unittest tools.verification.tests.test_candidate_feed -v",
+    "result": "PASS",
+    "testsPassed": 12,
+    "testsFailed": 0,
+    "scopeLimit": "Unit tests and integrated source review only; no new current-SHA candidate feed or final-package evidence produced"
+  },
+  "nextStage": {
+    "required": "Freeze a new full source SHA, build a fresh immutable local feed and independently rerun current-SHA package, nuspec, runtime dependency, PDB/CDI/checksum, source rebuild/parity, and required installed/consumer gates.",
+    "reusePrior4dPackages": false,
+    "externalPublicationAuthorized": false,
+    "goalOrReleaseAccepted": false
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "gate": "Gate23/24 final installed non-root Linux",
+  "candidateVersion": "0.2.0-beta.2.final.4d8a18c",
+  "sourceCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "declaredFinalCommit": "4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b",
+  "isFinal": true,
+  "feedManifest": "/mnt/d/Temp/spybrowser-feed-final-4d8a18c/feed-manifest.json",
+  "feedManifestSha256": "8144b157fe26a7f000cd4728fbe19a94773fd0d203badfec9be856e0d5833727",
+  "feedBytesRepacked": false,
+  "candidatePackagesSha256BeforeAndAfterUnchanged": true,
+  "packages": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.nupkg": "c50ad2a3381fded27fb7113bba52ee4e77f3b1e575e645cca4aed4d48cd840b5",
+    "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.nupkg": "78a5ccedbe322f023fbef9a326a31cdfb95a14a93edfe4ed58b84ec70a1270d2",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.nupkg": "595df25eb646defe3c66fa1505c2f517345476e26ca46333f1f9a473d5b8363e",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.nupkg": "d5eb6a7a1098660a380675dec3a357f0070cc764457abf72723805dd76a7cb76"
+  },
+  "symbols": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.4d8a18c.snupkg": "a36c62e8ffcb7817c3517e2b6d1288fc523844fd03a0fc053c985cf5e99fb8e3",
+    "SpyBrowser.Core.0.2.0-beta.2.final.4d8a18c.snupkg": "1d3f6bcd02a283f42c28806c661be5855116847b63302de42167022feff523cf",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.4d8a18c.snupkg": "2e76a9bf4fa5f48ccbfd8678d5cc4cec2cc083b17c5c4291dc8e4282e072159d",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.4d8a18c.snupkg": "ededa03871d588a85065c66e421f4fce0ab6da1781c72835999b28da5eceb559"
+  },
+  "baseline": {
+    "version": "0.1.0-baseline.e217359",
+    "commit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+    "provenance": "PASS",
+    "freshGitArchiveSha256": "91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f"
+  },
+  "runtime": {
+    "wslDistro": "SpyBrowser-Ubuntu24",
+    "user": "spyreview",
+    "uid": 1001,
+    "sdk": "8.0.319",
+    "playwright": "1.61.0",
+    "workingDirectory": "/home/spyreview/installed-final-4d8a18c-work",
+    "nugetCache": "/home/spyreview/installed-final-4d8a18c-work/nuget-cache",
+    "pinnedPlaywrightDependencyCache": "/home/spyreview/.nuget/packages"
+  },
+  "consumerEvidence": "artifacts/goal/installed-final-4d8a18c-linux-proof/distribution-evidence.json",
+  "consumerEvidenceSha256": "249d1869744cbd406585a2092677088657cb1c6afc3c43ea31426f72c3219024",
+  "technicalAllPassed": true,
+  "technicalPassCount": 13,
+  "technicalFailures": [],
+  "technicalPending": [],
+  "blocked": [
+    {
+      "check": "external-dataset-distribution-license",
+      "status": "BLOCKED",
+      "reason": "Dataset license/redistribution clearance is not accepted; no external distribution is authorized."
+    }
+  ],
+  "allPassed": false,
+  "externalPublicationAllowed": false,
+  "producerPackageAudit": {
+    "status": "FAIL",
+    "artifact": "/mnt/d/Temp/spybrowser-feed-final-4d8a18c/package-audit.log",
+    "reason": "Producer audit reported packaged/rebuilt SpyBrowser.Cursory DLL SHA256 mismatch (packaged 3a93b3535312098328c5e817e5dad9430c9fbd8dcfba3fa8377f82e5df69c978; rebuilt fcde380f939e665bf8b04306cf2cb4b6ba14fe3a43225ff88d1846d9c1c5a3ad). This independent producer-side failure is preserved and is not counted as a consumer check or overridden by consumer results."
+  },
+  "commands": [
+    "python3 /home/spyreview/installed-final-4d8a18c-work/distribution-checks/run.py --feed /mnt/d/Temp/spybrowser-feed-final-4d8a18c --candidate-version 0.2.0-beta.2.final.4d8a18c --expected-source-commit 4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b --declared-final-commit 4d8a18c5d2c21e9339cdadf4b606fbaaedfaa15b --feed-manifest /home/spyreview/installed-final-4d8a18c-work/tmp/feed-manifest.json --previous-feed /mnt/d/Temp/spybrowser-baseline-feed-e217359/feed --previous-version 0.1.0-baseline.e217359 --previous-feed-manifest /mnt/d/Temp/spybrowser-baseline-feed-e217359/baseline-manifest.json --dependency-feed /home/spyreview/.nuget/packages --repository /mnt/d/SpyBrowser --output /mnt/d/SpyBrowser/artifacts/goal/installed-final-4d8a18c-linux-proof",
+    "python consumer exit code: 2 (expected external rights gate BLOCKED; all consumer technical checks PASS)"
+  ]
+}
