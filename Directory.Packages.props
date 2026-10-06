@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <MicrosoftPlaywrightVersion Condition="'$(MicrosoftPlaywrightVersion)' == ''">1.61.0</MicrosoftPlaywrightVersion>
+    <MicrosoftPlaywrightVersion Condition="'$(MicrosoftPlaywrightVersion)' == ''">1.63.0</MicrosoftPlaywrightVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.Playwright" Version="$(MicrosoftPlaywrightVersion)" />
