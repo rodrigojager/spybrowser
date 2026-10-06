@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "decision": "ACCEPT_LOCAL_IMPLEMENTATION",
+  "reviewType": "independent subsequent closure decision; historical audits preserved",
+  "candidate": {
+    "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "version": "0.2.0-beta.2.final.ef2d0ea",
+    "producerFeed": "D:/Temp/spybrowser-feed-final-ef2d0ea",
+    "producerManifestSha256": "689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c",
+    "sourceArchiveSha256": "2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119",
+    "productionSourceScope": "Product C# source unchanged from frozen baseline 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a; archive SHA-256 above identifies the ef2d package-source archive, not a 5fa archive. No package rebuilt/repacked for test-only 06.09 evidence.",
+    "packageEvidence": "docs/implementation/ef2d0ea-package-proof.json and docs/implementation/ef2d0ea-native-proof.json: four actual nupkg and four snupkg hashes; 432 compared entries/23 types/zero differences (not whole-PE identity); actual CDI mapping /_/* (not producer display /_*); no remote-source-access claim."
+  },
+  "canonicalComparison": {
+    "source": "docs/implementation/ticket-evidence.json; literal acceptance lists of all 24 tickets",
+    "auditSources": [
+      "docs/implementation/final-audit-01-09.json",
+      "docs/implementation/final-audit-10-22.json",
+      "docs/implementation/final-audit-23-24.json"
+    ],
+    "criteriaExpected": 260,
+    "auditEntries": 260,
+    "uniqueAuditIds": 260,
+    "missingIds": [],
+    "extraIds": [],
+    "duplicateIds": [],
+    "requirementTextComparedExactly": true,
+    "requirementTextMismatches": 0,
+    "ticketAssociationMismatches": 0,
+    "dependencyComparison": "Exact per-ticket comparison against canonical blockedBy; audits 01-09 and 10-22 dependency maps match; audit 23-24 union [18,20,21,22,19,23] matches canonical ticket 23 [18,20,21,22] and ticket 24 [19,23].",
+    "criteriaIdsByTicket": {
+      "01": ["01.01","01.02","01.03","01.04","01.05","01.06","01.07","01.08","01.09","01.10"],
+      "02": ["02.01","02.02","02.03","02.04","02.05","02.06","02.07","02.08","02.09","02.10","02.11"],
+      "03": ["03.01","03.02","03.03","03.04","03.05","03.06","03.07","03.08","03.09","03.10","03.11","03.12"],
+      "04": ["04.01","04.02","04.03","04.04","04.05","04.06","04.07","04.08","04.09","04.10","04.11"],
+      "05": ["05.01","05.02","05.03","05.04","05.05","05.06","05.07","05.08","05.09","05.10","05.11"],
+      "06": ["06.01","06.02","06.03","06.04","06.05","06.06","06.07","06.08","06.09","06.10"],
+      "07": ["07.01","07.02","07.03","07.04","07.05","07.06","07.07","07.08","07.09","07.10"],
+      "08": ["08.01","08.02","08.03","08.04","08.05","08.06","08.07","08.08","08.09","08.10"],
+      "09": ["09.01","09.02","09.03","09.04","09.05","09.06","09.07","09.08","09.09","09.10"],
+      "10": ["10.01","10.02","10.03","10.04","10.05","10.06","10.07","10.08","10.09","10.10","10.11","10.12"],
+      "11": ["11.01","11.02","11.03","11.04","11.05","11.06","11.07","11.08","11.09","11.10"],
+      "12": ["12.01","12.02","12.03","12.04","12.05","12.06","12.07","12.08","12.09","12.10","12.11"],
+      "13": ["13.01","13.02","13.03","13.04","13.05","13.06","13.07","13.08","13.09","13.10","13.11"],
+      "14": ["14.01","14.02","14.03","14.04","14.05","14.06","14.07","14.08","14.09","14.10"],
+      "15": ["15.01","15.02","15.03","15.04","15.05","15.06","15.07","15.08","15.09","15.10","15.11"],
+      "16": ["16.01","16.02","16.03","16.04","16.05","16.06","16.07","16.08","16.09","16.10","16.11"],
+      "17": ["17.01","17.02","17.03","17.04","17.05","17.06","17.07","17.08","17.09","17.10","17.11"],
+      "18": ["18.01","18.02","18.03","18.04","18.05","18.06","18.07","18.08","18.09","18.10","18.11"],
+      "19": ["19.01","19.02","19.03","19.04","19.05","19.06","19.07","19.08","19.09","19.10","19.11"],
+      "20": ["20.01","20.02","20.03","20.04","20.05","20.06","20.07","20.08","20.09","20.10","20.11","20.12"],
+      "21": ["21.01","21.02","21.03","21.04","21.05","21.06","21.07","21.08","21.09","21.10","21.11"],
+      "22": ["22.01","22.02","22.03","22.04","22.05","22.06","22.07","22.08","22.09","22.10","22.11"],
+      "23": ["23.01","23.02","23.03","23.04","23.05","23.06","23.07","23.08","23.09","23.10","23.11","23.12"],
+      "24": ["24.01","24.02","24.03","24.04","24.05","24.06","24.07","24.08","24.09","24.10"]
+    },
+    "historicalAuditCounts": {
+      "01-09": {"criteria": 95, "verified": 94, "gap": 1},
+      "10-22": {"criteria": 143, "verified": 143, "gap": 0},
+      "23-24": {"criteria": 22, "verified": 21, "gap": 1}
+    },
+    "closureCounts": {"criteria": 260, "verifiedAtStatedScope": 260, "unresolvedImplementationGaps": 0}
+  },
+  "closures": [
+    {
+      "criterion": "06.09",
+      "requirement": "Há teste de cancelamento por fechamento do contexto enquanto Fill aguarda um campo indisponível.",
+      "reviewedArtifacts": [
+        "tests/SpyBrowser.Tests/FillContextCloseAcceptanceTests.cs",
+        "docs/implementation/final-fill-context-close-proof.json",
+        "docs/implementation/final-fill-context-close-proof.md",
+        "artifacts/goal/final-fill-context-close/results/fill-context-close.trx",
+        "artifacts/goal/final-fill-context-close/results/fill-context-close-first-failure.trx"
+      ],
+      "directAssertionFinding": "Wrapped Playwright-compatible Locator.FillAsync is invoked with explicit LocatorFillOptions Timeout=0 on a disabled field. The test checks the returned original Fill task is pending before context.CloseAsync; value remains untouched and input event count is zero before close; it then directly awaits that original task and requires TaskCanceledException, explicitly excludes timeout, and asserts task settled and context closed. The separate 10-second WaitAsync bounds are test safety guards, not Fill's action timeout. This is not the RpaRunner cancellation route.",
+      "optionsAssessment": "The literal criterion does not require default options. The explicit supported compatible/native forwarding path is valid: the proof confirms native proxy dispatch and the criterion names Fill waiting on an unavailable field, not a default-timeout combination. No broader browser matrix is inferred.",
+      "actualTrx": {"runId": "f6c4c1de-b379-4b7e-90bf-b3ab6b91eca5", "total": 1, "executed": 1, "passed": 1, "failed": 0, "skipped": 0},
+      "initialFailureRetained": "The earlier assertion expected PlaywrightException; observed native pending-operation cancellation was TaskCanceledException. Corrected assertion matches observed cancellation; no timeout relaxation. First-failure TRX preserved.",
+      "productionChange": false,
+      "candidateSource": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+      "closure": "verified"
+    },
+    {
+      "criterion": "24.09",
+      "requirement": "Release checklist da entrega completa associa snapshots às evidências de compatibilidade, licenciamento e desempenho do núcleo.",
+      "reviewedArtifacts": [
+        "docs/implementation/final-release-checklist.md",
+        "docs/implementation/ef2d0ea-native-proof.json",
+        "docs/implementation/ef2d0ea-native-proof.md",
+        "docs/implementation/ef2d0ea-installed-windows-proof.json",
+        "docs/implementation/ef2d0ea-installed-linux-proof.json",
+        "docs/release-notes-0.2.0-beta.2.md",
+        "docs/snapshot-operations.md"
+      ],
+      "directAssociationFinding": "The current release checklist checks the final-package native/benchmark/historical proof item and cites ef2d0ea-native-proof.md with measured cold/warm p50/p95/allocation, API and historical observations. It separately checks package-only Windows/Linux snapshot installed technical assertions and records unresolved dataset rights as an explicit external-distribution block (13 technical checks each; allPassed=false solely for rights). Release notes link the operator snapshot manual and state the review/publication limitations. At review time, the all-criterion-review checkbox awaited this independent decision; it is not the criterion's native-proof association item and no circular all-260 prerequisite is imposed.",
+      "performanceInterpretation": "Observed medians cold 401.380 ms, warm p50 7.563 ms, warm p95 11.049 ms, allocation 2,160,426 bytes/generation. 10 ms p95 is investigative, not a CI threshold or acceptance guarantee.",
+      "rightsInterpretation": "datasetRights=UNVERIFIED and externalPublicationAllowed=false remain explicit; accepted as the allowed blocked alternative, not legal clearance.",
+      "closure": "verified"
+    }
+  ],
+  "remainingBoundaries": [
+    "No external publication, default promotion, or legal clearance; dataset rights remain UNVERIFIED and publication prohibited.",
+    "No universal stealth guarantee, all-future-audits guarantee, or unlisted browser-combination claim.",
+    "No claim that RpaRunner cancellation is equivalent to awaiting original Fill; direct Fill proof was inspected.",
+    "No whole-PE identity or remote SourceLink retrieval claim; actual PDB CDI mapping is /_/* and 58 source checksums are verified.",
+    "Provider/CAPTCHA mixed suite was not run; p95 10 ms is investigative only; snapshots have no dedicated export API and no telemetry or destructive identity migration is introduced."
+  ],
+  "parentLedgerUpdateGuidance": {
+    "preserveHistoricalAudits": true,
+    "immutable": ["criterion IDs", "literal requirement text", "blockedBy dependencies"],
+    "mayUpdate": "Only the 21 currently pending canonical ticket statuses (23.01-23.04, 23.06-23.12 and 24.01-24.10; 23.05 was already verified), if the parent chooses to record this accepted local implementation; statuses of the other 239 already-verified ledger criteria remain intact.",
+    "06.09": "Append this directly reviewed proof as evidence; do not rewrite its ID/text/dependencies or imply the old audit had this evidence.",
+    "expectedLedgerAfterThoseUpdates": {"verified": 260, "pending": 0}
+  },
+  "validation": {
+    "performed": [
+      "Python JSON extraction compared all canonical criterion IDs, exact requirement strings, ticket associations and dependency lists with all three audit JSONs; 260/260 exact, no missing/extra/duplicate IDs or text mismatches.",
+      "Read both gap proofs, the full direct Fill test and TRX outcome/run ID, final checklist/native and installed proof reports, package provenance reports, release notes and snapshot operator manual.",
+      "git diff from baseline 5fa99de for src/**/*.cs produced no changed product C# files; current source commit resolves to ef2d0eaa35a5bf1950acf75a342590b95e15c9e0."
+    ],
+    "notPerformed": ["No test suites were rerun for this review.", "No source, tests, feeds, ledger, historical audits or other documents were changed by this closure."]
+  }
+}

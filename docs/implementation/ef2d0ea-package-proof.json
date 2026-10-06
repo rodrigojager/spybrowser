@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "decision": "LOCAL_FINAL_FEED_BUILT_AND_PACKAGE_CORRESPONDENCE_VERIFIED",
+  "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+  "candidateVersion": "0.2.0-beta.2.final.ef2d0ea",
+  "sourceArchiveSha256": "2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119",
+  "sdk": "8.0.319",
+  "producerFeed": "D:/Temp/spybrowser-feed-final-ef2d0ea",
+  "producerManifest": "D:/Temp/spybrowser-feed-final-ef2d0ea/feed-manifest.json",
+  "producerManifestSha256": "689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c",
+  "packages": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.nupkg": "d0ee0ae2d6fe850c12f3bdc3aacdb4c34c0f951324ad6a4b41a45bfbabed0790",
+    "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.nupkg": "7c3f64b2fb65cc4c706ce2f4d2b39f553e3f548e210384d4692e51fd6fd1e194",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.nupkg": "b042e0c8643b00b375bbf20d1d65ee458b990472592f064bb5a741e581ce3f10",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.nupkg": "17965e54e3828a8d11c8686afafaf768653629ee2f68ea5dbd3e03de9a28363b"
+  },
+  "symbols": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.snupkg": "ac988bcd318c356d6491fb4264c7918c0dcdeffa8b94e43052b0eba76b8ceffc",
+    "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.snupkg": "99c6266757d555556667a3cf7e3f93d934f658950119234f4d6e7ef075466277",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.snupkg": "f84bb3f47468addf20b214b8733c4b4d655ef44844bb69552687025d00b021f1",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.snupkg": "e0de433c945c0af8f5c44b56d998561a8abda3305dbce5453430f9a6cf2a5f73"
+  },
+  "nuspecAudit": "4/4 package IDs, versions, full repository commit and repository URL verified against actual package nuspecs",
+  "portablePdbAudit": {
+    "pdbCount": 4,
+    "documentCount": 71,
+    "sourceControlledDocumentsVerified": 58,
+    "generatedDocumentsExcluded": 13,
+    "sourceLinkUrlTemplate": "https://raw.githubusercontent.com/rodrigojager/spybrowser/ef2d0eaa35a5bf1950acf75a342590b95e15c9e0/*",
+    "mappingKey": "/_*",
+    "remoteSourceAccessVerified": false
+  },
+  "cursoryPackageInspection": {
+    "report": "artifacts/goal/package-ef2d0ea-inspection/package-audit.json",
+    "details": "artifacts/goal/package-ef2d0ea-inspection/SpyBrowser.Cursory.package-build-manifest.json",
+    "sourcePin": "8.0.319; rollForward disabled",
+    "runtimeAssemblies": ["lib/net8.0/SpyBrowser.Cursory.dll"],
+    "runtimeDependencies": [],
+    "parentPlaywrightNoticeExcluded": true,
+    "licensesNoticesReadmeBuildGuideAndCorrespondingSource": true,
+    "sourceCSharpFilesComparedToArchive": 11,
+    "sourceLineEndingOnlyNormalization": true
+  },
+  "sourceProgramCorrespondence": {
+    "report": "artifacts/goal/final-compiler-correspondence/ef2d0ea/correspondence.json",
+    "standalonePackageSourceBuild": "PASS with packaged source/global.json SDK 8.0.319",
+    "types": 23,
+    "comparedEntries": 432,
+    "differingEntries": 0,
+    "packagedAssemblySha256": "3cf6ecc4552eaba6d53b9be28d86c42b1843585e2134098e5b256d987e236d8f",
+    "rebuiltAssemblySha256": "fd6b11b11cfffc1003a4cc34b5009bd962d824c2de248faa0bcb1256bc2fab40",
+    "wholePeByteIdentityClaimed": false
+  },
+  "consumerProjection": {
+    "feed": "D:/SpyBrowser/artifacts/goal/final-feed-ef2d0ea",
+    "manifest": "artifacts/goal/final-feed-ef2d0ea/manifest.json",
+    "readyMarker": "artifacts/goal/final-feed-ef2d0ea/consumer-ready.json",
+    "packageIds": ["SpyBrowser.Core", "SpyBrowser.Cursory", "SpyBrowser.Playwright"],
+    "copiedBytesMatchProducerHashes": true,
+    "isFinal": true,
+    "declaredFinalCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0"
+  },
+  "validation": {
+    "officialBuilder": "PASS",
+    "packageInspector": "PASS",
+    "producerUnitTests": "12 passed",
+    "externalPublicationAllowed": false,
+    "datasetRights": "UNVERIFIED"
+  }
+}

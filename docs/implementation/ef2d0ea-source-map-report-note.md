@@ -1,0 +1,7 @@
+# SourceLink audit display-field correction
+
+The immutable ef2d0ea producer manifest reports `sourceLinkMappingKey` as `/_*`. This is a **diagnostic return-field typo**, not the actual Portable PDB mapping: the frozen producer's `validate_pdb_audit` independently requires exactly `{"documents":{"/_/*":"https://raw.githubusercontent.com/rodrigojager/spybrowser/ef2d0eaa35a5bf1950acf75a342590b95e15c9e0/*"}}` and compares each real CDI JSON with that canonical mapping before publishing the manifest. All four real PDB mappings and 58 source checksums passed that check.
+
+The parent corrected only the returned display field and added an assertion that it equals `/_/*`. No compiler mapping, compilation property, C# implementation, embedded resource, nuspec, package, symbol or old feed manifest was changed. The final NuGet/code source identity remains the frozen ef2d0ea commit; the evidence/tool-report correction is a later delivery annotation, not a relabel/repack of those packages.
+
+When interpreting the retained manifest or reports that copied its display field, use the actual canonical CDI mapping above, not the erroneous display value. Remote source accessibility was not tested and publication is still prohibited. The package/source hashes remain independently verified; source–program correspondence includes all 432 compared metadata/method/local/exception/resource entries, without a whole-PE byte-identity claim.

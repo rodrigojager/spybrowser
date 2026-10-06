@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "criterion": "06.09",
+  "disposition": "direct-test-proof-passed-tests-only-delta",
+  "test": {
+    "file": "tests/SpyBrowser.Tests/FillContextCloseAcceptanceTests.cs",
+    "name": "SpyBrowser.Tests.FillContextCloseAcceptanceTests.Compatible_fill_waiting_on_disabled_field_fails_when_context_closes_and_settles_original_task",
+    "scenario": "Playwright-compatible wrapped locator Fill waits on a disabled input with native action Timeout=0; the browser context is explicitly closed while Fill is pending.",
+    "assertions": [
+      "Fill start synchronization completes and original returned Fill task is still pending before context close.",
+      "Before close, input value remains untouched and input event count is zero.",
+      "Context close completes under a separate 10-second safety deadline.",
+      "Awaiting the Fill task under a separate 10-second safety deadline yields TaskCanceledException from the pending native Playwright locator operation.",
+      "Failure is not a timeout, Fill task is settled, and context reports closed."
+    ],
+    "scopeNote": "No post-close DOM read is possible; no effect is established by pre-close value/event observations, while task settlement proves no orphan Fill operation remains."
+  },
+  "execution": {
+    "sdk": "8.0.319",
+    "browserOptIn": "SPYBROWSER_RUN_BROWSER_TESTS=1",
+    "tempAndCliHome": "D:/Temp",
+    "command": "dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj --no-restore --filter FullyQualifiedName~FillContextCloseAcceptanceTests.Compatible_fill_waiting_on_disabled_field_fails_when_context_closes_and_settles_original_task --artifacts-path artifacts/goal/final-fill-context-close/build --results-directory artifacts/goal/final-fill-context-close/results --logger 'trx;LogFileName=fill-context-close.trx' --verbosity minimal",
+    "trx": "artifacts/goal/final-fill-context-close/results/fill-context-close.trx",
+    "trxRunId": "f6c4c1de-b379-4b7e-90bf-b3ab6b91eca5",
+    "counts": {
+      "total": 1,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "timeout": 0
+    },
+    "firstAttempt": {
+      "result": "failed-test-assertion",
+      "trx": "artifacts/goal/final-fill-context-close/results/fill-context-close-first-failure.trx",
+      "reason": "Initial assertion expected PlaywrightException; actual context-close cancellation was TaskCanceledException. Assertion was aligned to observed native pending-command cancellation; focused rerun passed."
+    }
+  },
+  "sourceAndPackage": {
+    "frozenProductionIdentity": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "productionSourceChanged": false,
+    "testOnlyDelta": true,
+    "compatibleFillDispatch": "Explicit LocatorFillOptions follows the native proxy path; HumanizingDispatchProxy<T>.InvokeCore calls targetMethod.Invoke(_target, nativeArguments). The test does not use the RpaRunner cancellation wrapper.",
+    "repackRequired": false
+  },
+  "consumerCheckAssessment": {
+    "source": "tools/verification/consumer-checks/Program.cs:158-171",
+    "route": "Actual RpaRunner RunAsync cancellation during FillWhenReadyAsync/FillWithRuntimeAsync; cancels caller token and awaits runner before checking context closed.",
+    "directOriginalFillAwait": false,
+    "providedConsumerLanes": "Three final ef2d consumer lanes reported 14/14 passed; not rerun for this focused test and not a substitute for directly awaiting Fill."
+  },
+  "independentBlock": "datasetRights=UNVERIFIED and externalPublicationAllowed=false remain unchanged; no publication/promotion/ledger update was performed.",
+  "residualScope": "One direct browser test in Chromium; no broader engine matrix claimed."
+}

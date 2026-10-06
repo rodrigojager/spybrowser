@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "audit": "literal tickets 23 and 24 criterion audit",
+  "candidate": {
+    "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "version": "0.2.0-beta.2.final.ef2d0ea",
+    "producerFeed": "D:/Temp/spybrowser-feed-final-ef2d0ea",
+    "sourceArchiveSha256": "2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119",
+    "producerManifestSha256": "689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c"
+  },
+  "summary": {
+    "total": 22,
+    "verified": 21,
+    "gap": 1,
+    "unreviewed": 0
+  },
+  "dependencies": [
+    18,
+    20,
+    21,
+    22,
+    19,
+    23
+  ],
+  "scopeLimits": [
+    "No external dataset-rights clearance; rights-only block is the allowed 23.05 alternative.",
+    "No publication, default promotion or approval inferred.",
+    "No full ef2d browser rerun claimed: source browser contracts are frozen 4d; installed package checks are separate.",
+    "No remote access verification for unpushed source SHA; no whole-PE identity; no mixed provider/CAPTCHA/network tests.",
+    "Native benchmark is reviewed and tied to ef2d; measurements are descriptive, not a universal CI timing guarantee. Historical RNG is unseedable.",
+    "Historical RNG is unseedable; no paired trajectory comparison."
+  ],
+  "criteria": [
+    {
+      "id": "23.01",
+      "requirement": "Pacotes são construídos e instalados via feed local em consumidor limpo, não apenas por project reference dentro da solution.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/ef2d0ea-installed-windows-proof.json",
+          "detail": "Installed Windows proof JSON: actualInstalledConsumer.cwdOutsideRepository=true, projectReference=false; distribution-checks/run.py rejects ProjectReference. Linux consumer is isolated at /home/spyreview/installed-ef2d0ea-work. Exact final feed/package hashes match frozen ef2d0ea."
+        }
+      ]
+    },
+    {
+      "id": "23.02",
+      "requirement": "O grafo contém a DLL Cursory separada, dados embarcados e nenhuma dependência adicional de servidor/processo de geração.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/ef2d0ea-package-proof.md",
+          "detail": "Package proof: actual Cursory package has only lib/net8.0/SpyBrowser.Cursory.dll, embedded gzip data once, no runtime dependencies or Playwright; source rebuild 432 entries/23 types/zero differences. tools/package-demo/verify_package.py checks DLL list and data hash."
+        }
+      ]
+    },
+    {
+      "id": "23.03",
+      "requirement": "O teste reconhece a instalação e o driver normal do Playwright; não exige erroneamente a ausência de todo Node no processo de automação.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Installed Program.cs prints official Microsoft.Playwright package driver; actual named browser-executable-and-official-driver check PASS Windows and Linux. Normal browser driver is allowed; absence of all Node is not required."
+        }
+      ]
+    },
+    {
+      "id": "23.04",
+      "requirement": "Conteúdo real de nupkg/nuspec, fontes correspondentes, símbolos, licenças e avisos de código/dados/helpers são verificados.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/ef2d0ea-package-proof.json",
+          "detail": "Package proof: four actual nupkg + four snupkg hashes; full commit nuspec; four actual SourceLink CDI mappings, 58 source checksums, packaged corresponding sources/licenses/notices, standalone rebuild/repack correspondence. verify_package.py PASS package/nuspec/source/data/licenses/symbols. Display typo annotation distinguishes canonical CDI /_/*; remote source access not claimed."
+        }
+      ]
+    },
+    {
+      "id": "23.05",
+      "requirement": "Checklist LGPL/proveniência está concluído ou aponta bloqueio explícito de distribuição; separação em DLL não é apresentada como parecer jurídico suficiente.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/ef2d0ea-installed-windows-proof.json",
+          "detail": "distribution.md and upstream-manifest record rights unresolved. Both installed proof JSONs: technicalAllPassed=true, 13 PASS/zero failures/pending; allPassed=false, exit 2 solely external-dataset-distribution-license, externalPublicationAllowed=false. This meets explicit block alternative, not legal clearance."
+        }
+      ]
+    },
+    {
+      "id": "23.06",
+      "requirement": "Ativar Cursory, selecionar Bézier e Humanize=false funcionam pelos mesmos comandos Playwright, sem fallback silencioso durante uma ação.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Windows/Linux named installed checks candidate-cursory, candidate-bezier, candidate-off PASS. distribution-checks/Program.cs asserts phase, algorithm, Humanize and completed click; no silent retry/fallback is claimed."
+        }
+      ]
+    },
+    {
+      "id": "23.07",
+      "requirement": "Pin da versão anterior é demonstrado sem migração destrutiva de identidade/perfil; recursos continuam descartados corretamente.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/ef2d0ea-installed-linux-proof.json",
+          "detail": "Installed Windows/Linux evidence: previous-package-provenance, previous-bezier-rollback, previous-humanize-off PASS. Program.cs asserts disposed context/unchanged identity manifest; actual prior e217359 opens same profile and leaves schema-999 snapshot byte-exact."
+        }
+      ]
+    },
+    {
+      "id": "23.08",
+      "requirement": "Releases documentam semântica do modo compatível, diferenças do legado, matriz homologada, limites do produto e rollback.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/release-notes-0.2.0-beta.2.md",
+          "detail": "Release notes document compatible vs Legacy semantics, raw limitations/deadlines, matrix and rollback. Current matrix binds frozen 4d browser suites and preserves Windows 176+1 late NewPage timeout plus focused and sequential full pass; no ef2d full-suite rerun claimed."
+        }
+      ]
+    },
+    {
+      "id": "23.09",
+      "requirement": "Evidências RpaBlockly, browser contracts, paridade e benchmark são associadas ao candidato instalado.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/ef2d0ea-native-proof.md",
+          "detail": "Final Rpa package proof: three lanes 14/14, final parity true; browser matrix: source-bound 177+37 lanes, not relabeled ef2d reruns. ef2d0ea-native-proof.json/.md directly bind native package consumer, existing 37-test TRX, three fresh-process benchmark runs and historical 28 DOM observations/API diff to frozen ef2d candidate. Benchmark has 1 cold/20 warmups/500 timed calls/process; observed warm p95 11.049,13.597,10.106 ms, two exceed 10ms investigation budget. Criterion asks association, not a performance threshold; no universal CI guarantee or paired RNG claim."
+        }
+      ]
+    },
+    {
+      "id": "23.10",
+      "requirement": "Nenhum default global é promovido silenciosamente; Cursory permanece opt-in até decisão explícita.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/release-notes-0.2.0-beta.2.md",
+          "detail": "Release notes state Cursory opt-in, Bézier/Legacy default and Humanize=false raw; installed candidate-cursory/bezier/off checks PASS. No global promotion or production source change."
+        }
+      ]
+    },
+    {
+      "id": "23.11",
+      "requirement": "Snapshots históricos não são dependência obrigatória desta pré-release; se já incluídos no pacote, só são anunciados como homologados após o ticket 24.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/release-notes-0.2.0-beta.2.md",
+          "detail": "Release notes explicitly say final-package installed consumers exercised snapshot save/select/compare/discard and criterion review remains distinct. Windows/Linux named checks PASS, so claims technical exercise after ticket-24 technical gates, not overall release acceptance."
+        }
+      ]
+    },
+    {
+      "id": "23.12",
+      "requirement": "Publicação em NuGet/GitHub externo exige aprovação operacional separada; este ticket não autoriza esse efeito por si só.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/final-release-checklist.md",
+          "detail": "Release notes/checklist and installed proof say publication prohibited/not authorized, externalPublicationAllowed=false; no publication occurred. Separate approval requirement remains in force; this audit grants none."
+        }
+      ]
+    },
+    {
+      "id": "24.01",
+      "requirement": "Consumidor instalado a partir de pacote executa salvar, selecionar baseline, comparar e descartar snapshots, sem acesso ao workspace de desenvolvimento.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Actual package-only Windows/Linux snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard checks PASS; cwd outside repo/no ProjectReference. Installed Program.cs reflects DiagnosticSnapshotStore signatures and executes SaveAsync/ReadAsync/Compare."
+        }
+      ]
+    },
+    {
+      "id": "24.02",
+      "requirement": "Schema de snapshot é independente do schema de identidade e da versão dos dados do algoritmo.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Program.cs creates snapshot/runtime version records independently of identity manifest or dataset; unknown schema rejection assertion passes. Snapshot operations manual states snapshot, identity and dataset schemas independent."
+        }
+      ]
+    },
+    {
+      "id": "24.03",
+      "requirement": "Rollback do pacote não altera/corrompe perfil ou manifesto de identidade; snapshots de versão mais nova são ignorados ou rejeitados de forma clara conforme contrato.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Windows/Linux previous-bezier-rollback and previous-package-ignores-newer-snapshot checks PASS. Program.cs verifies schema-999 fixture hash unchanged and old package opens same identity/profile/storage state. No old-reader compatibility is claimed."
+        }
+      ]
+    },
+    {
+      "id": "24.04",
+      "requirement": "Desligar persistência de snapshots e excluir arquivos do recurso não remove storage state, cookies, perfis ou identidades.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Program.cs discard assertion deletes only snapshot directory and verifies identity manifest, profile, storage state unchanged; named installed discard PASS both platforms. Disable by omitting dir/store call per manual."
+        }
+      ]
+    },
+    {
+      "id": "24.05",
+      "requirement": "Falta de permissão, interrupção de escrita e sessões concorrentes são exercitadas no formato distribuído, preservando baseline anterior válida.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Actual NTFS ACL (Windows) and nonroot Linux permission denial PASS; OS termination during SDK temp write preserves baseline; concurrent two-process saves make unique complete files and preserve baseline. Windows orphan temp caveat retained; no cleanup guarantee."
+        }
+      ]
+    },
+    {
+      "id": "24.06",
+      "requirement": "Testes confirmam ausência de secrets e isolamento dos dados do recurso, inclusive após erros e rollback.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Program.cs injects privacy sentinels/canvas/GPU error and rejects their appearance in snapshot. Installed save/error/concurrency/crash/rollback tests pass; evidence records hashes only and no cookie values."
+        }
+      ]
+    },
+    {
+      "id": "24.07",
+      "requirement": "Mudanças legítimas de versões e GPU aparecem como informação contextual, sem alterar automaticamente a baseline nem bloquear a execução.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "tools/verification/distribution-checks/Program.cs",
+          "detail": "Program.cs requires version/algorithm/GPU/context deltas to be informational and asserts webgl1.renderer-category severity=Information; named installed snapshot-gpu-context-information PASS both platforms. No automatic promotion/block."
+        }
+      ]
+    },
+    {
+      "id": "24.08",
+      "requirement": "Manual operacional cobre ativação, comparação, retenção, exportação quando disponível e descarte seguro.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/snapshot-operations.md",
+          "detail": "snapshot-operations.md covers activation, explicit comparison/baseline, retention, safe permissions, failure/rollback, discard; explicitly says no dedicated export API, addressing export when available."
+        }
+      ]
+    },
+    {
+      "id": "24.09",
+      "requirement": "Release checklist da entrega completa associa snapshots às evidências de compatibilidade, licenciamento e desempenho do núcleo.",
+      "status": "gap",
+      "evidence": [
+        {
+          "path": "docs/implementation/final-release-checklist.md",
+          "detail": "ef2d0ea-native-proof.json/.md has now been reviewed and binds candidate-native tests, benchmark observations and historical/API results to the frozen package, so performance evidence is available. However docs/implementation/final-release-checklist.md is stale: it still leaves “Accept the recovered final-package native/benchmark/historical report” unchecked and says criterion review pending. Update that checklist entry to cite the native proof and measured results (keeping timing descriptive); only then does the release checklist fully associate snapshots with compatibility, licensing and performance evidence."
+        }
+      ]
+    },
+    {
+      "id": "24.10",
+      "requirement": "Não se publica externamente ou altera defaults globais sem aprovação específica, mesmo com todos os testes concluídos.",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "docs/implementation/final-release-checklist.md",
+          "detail": "Installed proofs/checklist state externalPublicationAllowed=false, no publication or promotion; release notes preserve defaults. Criterion requires separate approval, not proof of unauthorized publishing; no approval is granted here."
+        }
+      ]
+    }
+  ]
+}

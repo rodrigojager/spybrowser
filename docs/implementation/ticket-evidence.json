@@ -1338,9 +1338,25 @@
             {
               "path": "docs/implementation/recovery-ledger-review.json",
               "detail": "Independent review approved criterion 06.09 for scoped promotion; review did not run tests."
+            },
+            {
+              "path": "docs/implementation/final-audit-23-24.json",
+              "detail": "Final independent closure directly reviewed criterion 06.09; compatible wrapped Fill on a disabled input with native Timeout=0 remained pending before context close, then awaiting the same original task yielded TaskCanceledException, not timeout. One focused Chromium test passed; separate from the RpaRunner cancellation route."
+            },
+            {
+              "path": "docs/implementation/final-fill-context-close-proof.json",
+              "detail": "Direct proof asserts original Fill task pending before close, value unchanged and zero input events before close, awaiting original task yields TaskCanceledException, not timeout, task settled and context closed. Separate 10-second WaitAsync bounds are test safety guards, not Fill action timeout."
+            },
+            {
+              "path": "tests/SpyBrowser.Tests/FillContextCloseAcceptanceTests.cs",
+              "detail": "SpyBrowser.Tests.FillContextCloseAcceptanceTests.Compatible_fill_waiting_on_disabled_field_fails_when_context_closes_and_settles_original_task asserts original Fill pending before context.CloseAsync and awaits that same task for TaskCanceledException, excluding timeout."
+            },
+            {
+              "path": "artifacts/goal/final-fill-context-close/results/fill-context-close.trx",
+              "detail": "Actual focused TRX run f6c4c1de-b379-4b7e-90bf-b3ab6b91eca5: total=1, executed=1, passed=1, failed=0, skipped=0, timeout=0."
             }
           ],
-          "notes": "Actual Fill wait-close test awaits the original Fill task; the typing-timeout test is not substituted."
+          "notes": "Actual Fill wait-close test awaits the original Fill task; the typing-timeout test is not substituted. Historical note retained above: the final audit subsequently found its original evidence mapping insufficient. Direct closure evidence now supersedes the previously narrow ActionContractMatrix typing-timeout evidence; that historical record remains unchanged. The new test invokes compatible wrapped Locator.FillAsync on a disabled field with native LocatorFillOptions Timeout=0, observes the original task pending and value unchanged with zero input events before context close, then awaits that same task and asserts TaskCanceledException (not timeout), settlement and closed context. Focused TRX run f6c4c1de-b379-4b7e-90bf-b3ab6b91eca5 passed 1/1. Separate WaitAsync bounds are test safety guards, not action timeout; no RpaRunner equivalence or broader browser matrix is claimed."
         },
         {
           "id": 10,
@@ -5047,30 +5063,42 @@
         {
           "id": 1,
           "requirement": "Pacotes são construídos e instalados via feed local em consumidor limpo, não apenas por project reference dentro da solution.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.01 actualInstalledConsumer.cwdOutsideRepository=true and projectReference=false; distribution-checks/run.py rejects ProjectReference; exact final-feed package hashes match candidate."},
+            {"path": "docs/implementation/ef2d0ea-installed-windows-proof.json", "detail": "Actual package-only installed Windows consumer executes outside the repository with no ProjectReference; counterpart Linux consumer is documented in its installed proof."}
+          ],
+          "notes": "Final audit assertions establish isolated local-feed package consumers on Windows and Linux, outside the repo and without ProjectReference. Candidate is ef2d0eaa35a5bf1950acf75a342590b95e15c9e0 version 0.2.0-beta.2.final.ef2d0ea; this is local installation evidence, not publication approval."
         },
         {
           "id": 2,
           "requirement": "O grafo contém a DLL Cursory separada, dados embarcados e nenhuma dependência adicional de servidor/processo de geração.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.02 package proof checks the actual separate Cursory DLL, one embedded gzip dataset and no runtime dependencies or Playwright; verify_package.py asserts package contents."},
+            {"path": "docs/implementation/ef2d0ea-package-proof.json", "detail": "Actual package/rebuild correspondence compares 432 entries across 23 types with zero differences; not a whole-PE identity claim."}
+          ],
+          "notes": "Package assertions identify lib/net8.0/SpyBrowser.Cursory.dll, embedded data exactly once and no runtime dependencies or Playwright; standalone source rebuild comparison is 432 entries/23 types/zero differences. No generation server/process is introduced."
         },
         {
           "id": 3,
           "requirement": "O teste reconhece a instalação e o driver normal do Playwright; não exige erroneamente a ausência de todo Node no processo de automação.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.03 named browser-executable-and-official-driver check PASS on Windows and Linux; Program.cs reports the official Microsoft.Playwright package driver."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Installed consumer assertion recognizes the normal official Playwright browser driver; it does not require absence of all Node."}
+          ],
+          "notes": "The named browser-executable-and-official-driver check passes on both installed platforms and Program.cs reports the Microsoft.Playwright driver. Normal driver presence is allowed; no all-Node-absent assertion is made."
         },
         {
           "id": 4,
           "requirement": "Conteúdo real de nupkg/nuspec, fontes correspondentes, símbolos, licenças e avisos de código/dados/helpers são verificados.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.04 verify_package.py PASS checks actual package, nuspec, source, data, licenses and symbols; four nupkg/snupkg pairs, four CDI mappings and 58 source checksums are recorded."},
+            {"path": "docs/implementation/ef2d0ea-package-proof.json", "detail": "Actual package proof records corresponding sources, licenses/notices, rebuild correspondence, and canonical CDI mapping /_/*; remote source access is not asserted."}
+          ],
+          "notes": "Actual nupkg/nuspec, symbols, corresponding source, data, licenses and notices were inspected; verify_package.py PASS. Four CDI mappings and 58 checksums are recorded; canonical mapping is /_* and no remote SourceLink availability is claimed."
         },
         {
           "id": 5,
@@ -5091,51 +5119,77 @@
         {
           "id": 6,
           "requirement": "Ativar Cursory, selecionar Bézier e Humanize=false funcionam pelos mesmos comandos Playwright, sem fallback silencioso durante uma ação.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.06 named installed checks candidate-cursory, candidate-bezier and candidate-off PASS on Windows and Linux; Program.cs asserts phase, algorithm, Humanize and completed click."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Installed consumer assertions cover Cursory opt-in, Bézier selection and Humanize=false through the same Playwright commands, without silent fallback/retry."}
+          ],
+          "notes": "Named candidate-cursory, candidate-bezier and candidate-off checks pass on both installed platforms; assertions cover phase, algorithm, Humanize and completed click. No silent fallback during an action is claimed."
         },
         {
           "id": 7,
           "requirement": "Pin da versão anterior é demonstrado sem migração destrutiva de identidade/perfil; recursos continuam descartados corretamente.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.07 named previous-package-provenance, previous-bezier-rollback and previous-humanize-off checks PASS; old package opens same profile and leaves schema-999 snapshot byte-exact."},
+            {"path": "docs/implementation/ef2d0ea-installed-linux-proof.json", "detail": "Installed rollback evidence records disposed context and unchanged identity manifest; checks are scoped to installed Windows/Linux consumers."}
+          ],
+          "notes": "previous-package-provenance, previous-bezier-rollback and previous-humanize-off checks pass. Prior e217359 opens the same profile and retains the schema-999 snapshot byte-exact; no destructive identity/profile migration is observed."
         },
         {
           "id": 8,
           "requirement": "Releases documentam semântica do modo compatível, diferenças do legado, matriz homologada, limites do produto e rollback.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.08 cites release notes for compatible/Legacy semantics, limits, matrix and rollback; frozen browser matrix preserves Windows late-NewPage timeout plus focused and sequential full pass."},
+            {"path": "docs/release-notes-0.2.0-beta.2.md", "detail": "Release notes document compatible/Legacy behavior, limitations/deadlines, matrix scope and rollback."},
+            {"path": "docs/implementation/browser-matrix-current.md", "detail": "Browser results remain bound to frozen 4d source runs, not relabeled as full ef2d reruns."}
+          ],
+          "notes": "Release notes document compatible/Legacy semantics, limitations/deadlines, matrix scope and rollback. Matrix preserves the Windows 176+1 late NewPage timeout and focused/sequential pass; frozen 4d browser runs are not represented as full ef2d reruns."
         },
         {
           "id": 9,
           "requirement": "Evidências RpaBlockly, browser contracts, paridade e benchmark são associadas ao candidato instalado.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.09 associates three final Rpa lanes (14/14 each, final parity true), source-bound browser matrix (177+37 lanes), native package proof, benchmark and historical/API observations with the frozen candidate."},
+            {"path": "docs/implementation/ef2d0ea-consumer-proof.json", "detail": "Actual installed RpaBlockly lanes Cursory/on, Bézier/on and Cursory/off each report 14/14; candidateFinalParity=true."},
+            {"path": "docs/implementation/browser-matrix-current.md", "detail": "Browser contracts are explicitly bound to frozen 4d runs, not claimed as full ef2d reruns."},
+            {"path": "docs/implementation/ef2d0ea-native-proof.json", "detail": "Direct package evidence binds 37 test passes, three fresh-process benchmark runs, 28 historical DOM observations and API comparison to ef2d candidate."},
+            {"path": "docs/implementation/ef2d0ea-package-proof.json", "detail": "Actual package hashes tie package evidence to candidate source ef2d0eaa35a5bf1950acf75a342590b95e15c9e0."},
+            {"path": "docs/implementation/ef2d0ea-installed-windows-proof.json", "detail": "Installed Windows proof binds package-only checks to the actual final candidate package."}
+          ],
+          "notes": "Candidate ef2d0eaa35a5bf1950acf75a342590b95e15c9e0, version 0.2.0-beta.2.final.ef2d0ea: three Rpa lanes each 14/14 and candidateFinalParity=true; browser matrix 177+37 is source-bound frozen 4d, not a full ef2d rerun. Native proof binds 37 test passes, three fresh-process benchmark runs and historical 28 observations/API comparison; warm p95 median 11.049 ms is descriptive and 10 ms investigative, not a CI threshold."
         },
         {
           "id": 10,
           "requirement": "Nenhum default global é promovido silenciosamente; Cursory permanece opt-in até decisão explícita.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.10 release notes state Cursory opt-in, Bézier/Legacy default and Humanize=false raw; installed candidate-cursory/bezier/off checks PASS."},
+            {"path": "docs/release-notes-0.2.0-beta.2.md", "detail": "Release notes preserve Bézier/Legacy defaults and Cursory opt-in; no global promotion is reported."}
+          ],
+          "notes": "Release notes preserve Cursory opt-in and Bézier/Legacy defaults; Humanize=false remains raw. Installed mode checks pass and no global default promotion or production source change is claimed."
         },
         {
           "id": 11,
           "requirement": "Snapshots históricos não são dependência obrigatória desta pré-release; se já incluídos no pacote, só são anunciados como homologados após o ticket 24.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.11 release notes distinguish package snapshot technical exercise from overall acceptance; installed Windows/Linux snapshot checks pass after ticket-24 technical gates."},
+            {"path": "docs/release-notes-0.2.0-beta.2.md", "detail": "Release notes identify snapshot behavior and distinguish technical exercise from overall release acceptance."}
+          ],
+          "notes": "Snapshots are not a pre-release dependency. Release notes state installed consumers exercised snapshot save/select/compare/discard after ticket-24 technical gates, while overall acceptance remains distinct; no blanket release approval is inferred."
         },
         {
           "id": 12,
           "requirement": "Publicação em NuGet/GitHub externo exige aprovação operacional separada; este ticket não autoriza esse efeito por si só.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 23.12 checklist and installed proofs state externalPublicationAllowed=false and separate operational approval remains required; no publication occurred."},
+            {"path": "docs/implementation/final-release-checklist.md", "detail": "Checklist records external publication/default-promotion holds and that neither is authorized by implementation acceptance."}
+          ],
+          "notes": "The authorization guard is satisfied by preserving the separate approval requirement: no external publication occurred or is authorized; externalPublicationAllowed=false. This criterion does not require actual publication, and this ledger update grants no publication approval."
         }
       ]
     },
@@ -5151,72 +5205,115 @@
         {
           "id": 1,
           "requirement": "Consumidor instalado a partir de pacote executa salvar, selecionar baseline, comparar e descartar snapshots, sem acesso ao workspace de desenvolvimento.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.01 actual package-only Windows/Linux snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard checks PASS; cwd outside repo and no ProjectReference."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Installed Program.cs exercises DiagnosticSnapshotStore SaveAsync, ReadAsync, Compare and discard against the packaged consumer."},
+            {"path": "docs/implementation/ef2d0ea-installed-windows-proof.json", "detail": "Windows installed proof binds the package-only snapshot checks to the final candidate; Linux counterpart is separately recorded."}
+          ],
+          "notes": "Named snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard checks pass in installed Windows/Linux consumers whose working directories are outside the repository and have no ProjectReference. Program.cs executes SaveAsync/ReadAsync/Compare and discard."
         },
         {
           "id": 2,
           "requirement": "Schema de snapshot é independente do schema de identidade e da versão dos dados do algoritmo.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.02 Program.cs creates independent snapshot/runtime version records and passes unknown-schema rejection; the operator manual states snapshot, identity and dataset schemas are independent."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Installed consumer assertion constructs snapshot schema independently from identity manifest and algorithm dataset version."},
+            {"path": "docs/snapshot-operations.md", "detail": "Operator documentation describes independent snapshot, identity and dataset schema versions."}
+          ],
+          "notes": "Installed assertions construct snapshot version independently of identity manifest and dataset version and reject an unknown snapshot schema; snapshot, identity and dataset schema independence is documented."
         },
         {
           "id": 3,
           "requirement": "Rollback do pacote não altera/corrompe perfil ou manifesto de identidade; snapshots de versão mais nova são ignorados ou rejeitados de forma clara conforme contrato.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.03 previous-bezier-rollback and previous-package-ignores-newer-snapshot checks PASS on Windows/Linux; schema-999 fixture hash is unchanged and old package opens the same profile."},
+            {"path": "docs/implementation/ef2d0ea-installed-linux-proof.json", "detail": "Installed proof records rollback and newer-snapshot handling without claiming old-reader compatibility."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Assertions check unchanged identity/profile state and clear newer-snapshot behavior in actual installed package consumers."}
+          ],
+          "notes": "Named previous-bezier-rollback and previous-package-ignores-newer-snapshot checks pass on both platforms. Schema-999 fixture hash remains unchanged and the prior package opens the same profile; no general old-reader compatibility claim is made."
         },
         {
           "id": 4,
           "requirement": "Desligar persistência de snapshots e excluir arquivos do recurso não remove storage state, cookies, perfis ou identidades.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.04 installed Program.cs discard assertion deletes only snapshot directory and verifies identity manifest, profile and storage state unchanged; named discard check PASS on both platforms."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Actual installed discard assertion checks state outside the snapshot directory remains intact; persistence is disabled by omitting the optional store/directory."},
+            {"path": "docs/snapshot-operations.md", "detail": "Operator manual documents optional activation and safe discard."}
+          ],
+          "notes": "Named installed discard check passes on Windows/Linux; assertion deletes only the snapshot directory and checks identity manifest, profile and storage state remain unchanged. Persistence is disabled by omitting the optional store/directory."
         },
         {
           "id": 5,
           "requirement": "Falta de permissão, interrupção de escrita e sessões concorrentes são exercitadas no formato distribuído, preservando baseline anterior válida.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.05 actual NTFS ACL denial on Windows and nonroot Linux permission denial PASS; OS termination during SDK temp write preserves baseline; concurrent two-process saves produce unique complete files and preserve baseline."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Installed consumer assertions exercise denied writes, process termination during temp-file write, concurrent saves and prior-baseline integrity."},
+            {"path": "docs/implementation/ef2d0ea-installed-windows-proof.json", "detail": "Windows installed package proof includes actual NTFS ACL denial and preserved baseline assertions."},
+            {"path": "docs/implementation/ef2d0ea-installed-linux-proof.json", "detail": "Linux nonroot installed package proof includes permission denial and preserved baseline assertions."}
+          ],
+          "notes": "Package-only installed checks exercise real NTFS ACL denial on Windows, nonroot Linux permission denial, OS termination during SDK temp write and concurrent two-process saves; both retain the previous valid baseline. Windows orphan-temp caveat remains; no cleanup guarantee is claimed."
         },
         {
           "id": 6,
           "requirement": "Testes confirmam ausência de secrets e isolamento dos dados do recurso, inclusive após erros e rollback.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.06 Program.cs injects privacy sentinels/canvas/GPU error and rejects their appearance in snapshots; installed save/error/concurrency/crash/rollback checks pass."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Installed consumer asserts injected secrets and resource data are absent from serialized snapshots after error conditions."},
+            {"path": "docs/implementation/ef2d0ea-installed-windows-proof.json", "detail": "Installed evidence records hashes only and no cookie values; platform proof reports named checks."}
+          ],
+          "notes": "Installed assertions inject privacy sentinels plus canvas/GPU errors and reject their appearance in snapshots; error, crash and rollback cases are exercised. Evidence records hashes only, not cookie values."
         },
         {
           "id": 7,
           "requirement": "Mudanças legítimas de versões e GPU aparecem como informação contextual, sem alterar automaticamente a baseline nem bloquear a execução.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.07 named installed snapshot-gpu-context-information check PASS on Windows/Linux; Program.cs requires version/algorithm/GPU/context deltas to be informational and asserts webgl1.renderer-category severity=Information."},
+            {"path": "tools/verification/distribution-checks/Program.cs", "detail": "Consumer assertion checks contextual severity and no automatic promotion/block of the baseline."},
+            {"path": "docs/implementation/ef2d0ea-installed-linux-proof.json", "detail": "Installed Linux report records the named context-information check."}
+          ],
+          "notes": "snapshot-gpu-context-information passes on both installed platforms. Program.cs asserts version/algorithm/GPU/context deltas are informational, including webgl1.renderer-category severity=Information, with no automatic baseline promotion or execution block."
         },
         {
           "id": 8,
           "requirement": "Manual operacional cobre ativação, comparação, retenção, exportação quando disponível e descarte seguro.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.08 manual covers activation, explicit comparison/baseline, retention, permissions, failure/rollback and discard; it states no dedicated export API exists."},
+            {"path": "docs/snapshot-operations.md", "detail": "Operational guide documents optional activation, comparison, retention, safe permissions and discard; export is described conditionally where available."}
+          ],
+          "notes": "The operator guide covers optional activation, explicit baseline/comparison, retention, permissions, failure/rollback and safe discard. It explicitly states there is no dedicated export API, satisfying the conditional export scope without claiming one exists."
         },
         {
           "id": 9,
           "requirement": "Release checklist da entrega completa associa snapshots às evidências de compatibilidade, licenciamento e desempenho do núcleo.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.09 follow-up verifies the formerly stale checklist now checks the final-package native/benchmark/historical proof, separately checks package-only Windows/Linux snapshot technical results and explicitly associates unresolved dataset rights with external-distribution block."},
+            {"path": "docs/implementation/final-release-checklist.md", "detail": "Checklist item '[x] Reviewed final-package native/benchmark/historical proof' cites ef2d0ea-native-proof.md; measured cold/warm p50/p95/allocation, API/historical observations and installed snapshot checks are described. Rights remain UNVERIFIED and external publication prohibited."},
+            {"path": "docs/implementation/ef2d0ea-native-proof.json", "detail": "Candidate-bound native report records compatibility/API and historical observations and benchmark cold/warm/allocation measurements."},
+            {"path": "docs/implementation/ef2d0ea-installed-windows-proof.json", "detail": "Package-only Windows snapshot technical checks are associated; allPassed=false only for external dataset rights."},
+            {"path": "docs/implementation/ef2d0ea-installed-linux-proof.json", "detail": "Package-only Linux snapshot technical checks are associated; allPassed=false only for external dataset rights."},
+            {"path": "docs/implementation/final-acceptance-closure.json", "detail": "Independent subsequent closure directly reviews the 24.09 checklist association and accepts the criterion; it does not edit the checklist or authorize publication."}
+          ],
+          "notes": "The stale checklist gap is superseded by direct review: '[x] Reviewed final-package native/benchmark/historical proof' cites candidate-bound compatibility/API/history/benchmark evidence, while Windows/Linux installed proofs associate snapshot technical checks and explicitly retain datasetRights=UNVERIFIED and externalPublicationAllowed=false. Observed cold median 401.380 ms, warm p50 7.563 ms, p95 11.049 ms and 2,160,426 bytes/generation; 10 ms p95 is investigative, not a CI threshold. Closure follow-up accepts only this association, not legal clearance or publication."
         },
         {
           "id": 10,
           "requirement": "Não se publica externamente ou altera defaults globais sem aprovação específica, mesmo com todos os testes concluídos.",
-          "status": "pending",
-          "evidence": [],
-          "notes": "Source under review: 5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a. Fresh 5fa99de source-bound package/consumer or installed-matrix evidence remains pending; older 776362f evidence is not promoted."
+          "status": "verified",
+          "evidence": [
+            {"path": "docs/implementation/final-audit-23-24.json", "detail": "Criterion 24.10 installed proofs and checklist show publication prohibited/not authorized, defaults unchanged, and separate approval required; no publication or promotion occurred."},
+            {"path": "docs/implementation/final-release-checklist.md", "detail": "Checklist states external publication and global-default promotion require separate specific operational approval; neither is performed or authorized by implementation work."},
+            {"path": "docs/implementation/final-acceptance-closure.json", "detail": "Independent closure explicitly limits decision to ACCEPT_LOCAL_IMPLEMENTATION and retains no publication/default-promotion authorization."}
+          ],
+          "notes": "Authorization guard is satisfied without performing the guarded effect: no external publication or global-default promotion occurred, defaults remain unchanged, and separate specific approval is required. ACCEPT_LOCAL_IMPLEMENTATION is local technical acceptance only and grants no authorization."
         }
       ]
     }

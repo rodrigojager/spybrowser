@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "candidateVersion": "0.2.0-beta.2.final.ef2d0ea",
+  "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+  "declaredFinalCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+  "isFinal": true,
+  "sdk": "8.0.319",
+  "sourceArchiveSha256": "2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119",
+  "feedManifest": "D:/Temp/spybrowser-feed-final-ef2d0ea/feed-manifest.json",
+  "feedManifestSha256": "689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c",
+  "candidatePackages": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.nupkg": "d0ee0ae2d6fe850c12f3bdc3aacdb4c34c0f951324ad6a4b41a45bfbabed0790",
+    "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.nupkg": "7c3f64b2fb65cc4c706ce2f4d2b39f553e3f548e210384d4692e51fd6fd1e194",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.nupkg": "b042e0c8643b00b375bbf20d1d65ee458b990472592f064bb5a741e581ce3f10",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.nupkg": "17965e54e3828a8d11c8686afafaf768653629ee2f68ea5dbd3e03de9a28363b"
+  },
+  "candidateSymbols": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.snupkg": "ac988bcd318c356d6491fb4264c7918c0dcdeffa8b94e43052b0eba76b8ceffc",
+    "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.snupkg": "99c6266757d555556667a3cf7e3f93d934f658950119234f4d6e7ef075466277",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.snupkg": "f84bb3f47468addf20b214b8733c4b4d655ef44844bb69552687025d00b021f1",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.snupkg": "e0de433c945c0af8f5c44b56d998561a8abda3305dbce5453430f9a6cf2a5f73"
+  },
+  "packageProvenance": {
+    "versionVerified": "0.2.0-beta.2.final.ef2d0ea",
+    "repositoryCommitVerified": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "repositoryUrlVerified": "https://github.com/rodrigojager/spybrowser",
+    "portablePdbAudit": {
+      "pdbCount": 4,
+      "documentCount": 71,
+      "sourceControlledDocumentsVerified": 58,
+      "generatedDocumentsExcluded": 13,
+      "sourceLinkMappingKey": "/_*",
+      "sourceLinkUrlTemplate": "https://raw.githubusercontent.com/rodrigojager/spybrowser/ef2d0eaa35a5bf1950acf75a342590b95e15c9e0/*",
+      "remoteSourceAccessVerified": false,
+      "auditSource": "producer feed manifest/build audit; no independent CDI GUID decode claimed"
+    },
+    "packageAndSymbolHashes": "Producer manifest hashes are validated by the runner; source-entry SHA256 values for all packaged source/license/notice files are recorded in the distribution evidence artifact."
+  },
+  "actualInstalledConsumer": {
+    "os": "Microsoft Windows 10.0.19045 x64",
+    "sdk": "8.0.319",
+    "cliVersion": "0.2.0-beta.2.final.ef2d0ea",
+    "playwrightVersion": "1.61.0.0",
+    "cwdOutsideRepository": true,
+    "projectReference": false,
+    "isolatedTemporaryNugetCaches": true,
+    "preExistingGlobalNugetCachePreserved": true,
+    "consumerAndProfileRemovedAfterRun": true,
+    "identityManifestSha256": "e2a69ac2d40fbaa1b98882c36d08ae93a88e47f41a0877dedc7e8d5876a9ca53",
+    "storageStateSha256": "59412bd404025e34e47971205a201199840ca0e9b1c89216de3d0a5d057d1008",
+    "privacy": "Hash-only safe fixture evidence; no cookie values or user data recorded."
+  },
+  "baseline": {
+    "version": "0.1.0-baseline.e217359",
+    "sourceCommit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+    "provenance": "PASS; supplied feed manifest, package hashes, repository commits, and fresh source archive verified"
+  },
+  "technicalChecks": [
+    {"check": "previous-package-provenance", "status": "PASS"},
+    {"check": "installed-cli-package-offline-version", "status": "PASS"},
+    {"check": "candidate-cursory", "status": "PASS"},
+    {"check": "candidate-bezier", "status": "PASS"},
+    {"check": "candidate-off", "status": "PASS"},
+    {"check": "snapshot-save-explicit-baseline-compare-concurrency-schema-secrets-discard", "status": "PASS"},
+    {"check": "snapshot-os-crash-during-sdk-write-baseline-preserved", "status": "PASS"},
+    {"check": "snapshot-real-permission-denial", "status": "PASS"},
+    {"check": "snapshot-gpu-context-information", "status": "PASS"},
+    {"check": "previous-bezier-rollback", "status": "PASS"},
+    {"check": "previous-package-ignores-newer-snapshot", "status": "PASS"},
+    {"check": "previous-humanize-off", "status": "PASS"},
+    {"check": "browser-executable-and-official-driver", "status": "PASS"}
+  ],
+  "technicalPassCount": 13,
+  "technicalPendingCount": 0,
+  "technicalFailureCount": 0,
+  "technicalAllPassed": true,
+  "rightsGate": {
+    "status": "BLOCKED",
+    "blockedCount": 1,
+    "check": "external-dataset-distribution-license",
+    "externalPublicationAllowed": false
+  },
+  "allPassed": false,
+  "runnerExitCode": 2,
+  "evidence": "artifacts/goal/installed-ef2d0ea-windows-proof/distribution-evidence.json",
+  "evidenceSha256": "6c7329ab27fc43f945da99595f73c6a40c8708d23544abb9519affa13b96d1e0",
+  "publicationOrPromotion": false
+}

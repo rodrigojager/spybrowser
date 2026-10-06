@@ -1,37 +1,34 @@
-# Final release checklist — local source candidate
+# Final local delivery checklist — ef2d0ea
 
-**State: good to cut a local final-source-candidate feed after this documentation cut is frozen. Not a final release or publication approval.** Current source HEAD is `35b6656caa1b272c074f32b16da67387cb1374df`; production `src/` is unchanged from `5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a`. The available `0.2.0-beta.2.review.5fa99de` feed is preliminary and must not be relabeled final.
+**Local implementation accepted: all 24 tickets and 260 literal criteria verified. External publication and default promotion remain prohibited.** See the [independent closure decision](final-acceptance-closure.md); the earlier gap findings remain preserved in their audit reports.
 
-## Source and build — next required gate
+## Frozen candidate
 
-- [ ] Freeze the complete source candidate and documentation; record full Git SHA and clean/dirty state.
-- [ ] Build a **new** local feed from that exact source candidate. Do not reuse/repackage `feed-review-5fa99de` as final.
-- [ ] Bind manifest, package hashes, source archive/hash, nuspec/source/PDB/license content and rebuild inspection to the same full source SHA. Verify all actual `.nupkg` contents.
-- [ ] Keep a separate local feed/version, with no external publish/push and no declaration that package parity exists until checks pass.
+- [x] Independently accepted source: `ef2d0eaa35a5bf1950acf75a342590b95e15c9e0`; see [integrated freeze decision](integrated-freeze-decision.md). Later evidence/reporting and test-only changes are not relabeled as package source.
+- [x] New immutable producer feed: `D:/Temp/spybrowser-feed-final-ef2d0ea`, version `0.2.0-beta.2.final.ef2d0ea`. Older preliminary and 4d feeds remain preserved, not repacked.
+- [x] Source archive SHA-256: `2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119`; producer manifest SHA-256: `689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c`.
+- [x] Four actual nupkg/symbol pairs, full-SHA nuspec identity, license/notices and complete corresponding-source build/repack payload inspected: [package proof](ef2d0ea-package-proof.md).
+- [x] Actual raw-URL SourceLink CDI in four PDBs; 58 tracked source checksums verified, 13 generated documents excluded. The retained manifest's display-field typo is separately explained in [source-map report note](ef2d0ea-source-map-report-note.md); actual CDI mapping is `/_/*`. Remote availability of the unpushed SHA is not claimed.
+- [x] SDK 8.0.319 standalone source rebuild corresponds across 432 entries / 23 types, with no compared method/metadata/local/exception/resource differences. Whole-PE byte identity is **not** claimed.
 
-## Existing evidence (use with its scope limits)
+## Installed and consumer gates
 
-- Linux exact-source matrix: required 1.61, reviewed 1.63 and Chrome 1.61 each 177/177 Playwright plus 37/37 Cursory with zero skips: [`linux-zero-skip-proof.md`](linux-zero-skip-proof.md). Windows required/latest 177, Cursory 37, Chrome 177; Edge 177 is source-compatible `d574f6b`, not current-HEAD test execution. Full boundaries are in the [browser matrix](browser-matrix-current.md).
-- Actual RpaBlockly adapter/event harness on preliminary feed: 14/14 checks in Cursory/PlaywrightCompatible/on mode; separate 17-operation semantic assertion map. Older Legacy/on and Humanize/off runs have 13 checks each. Re-run the consumer on the new feed: [`recovery-consumer-event-proof.md`](recovery-consumer-event-proof.md).
-- Installed preliminary Linux proof: 13 technical checks passed, but `allPassed=false`, rights `BLOCKED`, `externalPublicationAllowed=false`; Windows artifacts at `artifacts/goal/installed-5fa99de-windows-proof/`. These are not final-feed installed checks.
-- Recorded benchmark: three processes / 500 samples; median and p50 5.825 ms, p95 11.160 ms, 2,160,439 allocated bytes/generation. Local observation only; do not impose the 10 ms investigation target as a CI threshold or claim universal performance.
-- Status ledger currently reports 239/260 after platform evidence reconciliation. The remaining 21 criteria require the new source-bound installed candidate and final documentation/evidence association. Do not claim 260/260.
+- [x] New package-only Windows consumer: 13 technical passes, no failed/pending technical checks; [Windows proof](ef2d0ea-installed-windows-proof.md).
+- [x] New package-only Linux consumer, non-root UID 1001: 13 technical passes, no failed/pending technical checks; [Linux proof](ef2d0ea-installed-linux-proof.md).
+- [x] Cursory opt-in, Bézier/Legacy and Humanize off use the same commands. Separate BCL Cursory DLL/data verified; normal Playwright driver is allowed, not confused with a generation sidecar.
+- [x] Installed snapshots: save/select baseline/compare/discard, independent schema, unknown-schema rejection, private permissions, real permission denial, crash during write, concurrency, baseline preservation, safe disable/discard and pinned prior-package rollback without profile/identity/storage-state damage. Named checks and their assertions are in the installed proofs, not inferred from aggregate counts.
+- [x] Actual RpaBlockly final-feed runs: Cursory/compatible/on, Bézier/Legacy/on, Cursory/compatible/off each 14/14, `candidateFinalParity=true`. The separate map has 17 semantic assertion groups; neither number denotes exhaustive API coverage. SDK 10.0.401 was resolved in each actual isolated consumer CWD. [Consumer proof](ef2d0ea-consumer-proof.md).
+- [x] Source browser-contract matrix: Windows and Linux required/reviewed lanes 177 product + 37 Cursory each; Chrome/Edge scope and original reviewed Windows failure retained. These are frozen 4d source runs, with unchanged production C# at ef2d, **not** a claim of full-suite ef2d reruns: [matrix](browser-matrix-current.md).
+- [x] Reviewed [final-package native/benchmark/historical proof](ef2d0ea-native-proof.md): BCL-only consumer assertions, 37/37 native tests, 28 completed historical page observations, old37 API types with no removals/default changes and74 additive members. Three fresh processes each1cold/20warmups/500samples: median cold401.380ms, warm p507.563ms, p9511.049ms, allocation2,160,426bytes/generation. These measured ef2d observations exceed the10ms investigation target; no universal timing/CI guarantee or paired historical RNG claim.
+- [x] Closed the identified06.09 evidence finding with a direct pending compatible Fill/context-close test awaiting the original task: [proof](final-fill-context-close-proof.md), 1/1 focused pass. Initial mistaken exception-type assertion and failed TRX remain preserved; no production change or repack.
+- [x] Independent audits reconciled all 260 literal IDs, texts and dependencies. Both final gaps closed; [closure decision](final-acceptance-closure.md) accepts local implementation. Canonical ledger verifies 260/260; its original 239 verified statuses and immutable contract were preserved. Bookkeeping is not a substitute for the cited direct assertions.
 
-## New-feed installed and consumer verification — required after build
+## Operator documentation and publication-only holds
 
-- [ ] Run installed package/driver/mode checks on Windows and Linux against exact new-feed hashes; check Cursory opt-in, Bézier/Legacy, and Humanize off.
-- [ ] Verify package graph, separate Cursory DLL and embedded data, real nupkg/nuspec/license/source/PDB contents and source rebuild. DLL separation is not a legal opinion.
-- [ ] Verify rollback to the pinned prior package without identity/profile/storage-state damage; exercise snapshot save/select/compare/discard, schema separation, unknown-schema handling, permission denial, interrupted writes, concurrency and retention against the installed candidate.
-- [ ] Re-run actual RpaBlockly consumer harness using the exact local feed; preserve exact source/package/SDK/browser provenance, all named checks and excluded tests. Do not infer semantic coverage from aggregate counts.
-- [ ] Reconcile each remaining ticket criterion against concrete artifacts. Do not treat prior aggregate audits or this checklist as the 260-criterion signoff.
+- [x] [Release notes](../release-notes-0.2.0-beta.2.md) describe compatible/Legacy semantics, unchanged defaults, raw limitations, options/deadlines, rollback, matrix scope and diagnostics privacy.
+- [x] [Snapshot operations](../snapshot-operations.md) documents optional activation, comparison, baseline/retention, private access, crash temporary-file limitations and safe discard; no dedicated export API or telemetry service is claimed. Installed technical snapshot checks passed on both platforms; all ten ticket-24 criteria are accepted in the independent closure decision.
+- [x] Dataset redistribution rights remain **UNVERIFIED**, an explicit distribution block permitted by criterion 23.05, not clearance. Both installed runners have `allPassed=false` and exit 2 solely for that block.
+- [x] Cursory remains opt-in; global Bézier/Legacy defaults and raw `Humanize=false` remain unchanged.
+- [x] External NuGet/GitHub publication and global-default promotion require separate specific operational approval, in addition to rights clearance. Neither action has been performed or authorized by this implementation task.
 
-## Release and authorization gates
-
-- [ ] Publish release notes describing opt-in Cursory, compatible-vs-Legacy semantics, unchanged defaults, option/deadline behavior, rollback, diagnostics/privacy, snapshot lifecycle, IME/advanced-raw/CDP limitations and verified matrix scope.
-- [ ] Obtain independent dataset provenance/redistribution-rights clearance. Current status is blocked; ticket 23.05 permits explicitly recording a distribution block only. It is not legal clearance or permission to publish.
-- [ ] Obtain separate affirmative operational approval for any external publication or global-default change (ticket 24.10). Neither is authorized by this local task.
-- [ ] Keep Cursory opt-in and Legacy/Bézier defaults unchanged unless a separately approved release explicitly changes them.
-
-## Decision
-
-**Good to cut:** a new, local, source-bound final-candidate feed after freezing this documentation/source candidate. **Not good to publish, promote, or claim final acceptance:** installed/consumer proofs must be rerun against that new feed; remaining criteria, rights review and separate operational authorization remain open. See [goal progress](goal-progress.md) and [local source-candidate release notes](../release-notes-0.2.0-beta.2.md).
+**Decision:** local implementation delivered and independently accepted against all 260 criteria, with immutable ef2d package provenance and installed technical gates passed. External release remains blocked independently; this checklist is not legal or publication approval.

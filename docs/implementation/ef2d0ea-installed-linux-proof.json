@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "gate": "Gate23/24 final installed non-root Linux",
+  "candidateVersion": "0.2.0-beta.2.final.ef2d0ea",
+  "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+  "declaredFinalCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+  "isFinal": true,
+  "sourceArchiveSha256DeclaredAndVerified": "2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119",
+  "sourceArchiveLineEndings": "crlf (core.autocrlf=true, core.eol=crlf)",
+  "feed": "/mnt/d/Temp/spybrowser-feed-final-ef2d0ea",
+  "feedManifestSha256": "689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c",
+  "feedBytesRepacked": false,
+  "candidatePackageHashesBeforeAfterUnchanged": true,
+  "packages": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.nupkg": "d0ee0ae2d6fe850c12f3bdc3aacdb4c34c0f951324ad6a4b41a45bfbabed0790",
+    "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.nupkg": "7c3f64b2fb65cc4c706ce2f4d2b39f553e3f548e210384d4692e51fd6fd1e194",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.nupkg": "b042e0c8643b00b375bbf20d1d65ee458b990472592f064bb5a741e581ce3f10",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.nupkg": "17965e54e3828a8d11c8686afafaf768653629ee2f68ea5dbd3e03de9a28363b"
+  },
+  "symbols": {
+    "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.snupkg": "ac988bcd318c356d6491fb4264c7918c0dcdeffa8b94e43052b0eba76b8ceffc",
+    "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.snupkg": "99c6266757d555556667a3cf7e3f93d934f658950119234f4d6e7ef075466277",
+    "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.snupkg": "f84bb3f47468addf20b214b8733c4b4d655ef44844bb69552687025d00b021f1",
+    "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.snupkg": "e0de433c945c0af8f5c44b56d998561a8abda3305dbce5453430f9a6cf2a5f73"
+  },
+  "baseline": {
+    "version": "0.1.0-baseline.e217359",
+    "commit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+    "provenance": "PASS",
+    "freshGitArchiveSha256": "91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f"
+  },
+  "runtime": {
+    "wslDistro": "SpyBrowser-Ubuntu24",
+    "os": "Ubuntu 24.04",
+    "kernel": "Linux 5.15.153.1-microsoft-standard-WSL2",
+    "user": "spyreview",
+    "uid": 1001,
+    "sdk": "8.0.319",
+    "playwright": "1.61.0",
+    "browser": "Google Chrome for Testing 153.0.8010.12",
+    "workingDirectory": "/home/spyreview/installed-ef2d0ea-work",
+    "dependencyFeed": "/home/spyreview/.nuget/packages",
+    "playwrightBrowserCache": "/home/spyreview/.cache/ms-playwright"
+  },
+  "consumerEvidence": "artifacts/goal/installed-ef2d0ea-linux-proof/distribution-evidence.json",
+  "consumerEvidenceSha256": "52e6c66d28947d1ad2595ced9e003852b192b7c8f34189da7062c1b1032e5bfb",
+  "technicalAllPassed": true,
+  "technicalPassCount": 13,
+  "technicalFailures": [],
+  "technicalPending": [],
+  "blocked": [
+    {
+      "check": "external-dataset-distribution-license",
+      "status": "BLOCKED",
+      "reason": "Dataset rights remain UNVERIFIED; no external redistribution or publication is authorized."
+    }
+  ],
+  "allPassed": false,
+  "externalPublicationAllowed": false,
+  "sourceLinkRemoteAccessVerified": false,
+  "commands": [
+    "git -c safe.directory=/mnt/d/SpyBrowser -c core.autocrlf=true -c core.eol=crlf -C /mnt/d/SpyBrowser archive ef2d0eaa35a5bf1950acf75a342590b95e15c9e0 | sha256sum",
+    "timeout --signal=TERM --kill-after=10s 1800s python3 /home/spyreview/installed-ef2d0ea-work/distribution-checks/run.py --feed /mnt/d/Temp/spybrowser-feed-final-ef2d0ea --candidate-version 0.2.0-beta.2.final.ef2d0ea --expected-source-commit ef2d0eaa35a5bf1950acf75a342590b95e15c9e0 --declared-final-commit ef2d0eaa35a5bf1950acf75a342590b95e15c9e0 --feed-manifest /home/spyreview/installed-ef2d0ea-work/tmp/feed-manifest.json --previous-feed /mnt/d/Temp/spybrowser-baseline-feed-e217359/feed --previous-version 0.1.0-baseline.e217359 --previous-feed-manifest /mnt/d/Temp/spybrowser-baseline-feed-e217359/baseline-manifest.json --dependency-feed /home/spyreview/.nuget/packages --repository /mnt/d/SpyBrowser --output /mnt/d/SpyBrowser/artifacts/goal/installed-ef2d0ea-linux-proof",
+    "sha256sum candidate *.nupkg before and after; cmp inventories (identical)"
+  ],
+  "consumerExitCode": 2,
+  "consumerExitCodeReason": "Rights-only BLOCKED; technical checks all PASS. WSL host surfaced the process exit as shell status 1 after printing the evidence."
+}

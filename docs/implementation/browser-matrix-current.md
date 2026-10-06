@@ -1,31 +1,31 @@
-# Browser/platform matrix — source candidate at `35b6656`
+# Browser/platform matrix — ef2d0ea local candidate
 
-**Disposition:** suitable as the documentation cut for a *new local final-source-candidate feed*, not a final-feed, release, or publication approval. Current HEAD is `35b6656caa1b272c074f32b16da67387cb1374df`. `git diff 5fa99de..HEAD -- src` is empty: production `src/` is unchanged since `5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a`. These source-era results therefore describe the same production source; test/harness revisions and package identity still matter. No existing preliminary feed is final-parity evidence.
+Package identity is `ef2d0eaa35a5bf1950acf75a342590b95e15c9e0`, version `0.2.0-beta.2.final.ef2d0ea`. Production C# remains unchanged from `5fa99decd83295a96b7f2441f1fd3a0f1fca0c3a`; later Cursory project changes concern toolchain/source packaging. SDK-8 source/program correspondence is separately proven, not whole-PE byte identity. Full browser suites below were run from frozen **4d8a18c** source; do not relabel them as ef2d executions. Final installed and consumer checks below use actual **ef2d** package bytes.
 
-## Evidence matrix
+## Source browser contracts
 
-| Platform/lane | Playwright/browser | Playwright tests | Cursory tests | Evidence / scope |
+| Platform/lane | Playwright | Product | Cursory | Direct evidence |
 |---|---|---:|---:|---|
-| Linux required | 1.61.0, Ubuntu 24 / Xvfb, non-root | 177 passed, 0 skipped | 37 passed, 0 skipped | `artifacts/goal/linux-5fa99de-zero-skip/required161/`; exact source archive 5fa99de |
-| Linux reviewed | 1.63.0, Ubuntu 24 / Xvfb | 177 passed, 0 skipped | 37 passed, 0 skipped | `artifacts/goal/linux-5fa99de-zero-skip/reviewed163/`; reviewed lane, not a minimum-version promotion |
-| Linux Chrome | 1.61.0, Chrome 154.0.8037.97 / Xvfb | 177 passed, 0 skipped | 37 passed, 0 skipped | `artifacts/goal/linux-5fa99de-zero-skip/chrome161/` |
-| Windows required | 1.61.0 | 177 passed | 37 passed | `artifacts/goal/5fa99de-required-results/`, `5fa99de-cursory-results/` |
-| Windows reviewed | 1.63.0 | 177 passed | 37 passed | `artifacts/goal/5fa99de-latest-results/` |
-| Windows Chrome | stable Chrome | 177 passed | Cursory separately 37 passed | `artifacts/goal/5fa99de-chrome-results/` |
-| Windows Edge | Edge, source-compatible test cut `d574f6b` | 177 passed | — | `artifacts/goal/d574f6b-edge-results/`; production source unchanged from 5fa99de |
+| Windows required | 1.61.0 | 177 passed, zero skips | 37 passed, zero skips | `windows-final-4d8a18c/required161/` |
+| Windows reviewed | 1.63.0 | Initial 176 passed / 1 failed; focused diagnostic 1 passed; sequential full 177 passed / zero skips | 37 passed | `windows-final-4d8a18c/reviewed163/` |
+| Windows Chrome | 1.61.0 | 177 passed, zero skips | Separately above | `windows-final-4d8a18c/chrome177/` |
+| Windows Edge | 1.61.0 | 177 passed, zero skips | Separately above | `windows-final-4d8a18c/edge177/` |
+| Linux required | 1.61.0 | 177 passed, zero skips | 37 passed, zero skips | `linux-final-4d8a18c/required161/` |
+| Linux reviewed | 1.63.0 | 177 passed, zero skips | 37 passed, zero skips | `linux-final-4d8a18c/reviewed163/` |
+| Linux Chrome | 1.61.0 | 177 passed, zero skips | 37 passed, zero skips | `linux-final-4d8a18c/chrome161/` |
 
-Linux zero-skip run-status and six TRX counters establish 531/531 Playwright and 111/111 Cursory passed across the three lanes. The lane flags enable browser/headed behavior, but do **not** force every fixture to use channel Chrome or headed mode. The Windows Edge result is the separate `d574f6b` fixture/test cut; describe it as source-compatible, not as a run at current HEAD. Older `776362f` and `b1777b3` matrices are historical and are not being promoted as this cut's acceptance.
+Paths above are relative to `artifacts/goal/`. Exact commands, SDK 8.0.319/runtime 8.0.22, archive identities, browsers and TRXs are in [Windows proof](windows-final-source-proof.md) and [Linux proof](linux-final-source-proof.md). Linux used Ubuntu 24.04, non-root UID 1001 and Xvfb. Windows Chrome was 154.0.8037.93, Edge 154.0.4258.53; Linux Chrome 154.0.8037.97. Lane flags do **not** prove every fixture launched that browser channel or headed mode. Xvfb is not hardware-GPU evidence.
 
-## Consumer and package evidence (preliminary, source-bound)
+The retained Windows reviewed failure is `Probe_preserves_user_pages_and_concurrent_new_pages_in_all_launch_modes`, at the existing five-second late-page `NewPageAsync` completion bound. The exact test then passed focused and in the sequential complete suite without changed assertions/timeouts. A stronger OS/browser cause is not established; original failure remains visible. Linux's six TRXs contain 531 product and 111 Cursory passes, with zero skips/errors/aborts.
 
-- Actual RpaBlockly adapter/event harness consumed `C:/Temp/spybrowser-feed-review-5fa99de` (version `0.2.0-beta.2.review.5fa99de`): **14/14** named required checks for Cursory + PlaywrightCompatible + Humanize on. Its separate semantic map records **17** individually asserted operations; 14 is not a claim of 17 or exhaustive API coverage. See [recovery-consumer-event-proof](recovery-consumer-event-proof.md). Historical Bézier/Legacy-on and Humanize-off runs each passed **13** checks on that older harness; they are not the new 14-check event proof.
-- Linux installed-package run: 13 technical checks passed, `technicalAllPassed=true`, while rights remain BLOCKED, `allPassed=false`, and `externalPublicationAllowed=false`. Windows installed evidence is under `artifacts/goal/installed-5fa99de-windows-proof/`. Both are preliminary feed evidence, not final-feed parity or signoff.
-- Preliminary package inspection checked package contents, license/source/PDB material and source rebuild. A separate-DLL arrangement is not legal clearance.
+Required Playwright remains 1.61.0; reviewed 1.63.0 is not a minimum-version/default promotion. Older source/preliminary feeds remain historical evidence.
 
-## Reproduction and interpretation
+## Actual final-package verification
 
-Use exact commands, SDK/environment, TRX, and source-archive hash in [Linux zero-skip proof](linux-zero-skip-proof.md) and [recovered Linux proof](recovered-linux-proof.md). For Windows, use logs/results under the evidence paths above. Test results are source-era results; they do not attest to an as-yet-unbuilt package tied to current HEAD. Required Playwright remains 1.61.0; 1.63.0 is a reviewed lane only. The original earlier Linux skipped-probe runs remain historical records and were not relabeled; the zero-skip rerun explicitly enabled the probe.
+- [Windows installed](ef2d0ea-installed-windows-proof.md) and [Linux installed](ef2d0ea-installed-linux-proof.md): each 13 technical checks passed; no technical failures/pending. Linux actual SDK8.0.319, UID1001, cached Chrome for Testing153.0.8010.12. Both runners retain rights-only `BLOCKED`, `allPassed=false`, external publication false.
+- [RpaBlockly](ef2d0ea-consumer-proof.md): each of three final-feed lanes 14/14 and final parity true; separate 17-group semantic assertion map. Actual isolated CWD SDK10.0.401, net9 consumer, Playwright1.61.0/bundled Chromium1228. Pinned original checkout untouched. Mixed provider/CAPTCHA/network suites not run.
+- [Package inspection](ef2d0ea-package-proof.md): all four package/symbol pairs and provenance verified, 4 actual raw SourceLink CDIs /58 tracked checksums, 432/432 corresponding program entries. [Display-field annotation](ef2d0ea-source-map-report-note.md) preserves the immutable producer manifest and actual CDI distinction.
+- [Final native/benchmark/historical proof](ef2d0ea-native-proof.md): package-only BCL assertions,37/37 Cursory,28 completed historical page observations,37 old API types with no removals/default changes and74 additive members. Three-process median cold401.380ms/p507.563ms/p9511.049ms/2,160,426allocated bytes. Timing observations are not universal CI guarantees; old baseline RNG cannot support paired trajectory comparisons. Raw outputs remain in `cursory-ef2d0ea-results/`, `native-package-demo-ef2d0ea/` and `historical-ef2d0ea/`.
+- A later **test-only** closure for criterion06.09 directly starts a pending compatible Fill and closes its context, then awaits the original task:1/1 focused Chromium pass, first assertion failure preserved. [Proof](final-fill-context-close-proof.md). This is not a full-suite rerun or package-source relabel.
 
-## Gate before calling the installed candidate final
-
-After the documentation/source cut is frozen, build a **new** local feed from the complete source candidate, bind its full SHA and package/source hashes, inspect package contents, and rerun Windows/Linux installed-package and consumer checks against those exact packages. Then reconcile the remaining ticket/ledger criteria individually. Until those steps, do not claim a final feed, package parity, all 260 criteria complete, publication permission, rights clearance, or default promotion. External publication remains blocked by dataset redistribution rights; no current-final-feed parity is established.
+External dataset rights remain UNVERIFIED and publication/default promotion prohibited. Local technical results are not legal clearance or external-release approval.

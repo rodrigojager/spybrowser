@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "decision": "FINAL_PACKAGE_NATIVE_CONSUMER_AND_RETAINED_EVIDENCE_REVIEWED",
+  "packageIdentity": {
+    "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "version": "0.2.0-beta.2.final.ef2d0ea",
+    "producerManifest": "D:/Temp/spybrowser-feed-final-ef2d0ea/feed-manifest.json",
+    "producerManifestSha256": "689d8073ab245ae88eb71438f88fbbc7f2b133ad66eb1a39f1361835a8af336c",
+    "sourceArchiveSha256": "2022745ab0934089916ee2ccea335b9de3d3104275fdb8655f86b397c3d63119",
+    "packageAndSymbolHashes": {
+      "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.nupkg": "d0ee0ae2d6fe850c12f3bdc3aacdb4c34c0f951324ad6a4b41a45bfbabed0790",
+      "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.nupkg": "7c3f64b2fb65cc4c706ce2f4d2b39f553e3f548e210384d4692e51fd6fd1e194",
+      "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.nupkg": "b042e0c8643b00b375bbf20d1d65ee458b990472592f064bb5a741e581ce3f10",
+      "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.nupkg": "17965e54e3828a8d11c8686afafaf768653629ee2f68ea5dbd3e03de9a28363b",
+      "SpyBrowser.Cli.0.2.0-beta.2.final.ef2d0ea.snupkg": "ac988bcd318c356d6491fb4264c7918c0dcdeffa8b94e43052b0eba76b8ceffc",
+      "SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.snupkg": "99c6266757d555556667a3cf7e3f93d934f658950119234f4d6e7ef075466277",
+      "SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.snupkg": "f84bb3f47468addf20b214b8733c4b4d655ef44844bb69552687025d00b021f1",
+      "SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.snupkg": "e0de433c945c0af8f5c44b56d998561a8abda3305dbce5453430f9a6cf2a5f73"
+    },
+    "verifiedCopies": [
+      "D:/Temp/spybrowser-feed-final-ef2d0ea (4 nupkg + 4 snupkg)",
+      "D:/SpyBrowser/artifacts/goal/native-package-demo-ef2d0ea (4 nupkg + 4 snupkg)",
+      "D:/SpyBrowser/artifacts/goal/final-feed-ef2d0ea (3 nupkg)",
+      "D:/SpyBrowser/artifacts/goal/historical-ef2d0ea/candidate-feed-projection (3 nupkg)"
+    ],
+    "result": "Every available copy hashes to the frozen producer hashes; historical and final projection copies checked against the same hashes. No 4d proof substituted."
+  },
+  "sourceLink": {
+    "manifestDisplayFieldTypo": "/_*",
+    "actualCanonicalCdiMapping": "{\"documents\":{\"/_/*\":\"https://raw.githubusercontent.com/rodrigojager/spybrowser/ef2d0eaa35a5bf1950acf75a342590b95e15c9e0/*\"}}",
+    "audit": "The immutable producer manifest diagnostic return-field is mistyped; source-map-report-note explains the independent frozen validation of all four actual PDB CDI mappings and 58 source checksums. Do not describe /_* as the actual CDI mapping.",
+    "remoteSourceAccessVerified": false
+  },
+  "consumer": {
+    "project": "artifacts/goal/native-package-demo-ef2d0ea/consumer",
+    "runLog": "artifacts/goal/native-package-demo-ef2d0ea/consumer-run.log",
+    "sdkPin": "8.0.319; consumer/global.json uses latestFeature and prerelease disabled",
+    "sdkObservedInActualWorkspaceCwd": "dotnet --version => 8.0.319",
+    "runtime": ".NET 8.0.22",
+    "runtimeDependencies": ["Cursory.PackageDemo/1.0.0", "SpyBrowser.Cursory/0.2.0-beta.2.final.ef2d0ea"],
+    "bclOnly": true,
+    "assertions": {
+      "seededRepeatability": "Two Generate calls with identical start/end, Seed=42, Frequency=60 have equal point and timing sequences.",
+      "endpoints": "Exact requested start (-12.5,25.25) and end (500,280.75); default-seed generation also checks endpoints and at least two points.",
+      "finiteCoordinatesAndTimings": "Every X/Y and timing is finite; point/timing counts equal.",
+      "monotonicTiming": "Timing[0] == 0, final timing > 0, and each adjacent timing is nondecreasing.",
+      "invalidInput": "NaN, positive infinity and negative infinity start X are each required to throw ArgumentOutOfRangeException (NaN is also checked separately).",
+      "embeddedDatasetNonmutation": "SHA-256 of embedded trajectories.json.gz equals 1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203 before and after generation.",
+      "concurrentGeneration": "Task.WhenAll runs eight independently seeded calls; asserts result count 8 and requested endpoints on every result.",
+      "optionalEntropy": "Not separately tested; no entropy-quality claim."
+    },
+    "observed": "Consumer passed; generated 33 points and the expected dataset resource digest. No general child-process absence assertion: no process-table sampling is recorded."
+  },
+  "unitTests": {
+    "trx": "artifacts/goal/cursory-ef2d0ea-results/test-results/cursory-ef2d0ea.trx",
+    "total": 37,
+    "executed": 37,
+    "passed": 37,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "parityScope": "160 pinned upstream parity cases, with exact timing and point-coordinate tolerance 1e-9; 3 intermediate-stage cases with selection tolerance 1e-12 and other stage tolerance 1e-9; fixture hashes/source provenance pinned; RNG bitstream/distribution vectors. Not universal cross-implementation, browser, or whole-product parity.",
+    "additionalChecks": "Tests assert endpoint/timing invariants, deterministic repeated seeds, invalid coordinates/options, read-only result collections, and 1,000 concurrent calls with shared dataset hash unchanged."
+  },
+  "benchmark": {
+    "source": "artifacts/goal/native-package-demo-ef2d0ea/benchmark/Benchmark.cs",
+    "runs": 3,
+    "method": "Three separate processes; each times one first generation (cold), executes 20 untimed warmups, then times 500 calls; p50/p95 use sorted nearest-rank index ceil(p*n)-1; allocated bytes are GC total-allocation delta divided by 500.",
+    "runtime": ".NET 8.0.22; Windows 10.0.19045; x64; 16 logical processors",
+    "observations": [
+      {"run": 1, "coldMs": 503.269, "warmP50Ms": 7.563, "warmP95Ms": 11.049, "meanAllocatedBytes": 2160426},
+      {"run": 2, "coldMs": 401.380, "warmP50Ms": 8.474, "warmP95Ms": 13.597, "meanAllocatedBytes": 2160426},
+      {"run": 3, "coldMs": 400.063, "warmP50Ms": 6.283, "warmP95Ms": 10.106, "meanAllocatedBytes": 2160439}
+    ],
+    "medians": {"coldMs": 401.380, "warmP50Ms": 7.563, "warmP95Ms": 11.049, "meanAllocatedBytes": 2160426},
+    "interpretation": "10 ms p95 is an investigative budget, not a universal pass threshold; run 1 and run 2 exceed it. Measurements are descriptive, not a performance gate."
+  },
+  "historicalComparison": {
+    "report": "artifacts/goal/historical-ef2d0ea/acceptance-summary.json",
+    "baselineCommit": "e217359d19a29635f2b3b5ba54664d299fd16d36",
+    "baselineArchiveSha256": "91f7807b1c998d556479e8456d0c256f5c7cd6659ba96e56e148a666aa0ce52f",
+    "candidateCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "fourLanes": ["baseline-bezier", "candidate-bezier", "candidate-cursory", "candidate-off"],
+    "pageObservations": 28,
+    "domMoveCountsByLane": {"baseline-bezier": 175, "candidate-bezier": 175, "candidate-cursory": 108, "candidate-off": 7},
+    "pageCountsByLane": {"baseline-bezier": 25, "candidate-bezier": 25, "candidate-cursory": 18, "candidate-off": 1},
+    "taskCompletion": "All seven page records in each lane report taskCompleted=true; hover/click completion also true.",
+    "api": {"baselineExportedTypes": 37, "candidateExportedTypes": 50, "removedTypes": 0, "addedTypes": 13, "removedMembers": 0, "addedMembers": 74, "changedDefaults": 0},
+    "defaults": "All old baseline option defaults are unchanged. Candidate adds EnableDiagnostics=false, DiagnosticsCapacity=256, MouseAlgorithm=Bezier, RandomSeed=null, CursoryFrequency=60, CursoryFrequencyRandomizer=1, CursoryDirectness=0.65, CursoryMovementDeadlineMilliseconds=2000, CompatibilityMode=Legacy, ActionDeadlineMilliseconds=30000, TypingDeadlineMilliseconds=30000.",
+    "limitation": "Baseline RNG is not seedable. No paired trajectory comparison or causal performance regression claim."
+  },
+  "correspondenceAndReleaseCaveats": {
+    "sourceProgramCorrespondence": "432/432 compared entries across 23 types; zero differences. No whole-PE byte-identity claim.",
+    "datasetRights": "UNVERIFIED",
+    "externalPublicationAllowed": false,
+    "defaultsPromoted": false,
+    "processTableSampled": false
+  }
+}

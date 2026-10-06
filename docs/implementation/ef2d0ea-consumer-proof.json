@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+  "packageVersion": "0.2.0-beta.2.final.ef2d0ea",
+  "feed": "D:/SpyBrowser/artifacts/goal/final-feed-ef2d0ea",
+  "producerFeed": "D:/Temp/spybrowser-feed-final-ef2d0ea",
+  "feedReadiness": {
+    "consumerReadyStatus": "ready",
+    "manifestSourceCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "declaredFinalCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "isFinal": true,
+    "actualPackageHashesEqualManifest": true,
+    "nuspecRepositoryAndVersionVerified": true,
+    "portablePdbAuditReady": true,
+    "sourceLinkRawSourceUrlCommit": "ef2d0eaa35a5bf1950acf75a342590b95e15c9e0",
+    "datasetRights": "UNVERIFIED",
+    "externalPublicationAllowed": false
+  },
+  "packages": [
+    {"id":"SpyBrowser.Core","file":"SpyBrowser.Core.0.2.0-beta.2.final.ef2d0ea.nupkg","sha256":"7c3f64b2fb65cc4c706ce2f4d2b39f553e3f548e210384d4692e51fd6fd1e194","nuspecVersion":"0.2.0-beta.2.final.ef2d0ea","repositoryCommit":"ef2d0eaa35a5bf1950acf75a342590b95e15c9e0"},
+    {"id":"SpyBrowser.Cursory","file":"SpyBrowser.Cursory.0.2.0-beta.2.final.ef2d0ea.nupkg","sha256":"b042e0c8643b00b375bbf20d1d65ee458b990472592f064bb5a741e581ce3f10","nuspecVersion":"0.2.0-beta.2.final.ef2d0ea","repositoryCommit":"ef2d0eaa35a5bf1950acf75a342590b95e15c9e0"},
+    {"id":"SpyBrowser.Playwright","file":"SpyBrowser.Playwright.0.2.0-beta.2.final.ef2d0ea.nupkg","sha256":"17965e54e3828a8d11c8686afafaf768653629ee2f68ea5dbd3e03de9a28363b","nuspecVersion":"0.2.0-beta.2.final.ef2d0ea","repositoryCommit":"ef2d0eaa35a5bf1950acf75a342590b95e15c9e0"}
+  ],
+  "consumer": {
+    "checkout": "D:/RpaBlockly",
+    "pinnedCommit": "c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca",
+    "validationMethod": "git archive of pinned commit into a per-lane isolated copy; original checkout unchanged",
+    "targetFramework": "net9.0",
+    "sdkRequested": "10.0.302 (rollForward latestFeature)",
+    "sdkResolvedInActualIsolatedConsumerCwd": "10.0.401",
+    "rootGlobalSdkNotUsedAsProof": "8.0.319",
+    "playwrightPackageVersion": "1.61.0",
+    "browser": {"engine":"Chromium","revision":"1228","browserVersion":"149.0.7827.55","versionSource":"Microsoft.Playwright 1.61.0 packaged browsers.json; installed chromium-1228; actual harness BrowserLauncher Chromium launch completed"},
+    "candidatePackageCount": 3,
+    "candidatePackageIds": ["SpyBrowser.Core","SpyBrowser.Cursory","SpyBrowser.Playwright"],
+    "candidateProjectReferences": false,
+    "loopbackOnly": true
+  },
+  "lanes": [
+    {
+      "name":"cursory-compatible-on",
+      "output":"D:/SpyBrowser/artifacts/goal/consumer-ef2d0ea-cursory-compatible-on",
+      "mouseAlgorithm":"cursory","compatibilityMode":"playwright-compatible","humanize":"on",
+      "completedAtUtc":"2026-10-05T21:54:52.109985+00:00","exitCode":0,"result":"passed","candidateFinalParity":true,
+      "checksPassed":14,"checksExpected":14,"missingChecks":[],"unexpectedChecks":[],"excludedMixedCaptchaNetworkProviderSuite":"not-run",
+      "evidence":"artifacts/goal/consumer-ef2d0ea-cursory-compatible-on/evidence.json",
+      "harnessEvidence":"artifacts/goal/consumer-ef2d0ea-cursory-compatible-on/harness-evidence.json",
+      "runLog":"artifacts/goal/consumer-ef2d0ea-cursory-compatible-on/run.log",
+      "sdkResolved":"10.0.401","packageHashesMatchFeed":true
+    },
+    {
+      "name":"bezier-legacy-on",
+      "output":"D:/SpyBrowser/artifacts/goal/consumer-ef2d0ea-bezier-legacy-on",
+      "mouseAlgorithm":"bezier","compatibilityMode":"legacy","humanize":"on",
+      "completedAtUtc":"2026-10-05T21:55:50.364102+00:00","exitCode":0,"result":"passed","candidateFinalParity":true,
+      "checksPassed":14,"checksExpected":14,"missingChecks":[],"unexpectedChecks":[],"excludedMixedCaptchaNetworkProviderSuite":"not-run",
+      "evidence":"artifacts/goal/consumer-ef2d0ea-bezier-legacy-on/evidence.json",
+      "harnessEvidence":"artifacts/goal/consumer-ef2d0ea-bezier-legacy-on/harness-evidence.json",
+      "runLog":"artifacts/goal/consumer-ef2d0ea-bezier-legacy-on/run.log",
+      "sdkResolved":"10.0.401","packageHashesMatchFeed":true
+    },
+    {
+      "name":"cursory-compatible-off",
+      "output":"D:/SpyBrowser/artifacts/goal/consumer-ef2d0ea-cursory-compatible-off",
+      "mouseAlgorithm":"cursory","compatibilityMode":"playwright-compatible","humanize":"off",
+      "completedAtUtc":"2026-10-05T21:56:41.146949+00:00","exitCode":0,"result":"passed","candidateFinalParity":true,
+      "checksPassed":14,"checksExpected":14,"missingChecks":[],"unexpectedChecks":[],"excludedMixedCaptchaNetworkProviderSuite":"not-run",
+      "evidence":"artifacts/goal/consumer-ef2d0ea-cursory-compatible-off/evidence.json",
+      "harnessEvidence":"artifacts/goal/consumer-ef2d0ea-cursory-compatible-off/harness-evidence.json",
+      "runLog":"artifacts/goal/consumer-ef2d0ea-cursory-compatible-off/run.log",
+      "sdkResolved":"10.0.401","packageHashesMatchFeed":true
+    }
+  ],
+  "aggregateCheckNames": [
+    "Configured Humanize state, Chromium launch via pinned RpaBlockly BrowserLauncher, in-memory rpablockly identity, locale, timezone, viewport and context event/collection",
+    "RpaBlockly Browser.Context adapter and SDK context Page events each fire once with prepared object identity across unsubscribe/resubscribe",
+    "StorageStatePath write on local loopback origin",
+    "Screenshot, navigation and local loopback served page",
+    "RpaBlockly popup plus nested-frame wrapper propagation and working loopback page",
+    "Pinned RpaBlockly V1 flow: parsed definition, FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+    "Pinned RpaBlockly V2 package flow: parsed snapshot, V2FlowCompiler, real RpaRunner loopback execution and frame output via IFrameLocator/ILocator",
+    "Loopback download and saved artifact",
+    "Actual RpaRunner local flow restores StorageStatePath cookies",
+    "Actual RpaRunner FillWhenReadyAsync -> FillWithRuntimeAsync cancellation closes context and settles native Fill",
+    "Two concurrent actual RpaRunner jobs retain independent inputs and deterministic Cursory RNG trajectories without profile leases",
+    "Actual RpaBlockly cancellation helper cleans a controlled late BrowserSession (native IsConnected=false)",
+    "Context close removes collection entry",
+    "Humanize off remains raw"
+  ],
+  "semanticAssertionMap": [
+    {"id":1,"operation":"First Browser.Context callback is exactly once and receives the SDK-prepared context","source":"tools/verification/consumer-checks/Program.cs:42-43","assertions":["contextCallbacks == 1","ReferenceEquals(callbackContext, firstEventContext)"]},
+    {"id":2,"operation":"Unsubscribe/resubscribe delivers exactly one callback for the next distinct prepared context","source":"tools/verification/consumer-checks/Program.cs:52-53","assertions":["contextCallbacks == 2","ReferenceEquals(callbackContext, context)","!ReferenceEquals(firstEventContext, context)"]},
+    {"id":3,"operation":"SDK context Page event fires once with the returned page and collection identity","source":"tools/verification/consumer-checks/Program.cs:62-64","assertions":["pageCallbacks == 1","ReferenceEquals(callbackPage, wrappedPage)","ReferenceEquals(context.Pages.Single(), callbackPage)"]},
+    {"id":4,"operation":"Returned context references and Browser.Contexts collection are consistent","source":"tools/verification/consumer-checks/Program.cs:66-68","assertions":["ReferenceEquals(context.Pages.Single(), wrappedPage)","ReferenceEquals(observed, context)","session.Browser.Contexts.Contains(context)"]},
+    {"id":5,"operation":"Context wrapper is enabled only when humanization is enabled","source":"tools/verification/consumer-checks/Program.cs:70","assertion":"wrapper == humanize"},
+    {"id":6,"operation":"Page wrapper/raw identity follows configured humanization mode","source":"tools/verification/consumer-checks/Program.cs:71-72","assertion":"ReferenceEquals(wrappedPage, PlaywrightHumanizer.Unwrap(wrappedPage)) == !humanize"},
+    {"id":7,"operation":"Browser-observed timezone and locale match configured values","source":"tools/verification/consumer-checks/Program.cs:74-75","assertions":["environment[0] == BrowserTimeZone()","environment[1].StartsWith(\"pt-BR\", StringComparison.OrdinalIgnoreCase)"]},
+    {"id":8,"operation":"Configured viewport is preserved in the real page","source":"tools/verification/consumer-checks/Program.cs:76","assertion":"environment[2] == \"1173\" && environment[3] == \"777\""},
+    {"id":9,"operation":"StorageStatePath is written after local loopback navigation","source":"tools/verification/consumer-checks/Program.cs:85","assertion":"File.Exists(statePath)"},
+    {"id":10,"operation":"Screenshot is nonempty and URL wait is armed before navigation click","source":"tools/verification/consumer-checks/Program.cs:90-95","assertions":["File.Exists(shot) && new FileInfo(shot).Length > 0","var navigationTask = page.WaitForURLAsync(\"**/next\") (line 92, before ClickAsync line 93)","page.Url.EndsWith(\"/next\", StringComparison.Ordinal)"]},
+    {"id":11,"operation":"Popup load/title and context event result retain wrapper identity","source":"tools/verification/consumer-checks/Program.cs:102-104","assertions":["await popup.TitleAsync() == \"popup\"","context.Pages.Any(p => ReferenceEquals(p, popup))","ReferenceEquals(popup, PlaywrightHumanizer.Unwrap(popup)) == !humanize"]},
+    {"id":12,"operation":"Nested frame locator wrapper propagation and frame content work","source":"tools/verification/consumer-checks/Program.cs:107-110","assertions":["humanize ? !ReferenceEquals(wrappedFrameLocator, PlaywrightHumanizer.Unwrap(wrappedFrameLocator)) : await wrappedFrameLocator.InnerTextAsync() == \"frame-ok\"","await frame.Locator(\"#frame-value\").InnerTextAsync() == \"frame-ok\""]},
+    {"id":13,"operation":"Parsed V1 fixture runs through FlowCompiler/RpaRunner and returns nested-frame output","source":"tools/verification/consumer-checks/Program.cs:116-117","assertion":"v1Result.Output[\"frameResult\"]?.GetValue<string>() == \"frame-ok\" && v1Result.ExecutedActions == 2"},
+    {"id":14,"operation":"Parsed V2 package runs through V2FlowCompiler/RpaRunner and returns nested-frame output","source":"tools/verification/consumer-checks/Program.cs:125-126","assertion":"v2Result.Output[\"frameResult\"]?.GetValue<string>() == \"frame-ok\" && v2Result.ExecutedActions == 2"},
+    {"id":15,"operation":"Loopback download is saved with the expected content","source":"tools/verification/consumer-checks/Program.cs:134","assertion":"await File.ReadAllTextAsync(downloaded) == \"download-ok\""},
+    {"id":16,"operation":"Real RpaRunner restores StorageStatePath cookie and returns normal execution fields","source":"tools/verification/consumer-checks/Program.cs:145-147","assertions":["restoredCookie.Contains(\"contract=loaded\", StringComparison.Ordinal)","ExecutionId == \"runner-storage-restore\" && Output is not null && StartedAtUtc.HasValue && CompletedAtUtc.HasValue"]},
+    {"id":17,"operation":"Runtime cancellation, independent concurrent inputs/RNG, delayed browser cleanup, context teardown and raw mode invariants","source":"tools/verification/consumer-checks/Program.cs:169-170,180-181,195-199,215,219,224","assertions":["cancelledContext is { IsClosed: true }","Cursory trajectories deterministic per seed and distinct across seeds","two actual RpaRunner jobs retain independent markers and trajectory fingerprints","!lateSession.Browser.IsConnected after RpaBlockly cancellation cleanup","closed context absent from Browser.Contexts","Humanize=false context remains raw"]}
+  ],
+  "sourceHashes": {
+    "tools/verification/consumer-checks/run.py":"5dd979b521c750c0437140d7b62afbd574d8747a119ffe915c050713c32fc173",
+    "tools/verification/consumer-checks/Program.cs":"73c7efcdd7f35d6dc8adf639178c9866fb308ab3ac39d139a66e94955c67e110",
+    "tools/verification/consumer-checks/fixtures/v1-frame-flow.json":"4ff5f1cd45bff8ccdad4022ba497d122ace428174ec83d53c70305593cc8cb0c",
+    "tools/verification/consumer-checks/fixtures/v2-frame-package.json":"18aca81ea12dc79e93a8aa3a0b78a4d250329bf9b5931811baa200ffd0d5e8a6"
+  },
+  "scopeAndNonclaims": [
+    "No candidate package was repacked or edited; only the exact three-package feed was consumed.",
+    "No candidate SpyBrowser ProjectReference was added to the consumer; SpyBrowser.Playwright was restored from the exact local feed.",
+    "Each lane used a separate isolated pinned checkout, output, TMP/TEMP, DOTNET_CLI_HOME and NUGET_PACKAGES path; lanes ran sequentially with a 1800-second per-lane process-tree timeout.",
+    "No test fixture, effect budget, deadline, harness, source API, or defaults were relaxed or rewritten; consumer modifications are only temporary isolated package/configuration/test injection performed by the frozen run.py.",
+    "The original RpaBlockly checkout remained at pinned commit c2f2947c3ccd8b20f7a1cdf9c3b41fb68567b6ca.",
+    "The mixed CAPTCHA/network/provider suite was not run; only local loopback consumer checks are claimed.",
+    "Dataset rights are UNVERIFIED and external publication is disallowed."
+  ]
+}

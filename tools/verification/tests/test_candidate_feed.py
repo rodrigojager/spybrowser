@@ -97,6 +97,7 @@ class CandidateFeedAuditTests(unittest.TestCase):
                          f'{feed.RAW_SOURCE_URL}/{self.commit}/')
         self.assertEqual(result['sourceLinkUrlTemplate'],
                          f'{feed.RAW_SOURCE_URL}/{self.commit}/*')
+        self.assertEqual(result['sourceLinkMappingKey'], '/_/*')
         self.assertFalse(result['remoteSourceAccessVerified'])
 
     def test_document_path_escape_fails_closed(self):

@@ -154,7 +154,7 @@ def validate_pdb_audit(audit, source_root, commit, source_link_map):
             'sourceControlledDocumentsVerified': source_documents,
             'generatedDocumentsExcluded': generated_documents,
             'sourceLinkCdiGuid': SOURCELINK_KIND, 'sourceLinkUrlPrefix': expected_url,
-            'sourceLinkMappingKey': '/_*', 'sourceLinkUrlTemplate': f'{RAW_SOURCE_URL}/{commit}/*',
+            'sourceLinkMappingKey': '/_/*', 'sourceLinkUrlTemplate': f'{RAW_SOURCE_URL}/{commit}/*',
             'remoteSourceAccessVerified': False}
 
 
