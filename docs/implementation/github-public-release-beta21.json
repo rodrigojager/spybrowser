@@ -1,0 +1,477 @@
+{
+  "releaseUrl": "https://github.com/rodrigojager/spybrowser/releases/tag/v0.2.0-beta.2.1",
+  "sourceCommit": "7983680083dd66aea2ff39a753533d02d8de2491",
+  "authentication": "none",
+  "pdbsVerified": 5,
+  "remoteSourceChecksumsVerified": 62,
+  "generatedExcluded": 16,
+  "checks": [
+    {
+      "path": "/_/src/SpyBrowser.Compatibility.CloakBrowser/CloakLauncher.cs",
+      "sha256": "4a2b939b6746903b477e851f032e346f8d3ad0c1d49c8bb4268be6639dc51cd7"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Compatibility.CloakBrowser/Handles.cs",
+      "sha256": "d3e93a29e6d4bb8913da3c49849a1e6c26cbb851a9301bf2ace50464406a023f"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Compatibility.CloakBrowser/HumanCompatibility.cs",
+      "sha256": "21852585db2684980ce167721ddef61929403399788340792a073b4e0db125c3"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Compatibility.CloakBrowser/LaunchOptions.cs",
+      "sha256": "7ba42742a47bee1d6e694ab78e9642634f7e722bf2000606a7595f4744c0c3e3"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cli/CommandLine.cs",
+      "sha256": "a8797975aa3e49191f0149db1fb5b6bc51112c3d2c46dd166a487f25fdefb1b4"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cli/Program.cs",
+      "sha256": "38a8c521c2a7e69fc4adfb9c86f98c252b1e2138f0f87d7651b501de8684e579"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cli/SpyBrowserCli.cs",
+      "sha256": "ba244837fd393b593e69c782a3351f2e260be82696a6827af1fab69943f8c9e2"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/AssemblyInfo.cs",
+      "sha256": "692b0516a7fbe9cffcfea36c9c50f014986b20176c8df91db0c9ccf71b35b89d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/BrowserEngine.cs",
+      "sha256": "f89df611310d1a052eda8dda854702f8b549c2977e7895f7f7d3141c58057c62"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/BrowserIdentity.cs",
+      "sha256": "982f172d46ad82773db797c9e343c1ca007d3cb6ec2fd8deea718a585f68c58d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/GpuPolicy.cs",
+      "sha256": "093a1af57dae72a9eeb3900220b7c60597e407a590b6d8e038b4392c026dc02f"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/IdentityId.cs",
+      "sha256": "5b79ad2bb71bb52777a6552f43abbce1818ec024891d5a59b94957976942b1fb"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/IdentityInUseException.cs",
+      "sha256": "80575eb53ef4b70606bb0cd2798b99296ee414fcf2c2c9986992b1f481e66150"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/IdentityLease.cs",
+      "sha256": "469302b24ad30cc2a36a9d891d6d8b6f161bc233e2baa960619a4a756dfbd6af"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/IdentityStore.cs",
+      "sha256": "b6e21e52b583eadeb550e9d7bbcc11b086a2922f5e87e3b3446a0c6b0e1e6a1d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/IdentityValidationException.cs",
+      "sha256": "a77677ff22fdeacdbb59ecf363db761d51551683c2aaa78aa90544c67f1e1ce6"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/IdentityValidator.cs",
+      "sha256": "7e04a4baf4edb7b6c6ce2631706280f33622ae7a111a6fdba533ef3e136ceb8a"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Core/SpyBrowserPaths.cs",
+      "sha256": "a3c52f835d6facfd7d5e823ccf80922eb81f01f02827409cf5872ae16fe7f595"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/CursoryTrajectoryGenerator.cs",
+      "sha256": "ef2ac25bb89f954385965efde2777d5195d72dab97017f17f31117f5d00d55b4"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/Dataset.cs",
+      "sha256": "0e1fa3ebd77e2a2506656e9038a8606136ada7f0a02d5a7fbe3f940566759cb6"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/NumericCompat.cs",
+      "sha256": "d1916e0d6926379c8fb5b91fa3dc941211c7742377ef500cbd2ae3bd24afc4dc"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/Pcg64.cs",
+      "sha256": "f264b5a87e466ce10468de291f0ddf478ae500f53c599abd545f77a6049e0d56"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/RandomSampler.cs",
+      "sha256": "c82c3094914b3c7fbc0dd0cfe264b4b2b3aab0f0d54cb873991d128d132ff42f"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/TrajectorySelection.cs",
+      "sha256": "9d07585c5060d10a96b754530d13bfd6c728178b6bf9c2543d43ce8c7252f41b"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/TrajectoryTiming.cs",
+      "sha256": "bcf74782e8dd61de8494d7daa00cef261ad7a3fc7c7323077c76b84d0f46d62d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/TrajectoryTransforms.cs",
+      "sha256": "5b4bfcce42b26e88ff6334ce0a2ded0ec149be7dbb1ee5215a7af25520987724"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Internal/ZigguratTables.cs",
+      "sha256": "00bb61fc394cdb5e66a7b4681085ee144a3ed9ccf8b49a2b166eb755ecf4ac73"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Properties/AssemblyInfo.cs",
+      "sha256": "d4ed8127d9ef7b84e11ff7f83858dd2c9b5e3cf9e467c3dfe5e4f1851b4e5058"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Cursory/Trajectory.cs",
+      "sha256": "6fa00a33eecc4f7c5bf403e901ffc166690af560430c6c7cb7a2832ca3eb2e0a"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/AssemblyInfo.cs",
+      "sha256": "692b0516a7fbe9cffcfea36c9c50f014986b20176c8df91db0c9ccf71b35b89d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/BrowserArgumentBuilder.cs",
+      "sha256": "e8cf5713548fe278f0f71f08787bc39dbfc33231ca4db29128f51cb4a9574332"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/BrowserRuntimeProvenance.cs",
+      "sha256": "be269e39b5cba2db2a77ee9dd69d18474bb471c3c050dcd648c726a26f465c1b"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/ConsistencyReport.cs",
+      "sha256": "4d973a8414787d40cd4b513ae9878670e6f44085c17c1e64ec3708f5d0843f9d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Diagnostics/DiagnosticSnapshotStore.cs",
+      "sha256": "4f541b7c6589c36620e52c55e377faf5f353cb8eb9918487f8f5d584e840e95b"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Diagnostics/HumanizationDiagnostics.cs",
+      "sha256": "fc22add6dc773a0dd8447306e652749b47c19b3d012d665713eadbfc1748513e"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Diagnostics/RuntimeVersionRecord.cs",
+      "sha256": "f49faff17664db0872b9b2e86e1f05f6cfaa60a52e00f4c47d332f6cf22e7359"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/EnvironmentDoctor.cs",
+      "sha256": "c38cc515f8dad394f6958ee6e4b1974fa98f0bac1c7b52388e12948619cba0e2"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/GpuDiagnostics.cs",
+      "sha256": "3e27e68ca1bb9efe7261a0972df6ce602c551e74d6e070f0ef44260ac9b02551"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/GpuProbe.cs",
+      "sha256": "9728a2ccf2a7ca6d2643d1e648debb839945c774fcb783360f432c97d9d8f565"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/HumanActions.cs",
+      "sha256": "2598bca295b567878376260491e3f6290e4040c986027b22d34e223400e0e3a3"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/HumanInteractionOptions.cs",
+      "sha256": "e5e67a5ec205edb3438d1ec0cb55c199aaf16358f1995a90f0e771b7ccb9b48f"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/CursoryTrajectoryStrategy.cs",
+      "sha256": "fc4fe7a17fc27cd4d32446286fd5ed8196df7c489776ebfa25a24d2315d85386"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/HumanizationPolicy.cs",
+      "sha256": "fe9c25ce341499dc1b4b60f18e84651bf5c5fd3a0d63cefc0408dddcce81ee42"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/InteractionDeadline.cs",
+      "sha256": "e8815e671d7d680919c130a7a310760d6b32bf3856b7c3be167cbb1e3eb63f0e"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/MonotonicMovementScheduler.cs",
+      "sha256": "b5d8cf51a0fff76e6d90a8f7c8071caa6f7b69d35221fd7cbf0f904ad95b1bb2"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/MouseTrajectoryStrategy.cs",
+      "sha256": "33cb2c999a668e819b3f4f0d167a0b2a4795763c07f1d4b4c648aa1fe7e95b74"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/PageInputState.cs",
+      "sha256": "f6893efc02d7953a113e3d6deb1ea89c5c2a58b00fd72f5f8854767c718ea8dc"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Humanization/PageMouseState.cs",
+      "sha256": "9ceb6e1b09c37c214a215c30c6693c7d0d7e68a981aff78ee89a968d1e8eee47"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/IBrowserExecutableProvider.cs",
+      "sha256": "2224b778a2e7167bafa539c237a25e506efa28db4ed68a92817a4107273bc1ee"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/IdentityInitScriptBuilder.cs",
+      "sha256": "c81cd959bee11e5be83ee7b41c1ba81fa91baaa8bfba620505c6221415d54200"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/IdentityRotationPool.cs",
+      "sha256": "b8d367d70f71303456b0fd7b9a9ee9f58aacce34f8bb5f2e313a2ff4e773fd23"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/PlaywrightDriverConfiguration.cs",
+      "sha256": "fb9209e2e6dc91d0863ec70c9a620e5bed8b08dde0717e03e316a86e3c629fc7"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/PlaywrightHumanizer.cs",
+      "sha256": "b00af461647f5c98b266cf06418ba8669ed47a99d2bf52f72fd54f8980e763bf"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/ProbePageRegistry.cs",
+      "sha256": "38f5c64ae9b88fca1bb2a5c23a3db35968bfd738be50f54f711645874ce4880f"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/ProxyConfiguration.cs",
+      "sha256": "7058d7a652f751b97d5ce6a3bea434e40cec7f3d7f59bde662c48764eed8cd89"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/SpyBrowserBrowserHandle.cs",
+      "sha256": "5b9349da7b8c22c8535aca8dedf9df87127b4d9dc15e114342c3849966e0bcd2"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/SpyBrowserContextHandle.cs",
+      "sha256": "7ccaebce993a87bf4543fdb13866d150e613aca60dda36deae49910275c44d0d"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/SpyBrowserLauncher.cs",
+      "sha256": "bda758a65fca5d54a71ed19bc61fb6766664ab3dae15af0621ad16e6392e92cb"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/SpyBrowserLaunchOptions.cs",
+      "sha256": "a6ae27c13d43d86a6613aa2927a3b75156711e6c8ff204651e9c664bf46d76ec"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/SpyBrowserSession.cs",
+      "sha256": "035e937827fca7de16ebd75c5032fe7c08c67d073c4a677ce3485bef50b1242a"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Wrapping/ConfiguredBrowserProxy.cs",
+      "sha256": "1fc8892bc35002ba4b4730c8060d2bfd892c7d9f15d5c1e0af4da3ae947b75e1"
+    },
+    {
+      "path": "/_/src/SpyBrowser.Playwright/Wrapping/PlaywrightEventBridge.cs",
+      "sha256": "5f69c59c5705102d9f2d6446a9f7ceb26b336b641b3a10e30b801889889f9d01"
+    }
+  ],
+  "networkRetryEvents": [],
+  "initialTransportFailure": "Previous first remote check stopped on TLS handshake timeout; no checksum assertion was relaxed",
+  "releaseTestResults": [
+    {
+      "file": "release_net8.0_20261006094459.trx",
+      "total": "37",
+      "executed": "37",
+      "passed": "37",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    {
+      "file": "release_net8.0_20261006094648.trx",
+      "total": "180",
+      "executed": "179",
+      "passed": "179",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    }
+  ],
+  "assets": [
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099274",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:14Z",
+      "digest": "sha256:bcb325fffb8ec6de4595f0bf73d6d5bdaa8b31a86c604a8818a718e3e12c9d43",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqauK",
+      "label": "",
+      "name": "release_net8.0_20261006094459.trx",
+      "size": 55708,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/release_net8.0_20261006094459.trx"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099275",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:14Z",
+      "digest": "sha256:7532245885694697f035e7a75308c7bf0f6b916637f8b3bbca41efadaa7c45ac",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqauL",
+      "label": "",
+      "name": "release_net8.0_20261006094648.trx",
+      "size": 260778,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/release_net8.0_20261006094648.trx"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099218",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:c86dc65b53fdaea10b42e2192bbb42ec0c644eafb1757595659e47c3dcfb9662",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatS",
+      "label": "",
+      "name": "SpyBrowser.Cli.0.2.0-beta.2.1.nupkg",
+      "size": 205372344,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:20Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Cli.0.2.0-beta.2.1.nupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099222",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:16212bd4df4239c486ccaf02d49c7b1155428b2ceac0aed0dcf5d18443f3b093",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatW",
+      "label": "",
+      "name": "SpyBrowser.Cli.0.2.0-beta.2.1.snupkg",
+      "size": 68231,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:13Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Cli.0.2.0-beta.2.1.snupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099216",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:3f3aba696a038d6b5042da492340e76aab37ab3d2473ad9ca20196fb72b10e35",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatQ",
+      "label": "",
+      "name": "SpyBrowser.Compatibility.CloakBrowser.0.2.0-beta.2.1.nupkg",
+      "size": 28252,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:13Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Compatibility.CloakBrowser.0.2.0-beta.2.1.nupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099217",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:c807778bfb12f773fc8beae8d51a264c30c4f617c27002675bc2068575c08040",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatR",
+      "label": "",
+      "name": "SpyBrowser.Compatibility.CloakBrowser.0.2.0-beta.2.1.snupkg",
+      "size": 12861,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:13Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Compatibility.CloakBrowser.0.2.0-beta.2.1.snupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099219",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:df1fa5501263ff96805150d8de4f760a1a050f55196f880ff50030a4625ca2ab",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatT",
+      "label": "",
+      "name": "SpyBrowser.Core.0.2.0-beta.2.1.nupkg",
+      "size": 28773,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:13Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Core.0.2.0-beta.2.1.nupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099245",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:b2fc072abb1324c1e81fbc3a14824256a2f141087c07970beb955e31300a6753",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatt",
+      "label": "",
+      "name": "SpyBrowser.Core.0.2.0-beta.2.1.snupkg",
+      "size": 15767,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Core.0.2.0-beta.2.1.snupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099251",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:113390fd0009112c7103c7050824f5680f5c118157dda925d387953acdf3dbc1",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatz",
+      "label": "",
+      "name": "SpyBrowser.Cursory.0.2.0-beta.2.1.nupkg",
+      "size": 1391916,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Cursory.0.2.0-beta.2.1.nupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099248",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:13Z",
+      "digest": "sha256:5dceed4bd2c4c5c45a0d04137889ef0d7cef0d9634ba6b4b1ba69d099bb2cb80",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqatw",
+      "label": "",
+      "name": "SpyBrowser.Cursory.0.2.0-beta.2.1.snupkg",
+      "size": 14907,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Cursory.0.2.0-beta.2.1.snupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099255",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:14Z",
+      "digest": "sha256:ee7b630cbe83d8e7f838fc2fe88eeb66667f90506ab7f9f4d339acb17e4d7309",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqat3",
+      "label": "",
+      "name": "SpyBrowser.Playwright.0.2.0-beta.2.1.nupkg",
+      "size": 112579,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Playwright.0.2.0-beta.2.1.nupkg"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/rodrigojager/spybrowser/releases/assets/615099270",
+      "contentType": "application/octet-stream",
+      "createdAt": "2026-10-06T09:47:14Z",
+      "digest": "sha256:864c82dbc499e1f4751c1223c1b19ebeb5dbd304dd02fbc7e8386f27098645bb",
+      "downloadCount": 0,
+      "id": "RA_kwDOUL0a384kqauG",
+      "label": "",
+      "name": "SpyBrowser.Playwright.0.2.0-beta.2.1.snupkg",
+      "size": 32506,
+      "state": "uploaded",
+      "updatedAt": "2026-10-06T09:47:14Z",
+      "url": "https://github.com/rodrigojager/spybrowser/releases/download/v0.2.0-beta.2.1/SpyBrowser.Playwright.0.2.0-beta.2.1.snupkg"
+    }
+  ],
+  "operatorRightsStatus": "OPERATOR_ATTESTED",
+  "independentLegalReview": false,
+  "publicationRun": 37444936875,
+  "producerSdk": "8.0.319",
+  "workflowCommit": "db44394",
+  "distribution": "Public GitHub assets; no NuGet/GitHubPackages publication",
+  "visibilityAuthorization": "Explicit user choice: Tornar SpyBrowser p\u00fablico, including entire code/history"
+}
