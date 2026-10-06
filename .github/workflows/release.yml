@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag to publish with this workflow
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -14,14 +20,30 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v7
-      - name: Require the tag to match the declared package version
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
+          fetch-depth: 0
+      - name: Require an exact version-matched tag and full checked-out commit
         shell: bash
+        env:
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
         run: |
-          version=$(python3 -c 'import xml.etree.ElementTree as E; r=E.parse("Directory.Build.props").getroot(); print(r.findtext(".//VersionPrefix") + "-" + r.findtext(".//VersionSuffix"))')
-          test "$GITHUB_REF_NAME" = "v$version"
-          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]
+          version=$(python3 -c 'import xml.etree.ElementTree as E; r=E.parse("Directory.Build.props").getroot(); p=r.findtext(".//VersionPrefix"); s=r.findtext(".//VersionSuffix"); print(p + ("-" + s if s else ""))')
+          test "$RELEASE_TAG" = "v$version"
+          git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"
+          tag_sha=$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")
+          head_sha=$(git rev-parse HEAD)
+          [[ "$head_sha" =~ ^[0-9a-f]{40}$ || "$head_sha" =~ ^[0-9a-f]{64}$ ]]
+          test "$tag_sha" = "$head_sha"
+          {
+            echo "RELEASE_VERSION=$version"
+            echo "RELEASE_TAG=$RELEASE_TAG"
+          } >> "$GITHUB_ENV"
       # The gate accepts independent VERIFIED evidence or the explicitly recorded operator-attested route.
       - name: Require external publication approval and an authorized dataset-rights route
         env:
@@ -34,7 +56,12 @@ jobs:
         run: test "$(dotnet --version)" = "8.0.319"
       - run: dotnet restore SpyBrowser.sln
       - run: dotnet build SpyBrowser.sln -c Release --no-restore
-      - run: dotnet test SpyBrowser.sln -c Release --no-build
+      - name: Install Playwright Chromium and system dependencies
+        run: pwsh tests/SpyBrowser.Tests/bin/Release/net8.0/playwright.ps1 install --with-deps chromium
+      - name: Run tests and record TRX results
+        env:
+          SPYBROWSER_RUN_BROWSER_TESTS: "1"
+        run: dotnet test SpyBrowser.sln -c Release --no-build --logger "trx;LogFilePrefix=release" --results-directory artifacts/test-results
       - run: dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
       - run: dotnet pack src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
       - run: dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
@@ -54,7 +81,7 @@ jobs:
         shell: bash
         run: |
           prerelease=()
-          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+          if [[ "$RELEASE_TAG" == *-* ]]; then
             prerelease+=(--prerelease)
           fi
-          gh release create "$GITHUB_REF_NAME" artifacts/packages/* --generate-notes "${prerelease[@]}"
+          gh release create "$RELEASE_TAG" artifacts/packages/* artifacts/test-results/*.trx --generate-notes --verify-tag "${prerelease[@]}"
