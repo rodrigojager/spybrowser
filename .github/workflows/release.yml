@@ -16,26 +16,38 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
       - uses: actions/checkout@v7
-      # All SDK packages depend on the embedded dataset. A tag is not publication approval.
-      - name: Require publication approval and independently verified dataset rights
+      - name: Require the tag to match the declared package version
+        shell: bash
+        run: |
+          version=$(python3 -c 'import xml.etree.ElementTree as E; r=E.parse("Directory.Build.props").getroot(); print(r.findtext(".//VersionPrefix") + "-" + r.findtext(".//VersionSuffix"))')
+          test "$GITHUB_REF_NAME" = "v$version"
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+      # The gate accepts independent VERIFIED evidence or the explicitly recorded operator-attested route.
+      - name: Require external publication approval and an authorized dataset-rights route
         env:
           SPYBROWSER_EXTERNAL_PUBLICATION_APPROVED: ${{ vars.SPYBROWSER_EXTERNAL_PUBLICATION_APPROVED }}
         run: python3 tools/verification/check_distribution_gate.py
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 8.0.319
+      - name: Require the pinned global SDK
+        run: test "$(dotnet --version)" = "8.0.319"
       - run: dotnet restore SpyBrowser.sln
       - run: dotnet build SpyBrowser.sln -c Release --no-restore
       - run: dotnet test SpyBrowser.sln -c Release --no-build
-      - run: dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages
-      - run: dotnet pack src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj -c Release --no-build -o artifacts/packages
-      - run: dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages
-      - run: dotnet pack src/SpyBrowser.Compatibility.CloakBrowser/SpyBrowser.Compatibility.CloakBrowser.csproj -c Release --no-build -o artifacts/packages
-      - run: dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o artifacts/packages
-      - env:
+      - run: dotnet pack src/SpyBrowser.Core/SpyBrowser.Core.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
+      - run: dotnet pack src/SpyBrowser.Cursory/SpyBrowser.Cursory.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
+      - run: dotnet pack src/SpyBrowser.Playwright/SpyBrowser.Playwright.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
+      - run: dotnet pack src/SpyBrowser.Compatibility.CloakBrowser/SpyBrowser.Compatibility.CloakBrowser.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
+      - run: dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o artifacts/packages -p:Version="$RELEASE_VERSION"
+      # Release assets are the public distribution path selected by the operator.
+      # Publishing to the authenticated GitHub package registry needs a separate opt-in.
+      - if: vars.SPYBROWSER_GITHUB_PACKAGES_PUBLICATION_APPROVED == 'true'
+        env:
           GITHUB_PACKAGES_TOKEN: ${{ github.token }}
         run: dotnet nuget push "artifacts/packages/*.nupkg" --api-key "$GITHUB_PACKAGES_TOKEN" --source https://nuget.pkg.github.com/rodrigojager/index.json --skip-duplicate
-      - if: env.NUGET_API_KEY != ''
+      # NuGet publication is a separate effect. The operator currently approved GitHub only.
+      - if: env.NUGET_API_KEY != '' && vars.SPYBROWSER_NUGET_PUBLICATION_APPROVED == 'true'
         run: dotnet nuget push "artifacts/packages/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
       - env:
           GH_TOKEN: ${{ github.token }}

@@ -2,7 +2,7 @@
 
 ## Artifacts
 
-The solution builds five package projects. `SpyBrowser.Cursory` is an experimental LGPL preview and is not cleared for external distribution; the current release workflow still publishes the four established products.
+The solution builds five package projects. `SpyBrowser.Cursory` is an experimental LGPL package with dataset distribution gated by either an independently verified rights review or a separately recorded operator attestation plus explicit operational approval. The operator-attested route is not independent legal clearance.
 
 | Package | Purpose |
 |---|---|
@@ -15,8 +15,11 @@ The solution builds five package projects. `SpyBrowser.Cursory` is an experiment
 All projects target .NET 8 and can be consumed by .NET 8 or newer compatible
 applications. The four established release packages use MIT metadata; Cursory
 has separate LGPL-3.0-or-later metadata and license/NOTICE. Dataset provenance
-and redistribution review remain a gate before publishing either Cursory or a
-Playwright release that requires its package.
+and redistribution approval remain a gate before publishing Cursory or a
+Playwright release that requires its package. The source records operator
+attestation for the exact pinned dataset; this is not independent rights review.
+LGPL code, complete license texts, corresponding source and upstream
+NOTICE/attribution obligations remain in force.
 
 The library packages are small and depend on `Microsoft.Playwright` normally.
 The global CLI tool package is currently about 205 MB because .NET tool packing
@@ -37,8 +40,12 @@ dotnet pack src/SpyBrowser.Cli/SpyBrowser.Cli.csproj -c Release --no-build -o ar
 ```
 
 Applications can point a private feed or local `NuGet.config` at
-`artifacts/packages`. Tags matching `v*` run the release workflow, attach all
-packages to a GitHub release, and publish to NuGet when `NUGET_API_KEY` exists.
+`artifacts/packages`. The release workflow currently accepts only
+`v0.2.0-beta.2`, selects SDK 8.0.319 and packs all five package projects as
+`0.2.0-beta.2`. Publication still requires
+`SPYBROWSER_EXTERNAL_PUBLICATION_APPROVED=true` and an authorized dataset-rights
+route. A successful workflow attaches packages to a GitHub release and
+publishes to NuGet when `NUGET_API_KEY` exists.
 
 ## Browser delivery
 
@@ -89,15 +96,15 @@ The command builds the previous SpyBrowser.Core/Playwright packages from baselin
 
 Set `SPYBROWSER_BROWSER_EXECUTABLE` to an installed Chrome/Chromium executable if it is not discoverable by Playwright, and provision the normal browser cache before running. The consumer CWD and app are temporary and do not need source-workspace access. `distribution-evidence.json` hashes package/nuspec, runtime DLL, source/license entries and symbol packages, records commands and evidence-input paths, and distinguishes PASS/PENDING/FAIL/BLOCKED. Exit status is nonzero for any pending or blocked item; `allPassed` is never true unless every criterion is PASS.
 
-Snapshot tests reflect the supplied installed artifact. An absent API is PENDING and an incomplete API fails; the harness exercises comparison, concurrency, child-process interruption, cancellation, schema rejection, permission-denial limits and isolated discard without copying SDK implementation into the consumer. External rights review remains BLOCKED: that expected fail-closed distribution guard is not a technical PASS. Evidence reports technical status separately, while `allPassed` and `externalPublicationAllowed` stay false during the block. No command here publishes or pushes artifacts.
+Snapshot tests reflect the supplied installed artifact. An absent API is PENDING and an incomplete API fails; the harness exercises comparison, concurrency, child-process interruption, cancellation, schema rejection, permission-denial limits and isolated discard without copying SDK implementation into the consumer. This local verification command never publishes. External rights can pass its publication gate through either independent VERIFIED evidence or the explicitly recorded operator-attested route; operator attestation is not independent legal clearance.
 
 ## Release checklist
 
 1. Build and test the Playwright baseline and current stable version.
 2. Run installed-Chrome integration tests on Windows and Linux.
-3. Pack established release artifacts and inspect dependencies/content; pack Cursory only for gated verification until provenance/legal review clears external distribution.
+3. For beta.2, pack all five release projects with SDK 8.0.319 and inspect package/version/source/symbol payload. Cursory uses either auditable independent VERIFIED evidence or the recorded OPERATOR_ATTESTED / APPROVED_BY_OPERATOR route; the latter is an operator assertion, not independent legal clearance.
 4. Run the installed-distribution command above against the final feed, baseline rollback package, and shared profile; retain `distribution-evidence.json`.
-5. Confirm LGPL/provenance and dataset redistribution clearance; a package layout or successful local test is not legal clearance.
+5. Review LGPL/provenance and the exact dataset scope in `docs/implementation/external-publication-authorization.md`; the recorded operator attestation is not an independent review of a license document. Preserve LGPL code/license/NOTICE obligations.
 6. Install the CLI from the produced local package and run `version`/`help`.
 7. Rebuild a Cloak-migration sample against the compatibility package without adding it to the RpaBlockly package graph.
 8. Associate RpaBlockly, browser-contract, parity and benchmark evidence by exact candidate artifact hashes.

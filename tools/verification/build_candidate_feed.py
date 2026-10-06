@@ -259,6 +259,11 @@ def main():
         source.mkdir()
         with tarfile.open(fileobj=io.BytesIO(archive), mode='r:') as tree:
             tree.extractall(source, filter='data')
+        rights_manifest = json.loads((source / 'src/SpyBrowser.Cursory/Data/upstream-manifest.json').read_text(encoding='utf-8'))
+        rights_review = rights_manifest.get('dataset', {}).get('rightsReview', {})
+        dataset_rights = rights_review.get('status', 'UNKNOWN')
+        if not isinstance(dataset_rights, str) or not dataset_rights.strip():
+            dataset_rights = 'UNKNOWN'
         sdk = run(['dotnet', '--version'], source, log)
         if sdk != '8.0.319':
             raise RuntimeError(f'Requires isolated .NET SDK 8.0.319; resolved {sdk!r}')
@@ -283,7 +288,7 @@ def main():
                 'declaredFinalCommit': commit if args.final else None, 'isFinal': args.final,
                 'sourceArchiveSha256': source_hash, 'sdk': sdk, 'playwrightVersion': '1.61.0',
                 'packages': hashes, 'symbols': symbols, 'nuspecAudit': nuspec_audit, 'portablePdbAudit': pdb_audit,
-                'externalPublicationAllowed': False, 'datasetRights': 'UNVERIFIED'}
+                'externalPublicationAllowed': False, 'datasetRights': dataset_rights}
     (output / 'feed-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(manifest, indent=2))
 

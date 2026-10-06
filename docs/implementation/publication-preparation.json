@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "status": "PREPARED_NOT_PUBLISHED",
+  "targetTag": "v0.2.0-beta.2",
+  "packageVersion": "0.2.0-beta.2",
+  "sdk": "8.0.319",
+  "packageProjects": [
+    "SpyBrowser.Core",
+    "SpyBrowser.Cursory",
+    "SpyBrowser.Playwright",
+    "SpyBrowser.Compatibility.CloakBrowser",
+    "SpyBrowser.Cli"
+  ],
+  "rightsRoute": "OPERATOR_ATTESTED/APPROVED_BY_OPERATOR",
+  "authorizationEvidence": "docs/implementation/external-publication-authorization.md#operator-attestation",
+  "datasetGzipSha256": "1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203",
+  "datasetExpandedJsonSha256": "84468e214bf23c5ec422d566f5d3412a532b95feafd584bc0d54ade33035d9b8",
+  "independentLegalReview": false,
+  "localFeedPublicationAllowed": false,
+  "defaultPromotionAuthorized": false,
+  "externalPublicationPerformed": false,
+  "pending": [
+    "Parent to review this preparation and set SPYBROWSER_EXTERNAL_PUBLICATION_APPROVED=true in the release environment.",
+    "Parent to inspect whether the NUGET_API_KEY secret exists by name only.",
+    "Parent to perform/tag/publish only after review; no tag, package, push, or publication is performed by this preparation."
+  ],
+  "preservedObligations": [
+    "LGPL-3.0-or-later code license and full license texts",
+    "Corresponding source and upstream NOTICE/attribution",
+    "Operator attestation is not independent legal clearance"
+  ]
+}

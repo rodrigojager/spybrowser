@@ -36,8 +36,20 @@
     },
     "rightsReview": {
       "upstreamAttribution": "cursory-js NOTICE attributes recordings to Margit Antal, Norbert Fejer and Krisztian Buza (SapiMouse; https://ieeexplore.ieee.org/document/9465583) and MIMIC-LOGICS (MouseSynthesizer; https://github.com/MIMIC-LOGICS/Mouse-Synthesizer).",
-      "status": "UNVERIFIED — independent chain of rights and dataset redistribution terms have not been established.",
-      "externalDistribution": "BLOCKED pending provenance and rights review; upstream license statements are retained as source claims, not legal clearance."
+      "status": "OPERATOR_ATTESTED",
+      "externalDistribution": "APPROVED_BY_OPERATOR",
+      "evidence": "docs/implementation/external-publication-authorization.md#operator-attestation",
+      "operatorAttestation": {
+        "attestor": "Repository operator, represented by the user-provided authorization statements recorded in docs/implementation/external-publication-authorization.md#operator-attestation",
+        "basis": "The operator stated that they hold the license and authorized proceeding. This is an operator assertion, not an independently reviewed license document or independent rights determination.",
+        "statements": [
+          "pode desbloquear a publicação externa",
+          "Eu tenho a licença. Pode confiar e fazer",
+          "eu tenho a licença, pode confiar e fazer"
+        ],
+        "scope": "The exact pinned dataset blob src/trajectories.json.gz from https://github.com/JWriter20/cursory-js at commit 16fff97fab05bb6b0c6753b2dc136a7692634cec: gzip SHA-256 1bf3af168719a580e2c5d6fb439f894f9bfff72fc90147149cc531dee80b6203 and expanded JSON SHA-256 84468e214bf23c5ec422d566f5d3412a532b95feafd584bc0d54ade33035d9b8. This attestation does not change upstream attribution or assert independent confirmation of the source chain.",
+        "independentLegalReview": false
+      }
     }
   },
   "code": {
@@ -114,5 +126,5 @@
     "sourceCommit": "16fff97fab05bb6b0c6753b2dc136a7692634cec",
     "generator": "tools/cursory-reference/generate-js-stage-fixtures.cjs"
   },
-  "redistributionReview": "The algorithm/code licenses and upstream notices are recorded. The historical provenance and independent redistribution terms for the recorded trajectory dataset have not been conclusively established; external redistribution is blocked pending legal/provenance review."
+  "redistributionReview": "The algorithm/code licenses and upstream notices are recorded. For this release the operator attested possession of the dataset license and authorized external publication; rightsReview records the exact scope, statements and evidence as OPERATOR_ATTESTED. This is not an independently reviewed legal document or legal clearance; upstream attribution and corresponding-source obligations remain in force."
 }
