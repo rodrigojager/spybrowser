@@ -1,0 +1,66 @@
+{
+  "status": "implemented-locally",
+  "publication": {
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false
+  },
+  "changed_source_files": [
+    "global.json",
+    ".github/workflows/ci.yml",
+    "tests/SpyBrowser.Tests/BrowserIntegrationTests.cs"
+  ],
+  "source_boundary": {
+    "sdk": "Pinned SDK 8.0.319 with rollForward=disable; both main CI setup-dotnet steps read global.json.",
+    "timezone": "Keep exact EffectiveExpectations.TimezoneId assertions; compare runtime Intl timezone to independently queried native Intl canonicalization and cover UTC plus Etc/UTC.",
+    "preserved": [
+      "Playwright versions",
+      "test filters",
+      "actual SDK recording",
+      "browser opt-in behavior",
+      "release workflow",
+      "production source",
+      "datasets",
+      "package feeds and package binaries"
+    ]
+  },
+  "validation": {
+    "sdk": "8.0.319",
+    "browser_opt_in": "SPYBROWSER_RUN_BROWSER_TESTS=1",
+    "command": "dotnet test tests/SpyBrowser.Tests/SpyBrowser.Tests.csproj -c Release --filter 'FullyQualifiedName~Browser_timezone_matches_native_intl_canonicalization|FullyQualifiedName~Effective_callbacks_are_reported_for_persistent_context_and_browser_page_modes' --logger 'trx;LogFileName=timezone-focused.trx' --results-directory artifacts/goal/github-ci-followup/test-results -p:MicrosoftPlaywrightVersion=1.61.0",
+    "exit_code": 0,
+    "result": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "total": 3
+    },
+    "trx": "artifacts/goal/github-ci-followup/test-results/timezone-focused.trx",
+    "log": "artifacts/goal/github-ci-followup/timezone-focused.log",
+    "tests": [
+      {
+        "name": "SpyBrowser.Tests.BrowserIntegrationTests.Browser_timezone_matches_native_intl_canonicalization(requestedTimezone: \"UTC\")",
+        "id": "ab06633c-af62-4923-8d3d-fbe90dfe4d24",
+        "outcome": "Passed"
+      },
+      {
+        "name": "SpyBrowser.Tests.BrowserIntegrationTests.Browser_timezone_matches_native_intl_canonicalization(requestedTimezone: \"Etc/UTC\")",
+        "id": "0199721b-af46-1d22-1b10-b48af0d4245f",
+        "outcome": "Passed"
+      },
+      {
+        "name": "SpyBrowser.Tests.BrowserIntegrationTests.Effective_callbacks_are_reported_for_persistent_context_and_browser_page_modes",
+        "id": "481d768d-4b7d-96c1-13a4-f227312ce6bd",
+        "outcome": "Passed"
+      }
+    ]
+  },
+  "external_blocker": {
+    "kind": "GitHub Actions artifact storage quota exhausted",
+    "exact_error": "Failed to CreateArtifact: Artifact storage quota has been hit. Unable to upload any new artifacts. Usage is recalculated every 6-12 hours.",
+    "more_info": "https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions#calculating-minute-and-storage-spending",
+    "action": "Report to parent/user for administrative resolution; do not weaken evidence collection or ignore upload errors.",
+    "release_run_artifacts_published": false
+  }
+}

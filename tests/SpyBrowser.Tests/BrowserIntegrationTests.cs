@@ -175,7 +175,11 @@ public sealed class BrowserIntegrationTests
             Assert.Equal(localTimezone, context.EffectiveExpectations.TimezoneId);
             Assert.NotNull(context.Consistency.Runtime);
             var localPage = await context.NewPageAsync();
-            Assert.Equal(localTimezone, await localPage.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().timeZone"));
+            var canonicalLocalTimezone = await localPage.EvaluateAsync<string>(
+                "requested => new Intl.DateTimeFormat('en-US', { timeZone: requested }).resolvedOptions().timeZone",
+                localTimezone);
+            Assert.Equal(canonicalLocalTimezone,
+                await localPage.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().timeZone"));
         }
 
         await using (var browser = await SpyBrowserLauncher.LaunchBrowserAsync(common with
@@ -210,6 +214,39 @@ public sealed class BrowserIntegrationTests
             Assert.Equal("es-ES", await page.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().locale"));
             Assert.Equal("UTC", await page.EvaluateAsync<string>("Intl.DateTimeFormat().resolvedOptions().timeZone"));
         }
+    }
+
+    [BrowserTheory]
+    [InlineData("UTC")]
+    [InlineData("Etc/UTC")]
+    public async Task Browser_timezone_matches_native_intl_canonicalization(string requestedTimezone)
+    {
+        using var temporary = new TemporaryDirectory();
+        var identity = BrowserIdentity.Create("timezone-canonicalization") with
+        {
+            Browser = new BrowserIdentitySettings { Engine = BrowserEngine.Chromium, Channel = null }
+        };
+        await using var context = await SpyBrowserLauncher.LaunchContextAsync(new SpyBrowserLaunchOptions
+        {
+            IdentityId = identity.Id,
+            IdentityOverride = identity,
+            IdentitiesRoot = temporary.Path,
+            Headless = BrowserTestSettings.Headless,
+            ChannelOverride = BrowserTestSettings.Channel,
+            RunGpuProbe = false,
+            GpuPolicyOverride = GpuPolicy.AllowSoftware,
+            FailOnConsistencyErrors = false,
+            ConfigureContext = options => options.TimezoneId = requestedTimezone
+        });
+
+        Assert.Equal(requestedTimezone, context.EffectiveExpectations.TimezoneId);
+        var page = await context.NewPageAsync();
+        var canonicalTimezone = await page.EvaluateAsync<string>(
+            "requested => new Intl.DateTimeFormat('en-US', { timeZone: requested }).resolvedOptions().timeZone",
+            requestedTimezone);
+        var resolvedTimezone = await page.EvaluateAsync<string>(
+            "Intl.DateTimeFormat().resolvedOptions().timeZone");
+        Assert.Equal(canonicalTimezone, resolvedTimezone);
     }
 
     [BrowserFact]

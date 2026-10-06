@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "status": "IMPLEMENTED_UNIT_TESTS_PASS_NEW_PACKAGE_CUT_REQUIRED",
+  "cause": {
+    "hostConfig": "core.autocrlf=true",
+    "archiveBehavior": "git archive converted ordinary C# source to CRLF",
+    "remoteAndBlobBehavior": "GitHub raw source and Git blobs are LF",
+    "example": {
+      "path": "src/SpyBrowser.Cli/CommandLine.cs",
+      "lfBytes": 1986,
+      "lfSha256": "a8797975aa3e49191f0149db1fb5b6bc51112c3d2c46dd166a487f25fdefb1b4",
+      "crlfArchiveBytes": 2047,
+      "crlfArchiveSha256": "ee20f2376aa2574ac16e3f424bd376beb8461436619dde62edbfc6566b976cae"
+    },
+    "beta2": "Existing PDB checksums match the local CRLF archive, not the LF SourceLink raw documents."
+  },
+  "fix": {
+    "archiveHelper": "tools/verification/build_candidate_feed.py:archive_source_commit",
+    "archiveCommand": "git -c core.autocrlf=false archive <resolved-exact-commit>",
+    "gitattributes": "*.cs text eol=lf",
+    "existingLicenseAndFixturePoliciesChanged": false,
+    "productionCSemanticsChanged": false,
+    "datasetBytesChanged": false
+  },
+  "regressionTest": {
+    "path": "tools/verification/tests/test_candidate_feed.py",
+    "scenario": "Temporary owned Git repository, core.autocrlf=true, LF C# blob; default archive converts to CRLF and production helper output equals git show blob.",
+    "scratchLocation": "D:/SpyBrowser/.scratch (temporary directory removed after test)",
+    "initialFailure": "First run's expected CRLF conversion literal was over-escaped; corrected before successful run."
+  },
+  "version": {
+    "newVersion": "0.2.0-beta.2.1",
+    "beta2AssetsFeedAndTagReplacedOrRelabeled": false,
+    "beta2KnownLimitation": "Published beta2 PDB checksums are not byte-identical to GitHub raw LF source documents.",
+    "requiredFollowup": "New package cut from a new frozen source commit, followed by independent comparison of all source-controlled PDB checksums to remote raw bytes."
+  },
+  "validation": {
+    "command": "python -m unittest tools.verification.tests.test_candidate_feed -v",
+    "result": "PASS: 13 tests",
+    "syntaxCommand": "python -m py_compile tools/verification/build_candidate_feed.py tools/verification/tests/test_candidate_feed.py",
+    "syntaxResult": "PASS",
+    "packageBuild": "NOT RUN; not requested"
+  },
+  "publication": {
+    "commitPushOrPublication": false
+  }
+}

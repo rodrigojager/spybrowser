@@ -1,7 +1,10 @@
 import hashlib
 import importlib.util
+import io
 import json
 from pathlib import Path
+import subprocess
+import tarfile
 import sys
 import tempfile
 import unittest
@@ -28,6 +31,36 @@ class CandidateFeedAuditTests(unittest.TestCase):
                          'checksum': hashlib.sha256(self.file.read_bytes()).hexdigest()}
         self.good = [{'file': 'Example.pdb', 'sourceLink': [json.dumps(self.mapping)],
                       'documents': [self.document]}]
+
+    def test_archive_source_commit_preserves_git_blob_with_autocrlf_enabled(self):
+        scratch = Path(__file__).parents[3] / '.scratch'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch, prefix='candidate-feed-git-') as temp:
+            repository = Path(temp)
+            def git(*args):
+                return subprocess.run(['git', *args], cwd=repository, check=True,
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
+
+            git('init', '--quiet')
+            git('config', 'core.autocrlf', 'true')
+            git('config', 'user.name', 'Candidate Feed Test')
+            git('config', 'user.email', 'candidate-feed@example.invalid')
+            source = b'class Example {\n    // preserve LF bytes\n}\n'
+            (repository / 'Example.cs').write_bytes(source)
+            git('add', 'Example.cs')
+            git('commit', '--quiet', '-m', 'test source')
+            commit = git('rev-parse', 'HEAD').decode().strip()
+            blob = git('show', f'{commit}:Example.cs')
+            self.assertEqual(blob, source)
+
+            default_archive = git('archive', commit)
+            with tarfile.open(fileobj=io.BytesIO(default_archive), mode='r:') as archive:
+                self.assertEqual(archive.extractfile('Example.cs').read(),
+                                 source.replace(b'\n', b'\r\n'))
+
+            fixed_archive = feed.archive_source_commit(repository, commit)
+            with tarfile.open(fileobj=io.BytesIO(fixed_archive), mode='r:') as archive:
+                self.assertEqual(archive.extractfile('Example.cs').read(), blob)
 
     def test_run_timeout_captures_output_and_terminates_owned_process(self):
         log = self.source / 'timeout.log'

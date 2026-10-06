@@ -68,6 +68,17 @@ def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def archive_source_commit(repository, commit):
+    """Archive the exact Git commit without host-specific line-ending conversion."""
+    repository = Path(repository).resolve()
+    result = subprocess.run(
+        ['git', '-c', 'core.autocrlf=false', '-c', f'safe.directory={repository.as_posix()}',
+         '-C', str(repository), 'archive', commit],
+        cwd=repository, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        timeout=TIMEOUT, check=True)
+    return result.stdout
+
+
 def _write_pdb_auditor(root):
     """Compile a BCL-only auditor so CDI and document hashes are read from actual Portable PDBs."""
     project = root / 'pdb-audit'
@@ -251,8 +262,7 @@ def main():
     commit = run(git + ['rev-parse', '--verify', args.source_commit + '^{commit}'], repo, log)
     if not re.fullmatch(r'[0-9a-f]{40}', commit):
         parser.error('Resolved source commit is not a full 40-character SHA')
-    archive = subprocess.run(git + ['archive', commit], cwd=repo, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, timeout=TIMEOUT, check=True).stdout
+    archive = archive_source_commit(repo, commit)
     source_hash = sha256(archive)
     with tempfile.TemporaryDirectory(prefix='spybrowser-source-bound-feed-') as temp:
         source = Path(temp) / 'source'

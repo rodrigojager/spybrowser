@@ -1,3 +1,5 @@
+# C# documents embedded in Portable PDBs must match GitHub raw bytes.
+*.cs text eol=lf
 # Reference fixtures are hashed byte-for-byte across Windows and Linux.
 tests/**/Fixtures/*.json text eol=lf
 # Provenance manifests carry byte hashes of these upstream license texts.
